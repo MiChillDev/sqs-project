@@ -1,1 +1,1 @@
-# sqs-project
+# SQS Project
