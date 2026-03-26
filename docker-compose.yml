@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sqs-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sqs_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    networks:
+      - sqs-network
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sqs-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sqs_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sqs-network
+
+volumes:
+  postgres_data:
+
+networks:
+  sqs-network:
+    driver: bridge
