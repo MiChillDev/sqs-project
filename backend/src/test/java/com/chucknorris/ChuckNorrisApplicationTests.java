@@ -3,11 +3,14 @@ package com.chucknorris;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 class ChuckNorrisApplicationTests {
 
     @Test
-    void contextLoads() {
+    void dummyTest() {
+        assertEquals(2, 1 + 1);
     }
 
 }
