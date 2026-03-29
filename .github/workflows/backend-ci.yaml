@@ -1,0 +1,30 @@
+name: Backend CI Pipeline
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up Java
+        uses: actions/setup-java@fe779bf55ef683c9413269276a7588bb9cedf07a
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compile backend
+        run: cd backend && mvn clean compile
+
+      - name: Run unit tests
+        run: cd backend && mvn test
