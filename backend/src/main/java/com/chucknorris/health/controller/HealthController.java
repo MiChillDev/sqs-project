@@ -1,4 +1,4 @@
-package com.chucknorris.controller;
+package com.chucknorris.health.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class HealthController {
 
     @GetMapping("/health")

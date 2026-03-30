@@ -1,12 +1,13 @@
-package com.chucknorris.controller;
+package com.chucknorris.jokes.controller;
 
+import com.chucknorris.jokes.models.CreateJokeDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class JokeController {
 
     @GetMapping("/jokes")
@@ -16,7 +17,7 @@ public class JokeController {
     }
 
     @PostMapping("/jokes")
-    public ResponseEntity<Map<String, Object>> createJoke(@RequestBody Map<String, String> jokeInput) {
+    public ResponseEntity<Map<String, Object>> createJoke(@RequestBody CreateJokeDto input) {
         // TODO: Implement logic to create a new joke in the database
         return null;
     }
