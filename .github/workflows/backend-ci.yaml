@@ -1,11 +1,8 @@
 name: Backend CI Pipeline
 
 on:
-  push:
-    paths:
-      - 'backend/**'
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
     paths:
       - 'backend/**'
 
