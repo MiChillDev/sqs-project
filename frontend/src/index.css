@@ -27,6 +27,7 @@
 
 body {
   background: var(--color-background);
+  color: var(--color-foreground);
 }
 
 .dark {

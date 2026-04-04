@@ -6,9 +6,9 @@ const indexRoute = createRoute({
   path: '/',
   component: function IndexPage() {
     return (
-      <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-        <h1>SQS Frontend</h1>
-        <p>some paragraph</p>
+      <div className="mx-auto max-w-[800px] p-8">
+        <h1 className="text-2xl font-bold">SQS Frontend</h1>
+        <p className="mt-4 text-muted-foreground">some paragraph</p>
       </div>
     );
   },

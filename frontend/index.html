@@ -1,13 +1,36 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SQS Preparation</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <script>
+            (() => {
+                var savedTheme, prefersDark, theme;
+                try {
+                    savedTheme = localStorage.getItem("theme");
+                    prefersDark = window.matchMedia(
+                        "(prefers-color-scheme: dark)",
+                    ).matches;
+                    theme =
+                        savedTheme === "light" || savedTheme === "dark"
+                            ? savedTheme
+                            : prefersDark
+                              ? "dark"
+                              : "light";
+                    if (theme === "dark") {
+                        document.documentElement.classList.add("dark");
+                    }
+                } catch (e) {
+                    console.error("Failed to set theme:", e);
+                }
+            })();
+        </script>
+        <!-- %FOUC_STYLE% -->
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SQS Preparation</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>
