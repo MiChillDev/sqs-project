@@ -6,8 +6,10 @@ pnpm-debug.log*
 
 node_modules
 dist
+coverage
 *.local
 .env.local
+.env.production
 
 # Editor directories and files
 .vscode/*
