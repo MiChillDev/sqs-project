@@ -1,0 +1,30 @@
+{
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
+  "app": {
+    "headerTitle": "SQS Preparation",
+    "documentTitle": "SQS Preparation",
+    "toggleTheme": "Toggle theme"
+  },
+  "home": {
+    "title": "SQS Frontend",
+    "description": "some paragraph"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "badRequest": "Invalid request. Please check your input.",
+    "unauthorized": "Please sign in to continue.",
+    "forbidden": "You do not have permission to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "serverError": "Something went wrong. Please try again later."
+  },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "description": "The page you are looking for does not exist."
+  },
+  "toast": {
+    "errorTitle": "An error occurred",
+    "unknownError": "Unknown error"
+  }
+}

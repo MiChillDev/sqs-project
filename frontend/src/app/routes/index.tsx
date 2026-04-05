@@ -1,19 +1,18 @@
 import { createRoute } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { rootRoute } from './__root';
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: function IndexPage() {
-    useEffect(() => {
-      document.title = 'Home | SQS Preparation';
-    }, []);
+    const { t } = useTranslation();
 
     return (
       <div className="mx-auto max-w-[800px] p-8">
-        <h1 className="text-2xl font-bold">SQS Frontend</h1>
-        <p className="mt-4 text-muted-foreground">some paragraph</p>
+        <h1 className="text-2xl font-bold">{t('home.title')}</h1>
+        <p className="mt-4 text-muted-foreground">{t('home.description')}</p>
       </div>
     );
   },

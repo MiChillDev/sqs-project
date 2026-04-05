@@ -1,0 +1,30 @@
+{
+  "a11y": {
+    "skipToContent": "Zum Inhalt springen"
+  },
+  "app": {
+    "headerTitle": "SQS Vorbereitung",
+    "documentTitle": "SQS Vorbereitung",
+    "toggleTheme": "Design umschalten"
+  },
+  "home": {
+    "title": "SQS Frontend",
+    "description": "Ein Absatz"
+  },
+  "error": {
+    "title": "Etwas ist schiefgelaufen",
+    "badRequest": "Ungültige Anfrage. Bitte überprüfen Sie Ihre Eingabe.",
+    "unauthorized": "Bitte melden Sie sich an, um fortzufahren.",
+    "forbidden": "Sie haben keine Berechtigung für diese Aktion.",
+    "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
+    "serverError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut."
+  },
+  "notFound": {
+    "title": "404 - Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht."
+  },
+  "toast": {
+    "errorTitle": "Ein Fehler ist aufgetreten",
+    "unknownError": "Unbekannter Fehler"
+  }
+}

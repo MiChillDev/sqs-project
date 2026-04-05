@@ -2,7 +2,25 @@
 
 import { toast } from 'sonner';
 
-import { getUserSafeError, handleMutationError } from '@/app/providers/query-client';
+import { handleMutationError } from '@/app/providers/query-client';
+import { getUserSafeError } from '@/shared/lib/error-messages';
+
+vi.mock('i18next', () => ({
+  default: {
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'toast.errorTitle': 'An error occurred',
+        'toast.unknownError': 'Unknown error',
+        'error.badRequest': 'Invalid request. Please check your input.',
+        'error.unauthorized': 'Please sign in to continue.',
+        'error.forbidden': 'You do not have permission to perform this action.',
+        'error.notFound': 'The requested resource was not found.',
+        'error.serverError': 'Something went wrong. Please try again later.',
+      };
+      return translations[key] ?? key;
+    },
+  },
+}));
 
 describe('getUserSafeError', () => {
   it('returns sanitized message for 400', () => {
@@ -28,23 +46,23 @@ describe('getUserSafeError', () => {
   });
 
   it('returns default message for unrecognized status code', () => {
-    expect(getUserSafeError({ status: 418 })).toBe('An unexpected error occurred.');
+    expect(getUserSafeError({ status: 418 })).toBe('Unknown error');
   });
 
   it('returns default message for Error object without status', () => {
-    expect(getUserSafeError(new Error('Network failure'))).toBe('An unexpected error occurred.');
+    expect(getUserSafeError(new Error('Network failure'))).toBe('Unknown error');
   });
 
   it('returns default message for string input', () => {
-    expect(getUserSafeError('something broke')).toBe('An unexpected error occurred.');
+    expect(getUserSafeError('something broke')).toBe('Unknown error');
   });
 
   it('returns default message for null', () => {
-    expect(getUserSafeError(null)).toBe('An unexpected error occurred.');
+    expect(getUserSafeError(null)).toBe('Unknown error');
   });
 
   it('returns default message for undefined', () => {
-    expect(getUserSafeError(undefined)).toBe('An unexpected error occurred.');
+    expect(getUserSafeError(undefined)).toBe('Unknown error');
   });
 });
 
@@ -71,7 +89,7 @@ describe('handleMutationError', () => {
     handleMutationError(new Error('unknown'));
 
     expect(toastErrorSpy).toHaveBeenCalledWith('An error occurred', {
-      description: 'An unexpected error occurred.',
+      description: 'Unknown error',
     });
   });
 });

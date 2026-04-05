@@ -5,6 +5,18 @@ import userEvent from '@testing-library/user-event';
 
 import { ThemeToggle } from '@/shared/components/theme-toggle';
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'app.toggleTheme': 'Toggle theme',
+      };
+      return translations[key] ?? key;
+    },
+    i18n: { language: 'en' },
+  }),
+}));
+
 const mockToggleTheme = vi.fn();
 
 beforeEach(() => {
@@ -33,7 +45,7 @@ describe('ThemeToggle', () => {
 
     render(<ThemeToggle theme="light" onToggle={mockToggleTheme} />);
 
-    const button = screen.getByRole('button', { name: 'Switch to dark mode' });
+    const button = screen.getByRole('button', { name: 'Toggle theme' });
     await user.click(button);
 
     expect(mockToggleTheme).toHaveBeenCalledOnce();
@@ -42,15 +54,15 @@ describe('ThemeToggle', () => {
   it('has accessible label in light mode', () => {
     render(<ThemeToggle theme="light" onToggle={mockToggleTheme} />);
 
-    const button = screen.getByRole('button', { name: 'Switch to dark mode' });
-    expect(button).toHaveAttribute('aria-label', 'Switch to dark mode');
+    const button = screen.getByRole('button', { name: 'Toggle theme' });
+    expect(button).toHaveAttribute('aria-label', 'Toggle theme');
   });
 
   it('has accessible label in dark mode', () => {
     render(<ThemeToggle theme="dark" onToggle={mockToggleTheme} />);
 
-    const button = screen.getByRole('button', { name: 'Switch to light mode' });
-    expect(button).toHaveAttribute('aria-label', 'Switch to light mode');
+    const button = screen.getByRole('button', { name: 'Toggle theme' });
+    expect(button).toHaveAttribute('aria-label', 'Toggle theme');
   });
 
   it('calls onToggle when in dark mode', async () => {
@@ -58,7 +70,7 @@ describe('ThemeToggle', () => {
 
     render(<ThemeToggle theme="dark" onToggle={mockToggleTheme} />);
 
-    const button = screen.getByRole('button', { name: 'Switch to light mode' });
+    const button = screen.getByRole('button', { name: 'Toggle theme' });
     await user.click(button);
 
     expect(mockToggleTheme).toHaveBeenCalledOnce();
