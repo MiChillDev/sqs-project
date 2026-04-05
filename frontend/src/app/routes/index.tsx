@@ -1,10 +1,15 @@
 import { createRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { rootRoute } from './__root';
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: function IndexPage() {
+    useEffect(() => {
+      document.title = 'Home | SQS Preparation';
+    }, []);
+
     return (
       <div className="mx-auto max-w-[800px] p-8">
         <h1 className="text-2xl font-bold">SQS Frontend</h1>

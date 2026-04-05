@@ -7,6 +7,12 @@ const HEX_COLOR_RE = /^#[0-9a-fA-F]{3,8}$/;
 
 const CSS_PATH = path.resolve(import.meta.dirname, 'src/index.css');
 
+let cachedStyleTag: string | null = null;
+
+function stripComments(css: string): string {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '');
+}
+
 function getVar(block: string, name: string): string | null {
   const m = block.match(new RegExp(`--color-${name}:\\s*([^;]+);`));
   return m?.[1]?.trim() ?? null;
@@ -28,8 +34,9 @@ function requireColor(block: string, blockName: string, name: string): string {
 }
 
 function extractColors(css: string) {
-  const themeMatch = css.match(/@theme\s*\{([^}]+)\}/s);
-  const darkMatch = css.match(/\.dark\s*\{([^}]+)\}/s);
+  const stripped = stripComments(css);
+  const themeMatch = stripped.match(/@theme\s*\{([^}]+)\}/s);
+  const darkMatch = stripped.match(/(?:^|\n)\.dark\s*\{([^}]*)\}/m);
 
   if (!themeMatch) {
     throw new Error('[vite-plugin-fouc-style] @theme block not found in index.css');
@@ -66,6 +73,9 @@ function generateStyleTag(colors: ReturnType<typeof extractColors>): string {
 export function foucStylePlugin(): Plugin {
   return {
     name: 'vite-plugin-fouc-style',
+    buildStart() {
+      cachedStyleTag = null;
+    },
     transformIndexHtml(html: string) {
       if (!html.includes(PLACEHOLDER)) {
         throw new Error(
@@ -73,9 +83,14 @@ export function foucStylePlugin(): Plugin {
         );
       }
 
+      if (cachedStyleTag) {
+        return html.replace(PLACEHOLDER, cachedStyleTag);
+      }
+
       const css = fs.readFileSync(CSS_PATH, 'utf-8');
       const colors = extractColors(css);
-      return html.replace(PLACEHOLDER, generateStyleTag(colors));
+      cachedStyleTag = generateStyleTag(colors);
+      return html.replace(PLACEHOLDER, cachedStyleTag);
     },
   };
 }

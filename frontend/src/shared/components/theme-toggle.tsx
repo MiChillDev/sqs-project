@@ -5,8 +5,13 @@ import type { Theme } from '@/shared/hooks/use-theme';
 
 export function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
   return (
-    <Button variant="ghost" size="icon" aria-label="Toggle theme" onClick={onToggle}>
-      {theme === 'light' ? <Sun /> : <Moon />}
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+      onClick={onToggle}
+    >
+      {theme === 'light' ? <Sun size={16} /> : <Moon size={16} />}
     </Button>
   );
 }

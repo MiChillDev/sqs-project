@@ -75,12 +75,16 @@ const fieldVariants = cva('group/field flex w-full gap-3 data-[invalid=true]:tex
 function Field({
   className,
   orientation = 'vertical',
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   ...props
 }: React.ComponentProps<'div'> & VariantProps<typeof fieldVariants>) {
   return (
     // biome-ignore lint/a11y/useSemanticElements: intentionally uses div with role to avoid fieldset browser defaults
     <div
       role="group"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
       data-slot="field"
       data-orientation={orientation}
       className={cn(fieldVariants({ orientation }), className)}
@@ -172,6 +176,17 @@ function FieldSeparator({
   );
 }
 
+function ErrorShell({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      role="alert"
+      data-slot="field-error"
+      className={cn('font-normal text-destructive text-sm', className)}
+      {...props}
+    />
+  );
+}
+
 function FieldError({
   className,
   children,
@@ -182,14 +197,9 @@ function FieldError({
 }) {
   if (children) {
     return (
-      <div
-        role="alert"
-        data-slot="field-error"
-        className={cn('font-normal text-destructive text-sm', className)}
-        {...props}
-      >
+      <ErrorShell className={className} {...props}>
         {children}
-      </div>
+      </ErrorShell>
     );
   }
 
@@ -202,30 +212,20 @@ function FieldError({
 
   if (uniqueErrors.length === 1) {
     return (
-      <div
-        role="alert"
-        data-slot="field-error"
-        className={cn('font-normal text-destructive text-sm', className)}
-        {...props}
-      >
+      <ErrorShell className={className} {...props}>
         {uniqueErrors[0].message}
-      </div>
+      </ErrorShell>
     );
   }
 
   return (
-    <div
-      role="alert"
-      data-slot="field-error"
-      className={cn('font-normal text-destructive text-sm', className)}
-      {...props}
-    >
+    <ErrorShell className={className} {...props}>
       <ul className="ml-4 flex list-disc flex-col gap-1">
         {uniqueErrors.map((e) => (
           <li key={e.message}>{e.message}</li>
         ))}
       </ul>
-    </div>
+    </ErrorShell>
   );
 }
 
