@@ -1,6 +1,7 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
 
+import { ConfigErrorBanner } from '@/shared/components/config-error-banner';
 import { ThemeToggle } from '@/shared/components/theme-toggle';
 import { useTheme } from '@/shared/hooks/use-theme';
 
@@ -12,6 +13,7 @@ export const rootRoute = createRootRoute({
 
     return (
       <QueryClientProviderWrapper>
+        <ConfigErrorBanner />
         <div className="flex min-h-dvh flex-col">
           <header className="flex items-center justify-between border-b px-6 py-3">
             <h1 className="text-lg font-semibold">SQS Preparation</h1>

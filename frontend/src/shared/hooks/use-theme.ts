@@ -20,7 +20,7 @@ export function useTheme() {
       let saved: string | null = null;
       try {
         saved = localStorage.getItem(STORAGE_ITEM_KEY);
-      } catch { 
+      } catch {
         //
       }
       if (!saved || (saved !== LIGHT && saved !== DARK)) {
