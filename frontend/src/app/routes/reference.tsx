@@ -41,7 +41,7 @@ const referenceRoute = createRoute({
     }
 
     return (
-      <div className="mx-auto max-w-[600px] p-8">
+      <div className="mx-auto max-w-400 p-8">
         <h2 className="text-2xl font-bold">Reference Implementation</h2>
         <div className="mt-4 flex gap-2">
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
