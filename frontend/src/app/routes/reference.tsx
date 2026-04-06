@@ -41,13 +41,13 @@ const referenceRoute = createRoute({
     }
 
     return (
-      <div className="mx-auto max-w-400 p-8">
-        <h2 className="text-2xl font-bold">Reference Implementation</h2>
-        <div className="mt-4 flex gap-2">
+      <div className='mx-auto max-w-400 p-8'>
+        <h2 className='text-2xl font-bold'>Reference Implementation</h2>
+        <div className='mt-4 flex gap-2'>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() =>
               toast.error('Simulated error', { description: 'This is a simulated API error' })
             }
@@ -55,33 +55,33 @@ const referenceRoute = createRoute({
             Simulate Error
           </Button>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className='mt-6 space-y-4'>
           <Field data-invalid={!!errors.name}>
-            <FieldLabel htmlFor="name">Name</FieldLabel>
+            <FieldLabel htmlFor='name'>Name</FieldLabel>
             <FieldContent>
               <Input
-                id="name"
+                id='name'
                 aria-invalid={!!errors.name}
                 {...register('name')}
-                placeholder="Enter your name"
+                placeholder='Enter your name'
               />
             </FieldContent>
             <FieldError errors={[errors.name]} />
           </Field>
           <Field data-invalid={!!errors.email}>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
+            <FieldLabel htmlFor='email'>Email</FieldLabel>
             <FieldContent>
               <Input
-                id="email"
-                type="email"
+                id='email'
+                type='email'
                 aria-invalid={!!errors.email}
                 {...register('email')}
-                placeholder="Enter your email"
+                placeholder='Enter your email'
               />
             </FieldContent>
             <FieldError errors={[errors.email]} />
           </Field>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type='submit' disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Submit'}
           </Button>
         </form>

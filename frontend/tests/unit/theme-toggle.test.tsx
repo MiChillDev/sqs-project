@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe('ThemeToggle', () => {
   it('renders Sun icon in light mode', () => {
-    const { container } = render(<ThemeToggle theme="light" onToggle={mockToggleTheme} />);
+    const { container } = render(<ThemeToggle theme='light' onToggle={mockToggleTheme} />);
 
     const svg = container.querySelector('svg');
     expect(svg).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe('ThemeToggle', () => {
   });
 
   it('renders Moon icon in dark mode', () => {
-    const { container } = render(<ThemeToggle theme="dark" onToggle={mockToggleTheme} />);
+    const { container } = render(<ThemeToggle theme='dark' onToggle={mockToggleTheme} />);
 
     const svg = container.querySelector('svg');
     expect(svg).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('ThemeToggle', () => {
   it('calls onToggle on click', async () => {
     const user = userEvent.setup();
 
-    render(<ThemeToggle theme="light" onToggle={mockToggleTheme} />);
+    render(<ThemeToggle theme='light' onToggle={mockToggleTheme} />);
 
     const button = screen.getByRole('button', { name: 'Toggle theme' });
     await user.click(button);
@@ -52,14 +52,14 @@ describe('ThemeToggle', () => {
   });
 
   it('has accessible label in light mode', () => {
-    render(<ThemeToggle theme="light" onToggle={mockToggleTheme} />);
+    render(<ThemeToggle theme='light' onToggle={mockToggleTheme} />);
 
     const button = screen.getByRole('button', { name: 'Toggle theme' });
     expect(button).toHaveAttribute('aria-label', 'Toggle theme');
   });
 
   it('has accessible label in dark mode', () => {
-    render(<ThemeToggle theme="dark" onToggle={mockToggleTheme} />);
+    render(<ThemeToggle theme='dark' onToggle={mockToggleTheme} />);
 
     const button = screen.getByRole('button', { name: 'Toggle theme' });
     expect(button).toHaveAttribute('aria-label', 'Toggle theme');
@@ -68,7 +68,7 @@ describe('ThemeToggle', () => {
   it('calls onToggle when in dark mode', async () => {
     const user = userEvent.setup();
 
-    render(<ThemeToggle theme="dark" onToggle={mockToggleTheme} />);
+    render(<ThemeToggle theme='dark' onToggle={mockToggleTheme} />);
 
     const button = screen.getByRole('button', { name: 'Toggle theme' });
     await user.click(button);

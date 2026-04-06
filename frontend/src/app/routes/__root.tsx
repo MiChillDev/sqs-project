@@ -19,25 +19,25 @@ export const rootRoute = createRootRoute({
       <>
         <ConfigErrorBanner />
         <I18nWatcher />
-        <div className="flex min-h-dvh flex-col">
+        <div className='flex min-h-dvh flex-col'>
           <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground"
+            href='#main-content'
+            className='sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground'
           >
             {t('a11y.skipToContent')}
           </a>
-          <header className="flex items-center justify-between border-b px-6 py-3">
-            <h1 className="text-lg font-semibold">{t('app.headerTitle')}</h1>
-            <div className="flex items-center gap-1">
+          <header className='flex items-center justify-between border-b px-6 py-3'>
+            <h1 className='text-lg font-semibold'>{t('app.headerTitle')}</h1>
+            <div className='flex items-center gap-1'>
               <LanguageToggle />
               <ThemeToggle theme={theme} onToggle={toggleTheme} />
             </div>
           </header>
-          <main id="main-content" className="flex-1">
+          <main id='main-content' className='flex-1'>
             <Outlet />
           </main>
         </div>
-        <Toaster position="top-right" richColors theme={theme} />
+        <Toaster position='top-right' richColors theme={theme} />
       </>
     );
   },
@@ -45,10 +45,10 @@ export const rootRoute = createRootRoute({
     const { t } = useTranslation();
 
     return (
-      <div className="flex min-h-dvh flex-col">
-        <main id="main-content" className="flex-1 p-8">
-          <h1 className="text-2xl font-bold text-destructive">{t('error.title')}</h1>
-          <p className="mt-2 text-muted-foreground">{getUserSafeError(error)}</p>
+      <div className='flex min-h-dvh flex-col'>
+        <main id='main-content' className='flex-1 p-8'>
+          <h1 className='text-2xl font-bold text-destructive'>{t('error.title')}</h1>
+          <p className='mt-2 text-muted-foreground'>{getUserSafeError(error)}</p>
         </main>
       </div>
     );
@@ -57,10 +57,10 @@ export const rootRoute = createRootRoute({
     const { t } = useTranslation();
 
     return (
-      <div className="flex min-h-dvh flex-col">
-        <main id="main-content" className="flex-1 p-8">
-          <h1 className="text-2xl font-bold">{t('notFound.title')}</h1>
-          <p className="mt-2 text-muted-foreground">{t('notFound.description')}</p>
+      <div className='flex min-h-dvh flex-col'>
+        <main id='main-content' className='flex-1 p-8'>
+          <h1 className='text-2xl font-bold'>{t('notFound.title')}</h1>
+          <p className='mt-2 text-muted-foreground'>{t('notFound.description')}</p>
         </main>
       </div>
     );

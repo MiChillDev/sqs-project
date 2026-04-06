@@ -22,12 +22,12 @@ function requireColor(block: string, blockName: string, name: string): string {
   const value = getVar(block, name);
   if (!value) {
     throw new Error(
-      `[vite-plugin-fouc-style] Could not extract --color-${name} from ${blockName} in index.css`,
+      `[vite-plugin-fouc-style] Could not extract --color-${name} from ${blockName} in index.css`
     );
   }
   if (!HEX_COLOR_RE.test(value)) {
     throw new Error(
-      `[vite-plugin-fouc-style] Invalid hex color for --color-${name}: "${value}" in index.css`,
+      `[vite-plugin-fouc-style] Invalid hex color for --color-${name}: "${value}" in index.css`
     );
   }
   return value;
@@ -79,7 +79,7 @@ export function foucStylePlugin(): Plugin {
     transformIndexHtml(html: string) {
       if (!html.includes(PLACEHOLDER)) {
         throw new Error(
-          `[vite-plugin-fouc-style] ${PLACEHOLDER} placeholder not found in index.html`,
+          `[vite-plugin-fouc-style] ${PLACEHOLDER} placeholder not found in index.html`
         );
       }
 

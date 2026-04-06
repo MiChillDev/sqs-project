@@ -10,9 +10,9 @@ const indexRoute = createRoute({
     const { t } = useTranslation();
 
     return (
-      <div className="mx-auto max-w-200 p-8">
-        <h1 className="text-2xl font-bold">{t('home.title')}</h1>
-        <p className="mt-4 text-muted-foreground">{t('home.description')}</p>
+      <div className='mx-auto max-w-200 p-8'>
+        <h1 className='text-2xl font-bold'>{t('home.title')}</h1>
+        <p className='mt-4 text-muted-foreground'>{t('home.description')}</p>
       </div>
     );
   },

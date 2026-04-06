@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { getUserSafeError } from '@/shared/lib/error-messages';
 
 const LazyReactQueryDevtools = lazy(() =>
-  import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools })),
+  import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools }))
 );
 
 export { getUserSafeError };

@@ -33,7 +33,7 @@ describe('getUserSafeError', () => {
 
   it('returns sanitized message for 403', () => {
     expect(getUserSafeError({ status: 403 })).toBe(
-      'You do not have permission to perform this action.',
+      'You do not have permission to perform this action.'
     );
   });
 

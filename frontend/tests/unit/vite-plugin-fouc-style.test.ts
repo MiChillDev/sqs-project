@@ -72,31 +72,31 @@ describe('extractColors', () => {
   it('throws when @theme block is missing', () => {
     const noTheme = VALID_CSS.replace(/@theme/, '/* removed */');
     expect(() => extractColors(noTheme)).toThrow(
-      '[vite-plugin-fouc-style] @theme block not found in index.css',
+      '[vite-plugin-fouc-style] @theme block not found in index.css'
     );
   });
 
   it('throws when .dark block is missing', () => {
     const noDark = VALID_CSS.replace(/\.dark\s*\{[^}]+\}/s, '');
     expect(() => extractColors(noDark)).toThrow(
-      '[vite-plugin-fouc-style] .dark block not found in index.css',
+      '[vite-plugin-fouc-style] .dark block not found in index.css'
     );
   });
 
   it('throws when --color-background is missing from @theme', () => {
     const noBg = VALID_CSS.replace(/--color-background: #ffffff;/, '');
     expect(() => extractColors(noBg)).toThrow(
-      '[vite-plugin-fouc-style] Could not extract --color-background from @theme in index.css',
+      '[vite-plugin-fouc-style] Could not extract --color-background from @theme in index.css'
     );
   });
 
   it('throws when color value is not a valid hex', () => {
     const badHex = VALID_CSS.replace(
       '--color-background: #ffffff;',
-      '--color-background: rgb(255, 255, 255);',
+      '--color-background: rgb(255, 255, 255);'
     );
     expect(() => extractColors(badHex)).toThrow(
-      '[vite-plugin-fouc-style] Invalid hex color for --color-background: "rgb(255, 255, 255)" in index.css',
+      '[vite-plugin-fouc-style] Invalid hex color for --color-background: "rgb(255, 255, 255)" in index.css'
     );
   });
 
@@ -109,7 +109,7 @@ describe('extractColors', () => {
   it('accepts 8-digit hex colors', () => {
     const longHex = VALID_CSS.replace(
       '--color-foreground: #0f172a;',
-      '--color-foreground: #0f172a00;',
+      '--color-foreground: #0f172a00;'
     );
     const colors = extractColors(longHex);
     expect(colors.lightFg).toBe('#0f172a00');
@@ -118,7 +118,7 @@ describe('extractColors', () => {
   it('ignores CSS comments containing .dark {', () => {
     const cssWithComment = VALID_CSS.replace(
       '.dark {',
-      '/* .dark { --color-background: #ff0000; --color-foreground: #ff0000; } */\n.dark {',
+      '/* .dark { --color-background: #ff0000; --color-foreground: #ff0000; } */\n.dark {'
     );
     const colors = extractColors(cssWithComment);
     expect(colors.darkBg).toBe('#0f172a');
@@ -128,7 +128,7 @@ describe('extractColors', () => {
   it('ignores .dark-mode selector', () => {
     const cssWithDarkMode = VALID_CSS.replace('.dark {', '.dark-mode {');
     expect(() => extractColors(cssWithDarkMode)).toThrow(
-      '[vite-plugin-fouc-style] .dark block not found in index.css',
+      '[vite-plugin-fouc-style] .dark block not found in index.css'
     );
   });
 });
@@ -150,21 +150,21 @@ describe('generateStyleTag', () => {
   it('contains :root with light color variables', () => {
     const result = generateStyleTag(colors);
     expect(result).toMatch(
-      /:root\s*\{[^}]*--color-background:\s*#ffffff;[^}]*--color-foreground:\s*#0f172a;[^}]*\}/s,
+      /:root\s*\{[^}]*--color-background:\s*#ffffff;[^}]*--color-foreground:\s*#0f172a;[^}]*\}/s
     );
   });
 
   it('contains .dark with dark color variables', () => {
     const result = generateStyleTag(colors);
     expect(result).toMatch(
-      /\.dark\s*\{[^}]*--color-background:\s*#0f172a;[^}]*--color-foreground:\s*#f8fafc;[^}]*\}/s,
+      /\.dark\s*\{[^}]*--color-background:\s*#0f172a;[^}]*--color-foreground:\s*#f8fafc;[^}]*\}/s
     );
   });
 
   it('contains body with CSS variable references', () => {
     const result = generateStyleTag(colors);
     expect(result).toMatch(
-      /body\s*\{[^}]*background:\s*var\(--color-background\);[^}]*color:\s*var\(--color-foreground\);[^}]*\}/s,
+      /body\s*\{[^}]*background:\s*var\(--color-background\);[^}]*color:\s*var\(--color-foreground\);[^}]*\}/s
     );
   });
 
@@ -191,7 +191,7 @@ describe('foucStylePlugin', () => {
   beforeEach(() => {
     const plugin = foucStylePlugin();
     plugin.buildStart?.(
-      {} as Parameters<NonNullable<Parameters<typeof foucStylePlugin>[0]['buildStart']>>[0],
+      {} as Parameters<NonNullable<Parameters<typeof foucStylePlugin>[0]['buildStart']>>[0]
     );
     readFileSyncSpy = vi.spyOn(fs, 'readFileSync').mockReturnValue(VALID_CSS);
   });
@@ -213,7 +213,7 @@ describe('foucStylePlugin', () => {
     const plugin = foucStylePlugin();
 
     expect(() => plugin.transformIndexHtml?.('<html><head></head></html>')).toThrow(
-      '[vite-plugin-fouc-style] <!-- %FOUC_STYLE% --> placeholder not found in index.html',
+      '[vite-plugin-fouc-style] <!-- %FOUC_STYLE% --> placeholder not found in index.html'
     );
   });
 
@@ -231,7 +231,7 @@ describe('foucStylePlugin', () => {
 
     plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
     plugin.buildStart?.(
-      {} as Parameters<NonNullable<Parameters<typeof foucStylePlugin>[0]['buildStart']>>[0],
+      {} as Parameters<NonNullable<Parameters<typeof foucStylePlugin>[0]['buildStart']>>[0]
     );
     plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
 

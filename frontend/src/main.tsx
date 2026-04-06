@@ -18,7 +18,7 @@ const renderApp = () => {
       <QueryClientProviderWrapper>
         <RouterProvider router={router} />
       </QueryClientProviderWrapper>
-    </StrictMode>,
+    </StrictMode>
   );
 };
 

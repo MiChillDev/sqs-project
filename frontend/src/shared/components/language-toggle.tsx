@@ -12,22 +12,22 @@ export function LanguageToggle() {
     const next = i18n.language === 'en' ? 'de' : 'en';
     i18n.changeLanguage(next);
     setAnnouncement(
-      next === 'de' ? 'Sprache auf Deutsch umgestellt' : 'Language switched to English',
+      next === 'de' ? 'Sprache auf Deutsch umgestellt' : 'Language switched to English'
     );
   };
 
   return (
     <>
       <Button
-        variant="ghost"
-        size="icon"
-        lang="en"
+        variant='ghost'
+        size='icon'
+        lang='en'
         aria-label={i18n.language === 'en' ? 'Switch to German' : 'Switch to English'}
         onClick={toggleLanguage}
       >
         <Languages />
       </Button>
-      <span className="sr-only" aria-live="polite" role="status">
+      <span className='sr-only' aria-live='polite' role='status'>
         {announcement}
       </span>
     </>

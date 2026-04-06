@@ -136,7 +136,7 @@ describe('useTheme', () => {
       expect(classListToggleSpy).toHaveBeenCalledWith('dark', true);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to persist theme:',
-        expect.any(DOMException),
+        expect.any(DOMException)
       );
     });
   });

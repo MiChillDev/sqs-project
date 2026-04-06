@@ -7,7 +7,7 @@ export function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () =>
   const { t } = useTranslation();
 
   return (
-    <Button variant="ghost" size="icon" aria-label={t('app.toggleTheme')} onClick={onToggle}>
+    <Button variant='ghost' size='icon' aria-label={t('app.toggleTheme')} onClick={onToggle}>
       {theme === 'light' ? <Sun size={16} /> : <Moon size={16} />}
     </Button>
   );
