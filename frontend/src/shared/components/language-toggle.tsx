@@ -2,7 +2,7 @@ import { Languages } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '@/shared/components/ui/button';
+import { Button } from './ui/button';
 
 export function LanguageToggle() {
   const { i18n } = useTranslation();

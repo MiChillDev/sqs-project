@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <script>
             (() => {
-                var savedTheme, prefersDark, theme;
+                let savedTheme, prefersDark, theme;
                 try {
                     savedTheme = localStorage.getItem("theme");
                     prefersDark = window.matchMedia(
@@ -20,6 +20,7 @@
                         document.documentElement.classList.add("dark");
                     }
                 } catch (e) {
+                    // biome-ignore lint/suspicious/noConsole: inline script cannot import modules
                     console.error("Failed to set theme:", e);
                 }
             })();

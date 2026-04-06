@@ -11,6 +11,18 @@ vi.mock('sonner', () => ({
   }),
 }));
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'app.toggleTheme': 'Toggle theme',
+      };
+      return translations[key] ?? key;
+    },
+    i18n: { language: 'en' },
+  }),
+}));
+
 function ReferencePage() {
   const Component = referenceRoute.options.component;
   if (!Component) throw new Error('Route component missing');

@@ -16,7 +16,19 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noAlert": "error",
+        "noCommentText": "warn",
+        "noConstEnum": "warn",
+        "noConsole": "error",
+        "noDebugger": "error",
+        "noEvolvingTypes": "error",
+        "noExportsInTest": "error",
+        "noExplicitAny": "warn",
+        "noFocusedTests": "error",
+        "noImplicitAnyLet": "error",
+        "noImportCycles": "error",
+        "noReactSpecificProps": "off",
+        "noVar": "error"
       }
     }
   },

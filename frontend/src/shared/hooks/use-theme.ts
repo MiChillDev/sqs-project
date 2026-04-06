@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { debugLogger } from '@/shared/lib/debug-logger';
 
 export type Theme = 'light' | 'dark';
 export const LIGHT: Theme = 'light';
@@ -18,7 +19,7 @@ export function useTheme() {
     try {
       localStorage.setItem(STORAGE_ITEM_KEY, theme);
     } catch (e) {
-      console.error('Failed to persist theme:', e);
+      debugLogger.error('Failed to persist theme:', e);
     }
   }, [theme]);
 
