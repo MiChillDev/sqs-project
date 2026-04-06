@@ -1,30 +1,37 @@
 package com.chucknorris.jokes.controller;
 
+import com.chucknorris.common.controller.BaseController;
 import com.chucknorris.jokes.models.CreateJokeDto;
+import com.chucknorris.common.domain.models.Either;
+import com.chucknorris.common.domain.models.ErrorResultStatus;
+import com.chucknorris.jokes.models.JokeDto;
+import com.chucknorris.jokes.models.SourceJokeDto;
+import com.chucknorris.jokes.service.JokeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/v1")
-public class JokeController {
+public class JokeController extends BaseController {
+
+    private final JokeService jokeService;
+
+    public JokeController(JokeService jokeService) {
+        this.jokeService = jokeService;
+    }
 
     @GetMapping("/jokes")
-    public ResponseEntity<Map<String, Object>> getRandomJoke() {
-        // TODO: Implement logic to retrieve a random joke from the database
-        return null;
+    public ResponseEntity<JokeDto> getRandomJoke() {
+        return executeUnauthenticated(jokeService.getRandomJoke());
     }
 
     @PostMapping("/jokes")
-    public ResponseEntity<Map<String, Object>> createJoke(@RequestBody CreateJokeDto input) {
-        // TODO: Implement logic to create a new joke in the database
-        return null;
+    public ResponseEntity<JokeDto> createJoke(@RequestBody CreateJokeDto input) {
+        return executeAuthenticated(jokeService.createJoke(input));
     }
 
     @GetMapping("/source-joke")
-    public ResponseEntity<Map<String, Object>> getRandomSourceJoke() {
-        // TODO: Implement logic to retrieve a random joke from the external API
-        return null;
+    public ResponseEntity<SourceJokeDto> getRandomSourceJoke() {
+        return executeAuthenticated(jokeService.getRandomSourceJoke());
     }
 }
