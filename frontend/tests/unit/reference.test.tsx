@@ -16,6 +16,24 @@ vi.mock('react-i18next', () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
         'app.toggleTheme': 'Toggle theme',
+        'common.validation.nameMin': 'Name must be at least 2 characters',
+        'common.validation.emailInvalid': 'Please enter a valid email address',
+        'common.validation.messageMin': 'Message must be at least 10 characters',
+        'reference.title': 'Reference Implementation',
+        'reference.form.fields.name': 'Name',
+        'reference.form.fields.namePlaceholder': 'Enter your name',
+        'reference.form.fields.email': 'Email',
+        'reference.form.fields.emailPlaceholder': 'Enter your email',
+        'reference.form.submit': 'Submit',
+        'reference.form.submitting': 'Submitting...',
+        'reference.form.simulateError': 'Simulate Error',
+        'reference.form.simErrorTitle': 'Simulated error',
+        'reference.form.simErrorDesc': 'This is a simulated API error',
+        'reference.form.toastTitle': 'Form submitted',
+        'reference.form.toastDescription': 'Thank you, {{name}}!',
+        'demo.form.reset': 'Reset',
+        'demo.form.submit': 'Submit',
+        'demo.form.submitting': 'Submitting...',
       };
       return translations[key] ?? key;
     },

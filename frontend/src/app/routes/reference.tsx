@@ -1,6 +1,8 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { createRoute } from '@tanstack/react-router';
+import type { TFunction } from 'i18next';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -9,80 +11,94 @@ import { Button } from '@/shared/components/ui/button';
 import { Field, FieldContent, FieldError, FieldLabel } from '@/shared/components/ui/field';
 import { Input } from '@/shared/components/ui/input';
 import { useTheme } from '@/shared/hooks/use-theme';
+import { useZodResolver } from '@/shared/hooks/use-zod-resolver';
 
 import { rootRoute } from './__root';
 
-export const contactSchema = z.object({
-  name: z.string().min(2, { error: 'Name must be at least 2 characters' }),
-  email: z.email({ error: 'Please enter a valid email address' }),
-});
-type ContactForm = z.infer<typeof contactSchema>;
+function createContactSchema(t: TFunction) {
+  return z.object({
+    name: z.string().min(2, { error: () => t('forms.nameMin') }),
+    email: z.email({ error: () => t('forms.emailInvalid') }),
+  });
+}
 
 const referenceRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reference',
   component: function ReferencePage() {
     const { theme, toggleTheme } = useTheme();
+    const { t } = useTranslation();
+    const schema = useMemo(() => createContactSchema(t), [t]);
+    type ContactForm = z.infer<typeof schema>;
 
     const {
       register,
       handleSubmit,
       reset,
+      trigger,
       formState: { errors, isSubmitting },
     } = useForm<ContactForm>({
-      resolver: zodResolver(contactSchema),
+      resolver: useZodResolver(schema),
       defaultValues: { name: '', email: '' },
       mode: 'onTouched',
     });
 
+    useEffect(() => {
+      trigger();
+    }, [trigger]);
+
     function onSubmit(data: ContactForm) {
-      toast.success('Form submitted', { description: `Thank you, ${data.name}!` });
+      toast.success(t('forms.refToastTitle'), {
+        description: t('forms.refToastDescription', { name: data.name }),
+      });
       reset();
     }
 
     return (
       <div className='mx-auto max-w-400 p-8'>
-        <h2 className='text-2xl font-bold'>Reference Implementation</h2>
+        <h2 className='text-2xl font-bold'>{t('forms.refTitle')}</h2>
         <div className='mt-4 flex gap-2'>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <Button
             variant='outline'
             size='sm'
             onClick={() =>
-              toast.error('Simulated error', { description: 'This is a simulated API error' })
+              toast.error(t('forms.refSimErrorTitle'), {
+                description: t('forms.refSimErrorDesc'),
+              })
             }
           >
-            Simulate Error
+            {t('forms.refSimulateError')}
           </Button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className='mt-6 space-y-4'>
           <Field data-invalid={!!errors.name}>
-            <FieldLabel htmlFor='name'>Name</FieldLabel>
+            <FieldLabel htmlFor='name'>{t('forms.name')}</FieldLabel>
             <FieldContent>
               <Input
                 id='name'
                 aria-invalid={!!errors.name}
                 {...register('name')}
-                placeholder='Enter your name'
+                placeholder={t('forms.refNamePlaceholder')}
               />
             </FieldContent>
             <FieldError errors={[errors.name]} />
           </Field>
           <Field data-invalid={!!errors.email}>
-            <FieldLabel htmlFor='email'>Email</FieldLabel>
+            <FieldLabel htmlFor='email'>{t('forms.email')}</FieldLabel>
             <FieldContent>
               <Input
                 id='email'
                 type='email'
                 aria-invalid={!!errors.email}
                 {...register('email')}
-                placeholder='Enter your email'
+                placeholder={t('forms.refEmailPlaceholder')}
               />
             </FieldContent>
             <FieldError errors={[errors.email]} />
           </Field>
           <Button type='submit' disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Submit'}
+            {isSubmitting ? t('forms.submitting') : t('forms.submit')}
           </Button>
         </form>
       </div>

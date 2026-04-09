@@ -1,6 +1,8 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { createRoute } from '@tanstack/react-router';
+import type { TFunction } from 'i18next';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -25,35 +27,45 @@ import {
   FieldSet,
 } from '@/shared/components/ui/field';
 import { Input } from '@/shared/components/ui/input';
+import { useZodResolver } from '@/shared/hooks/use-zod-resolver';
 
 import { rootRoute } from './__root';
 
 const variants = ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const;
 const sizes = ['xs', 'sm', 'default', 'lg'] as const;
 
-export const testSchema = z.object({
-  name: z.string().min(2, { error: 'Name must be at least 2 characters' }),
-  email: z.email({ error: 'Please enter a valid email address' }),
-  message: z.string().min(10, { error: 'Message must be at least 10 characters' }),
-});
+function createDemoSchema(t: TFunction) {
+  return z.object({
+    name: z.string().min(2, { error: () => t('common.validation.nameMin') }),
+    email: z.email({ error: () => t('common.validation.emailInvalid') }),
+    message: z.string().min(10, { error: () => t('common.validation.messageMin') }),
+  });
+}
 
-type TestForm = z.infer<typeof testSchema>;
+function ComponentDemoPage() {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createDemoSchema(t), [t]);
+  type TestForm = z.infer<typeof schema>;
 
-function ComponentTestPage() {
   const {
     register,
     handleSubmit,
     reset,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<TestForm>({
-    resolver: zodResolver(testSchema),
+    resolver: useZodResolver(schema),
     defaultValues: { name: '', email: '', message: '' },
     mode: 'onTouched',
   });
 
+  useEffect(() => {
+    trigger();
+  }, [trigger]);
+
   async function onSubmit(_data: TestForm) {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success('Form submitted', { description: 'Test successful!' });
+    toast.success(t('demo.form.toastTitle'), { description: t('demo.form.toastDescription') });
     reset();
   }
 
@@ -120,16 +132,16 @@ function ComponentTestPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
         <FieldSet>
-          <FieldLegend>Contact Form</FieldLegend>
+          <FieldLegend>{t('demo.form.legend')}</FieldLegend>
           <FieldGroup>
             <Field data-invalid={!!errors.name}>
-              <FieldLabel htmlFor='name'>Name</FieldLabel>
+              <FieldLabel htmlFor='name'>{t('demo.form.fields.name')}</FieldLabel>
               <FieldContent>
                 <Input
                   id='name'
                   aria-invalid={!!errors.name}
                   {...register('name')}
-                  placeholder='Your name'
+                  placeholder={t('demo.form.fields.namePlaceholder')}
                 />
               </FieldContent>
               <FieldError errors={[errors.name]} />
@@ -138,14 +150,14 @@ function ComponentTestPage() {
             <FieldSeparator />
 
             <Field data-invalid={!!errors.email}>
-              <FieldLabel htmlFor='email'>Email</FieldLabel>
+              <FieldLabel htmlFor='email'>{t('demo.form.fields.email')}</FieldLabel>
               <FieldContent>
                 <Input
                   id='email'
                   type='email'
                   aria-invalid={!!errors.email}
                   {...register('email')}
-                  placeholder='Your email'
+                  placeholder={t('demo.form.fields.emailPlaceholder')}
                 />
               </FieldContent>
               <FieldError errors={[errors.email]} />
@@ -154,13 +166,13 @@ function ComponentTestPage() {
             <FieldSeparator />
 
             <Field data-invalid={!!errors.message}>
-              <FieldLabel htmlFor='message'>Message</FieldLabel>
+              <FieldLabel htmlFor='message'>{t('demo.form.fields.message')}</FieldLabel>
               <FieldContent>
                 <Input
                   id='message'
                   aria-invalid={!!errors.message}
                   {...register('message')}
-                  placeholder='Your message (min 10 chars)'
+                  placeholder={t('demo.form.fields.messagePlaceholder')}
                 />
               </FieldContent>
               <FieldError errors={[errors.message]} />
@@ -170,10 +182,10 @@ function ComponentTestPage() {
 
         <div className='flex gap-2'>
           <Button type='submit' disabled={isSubmitting}>
-            {isSubmitting ? 'Submitting...' : 'Submit'}
+            {isSubmitting ? t('demo.form.submitting') : t('demo.form.submit')}
           </Button>
           <Button type='button' variant='outline' onClick={() => reset()}>
-            Reset
+            {t('demo.form.reset')}
           </Button>
         </div>
       </form>
@@ -184,7 +196,7 @@ function ComponentTestPage() {
 const componentTestRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/demo',
-  component: ComponentTestPage,
+  component: ComponentDemoPage,
 });
 
 export default componentTestRoute;

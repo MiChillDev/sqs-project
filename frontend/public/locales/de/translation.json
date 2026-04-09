@@ -26,5 +26,48 @@
   "toast": {
     "errorTitle": "Ein Fehler ist aufgetreten",
     "unknownError": "Unbekannter Fehler"
+  },
+  "common": {
+    "validation": {
+      "nameMin": "Name muss mindestens 2 Zeichen haben",
+      "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "messageMin": "Nachricht muss mindestens 10 Zeichen haben"
+    }
+  },
+  "demo": {
+    "form": {
+      "legend": "Kontaktformular",
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "Ihr Name",
+        "email": "E-Mail",
+        "emailPlaceholder": "Ihre E-Mail",
+        "message": "Nachricht",
+        "messagePlaceholder": "Ihre Nachricht (min. 10 Zeichen)"
+      },
+      "submit": "Absenden",
+      "submitting": "Wird gesendet...",
+      "reset": "Zurücksetzen",
+      "toastTitle": "Formular gesendet",
+      "toastDescription": "Test erfolgreich!"
+    }
+  },
+  "reference": {
+    "title": "Referenzimplementierung",
+    "form": {
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "Geben Sie Ihren Namen ein",
+        "email": "E-Mail",
+        "emailPlaceholder": "Geben Sie Ihre E-Mail ein"
+      },
+      "submit": "Absenden",
+      "submitting": "Wird gesendet...",
+      "simulateError": "Fehler simulieren",
+      "simErrorTitle": "Simulierter Fehler",
+      "simErrorDesc": "Dies ist ein simulierter API-Fehler",
+      "toastTitle": "Formular gesendet",
+      "toastDescription": "Danke, {{name}}!"
+    }
   }
 }
