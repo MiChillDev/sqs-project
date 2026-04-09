@@ -1,0 +1,73 @@
+{
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
+  "app": {
+    "headerTitle": "SQS Preparation",
+    "documentTitle": "SQS Preparation",
+    "toggleTheme": "Toggle theme"
+  },
+  "home": {
+    "title": "SQS Frontend",
+    "description": "some paragraph"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "badRequest": "Invalid request. Please check your input.",
+    "unauthorized": "Please sign in to continue.",
+    "forbidden": "You do not have permission to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "serverError": "Something went wrong. Please try again later."
+  },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "description": "The page you are looking for does not exist."
+  },
+  "toast": {
+    "errorTitle": "An error occurred",
+    "unknownError": "Unknown error"
+  },
+  "common": {
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "emailInvalid": "Please enter a valid email address",
+      "messageMin": "Message must be at least 10 characters"
+    }
+  },
+  "demo": {
+    "form": {
+      "legend": "Contact Form",
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "Your name",
+        "email": "Email",
+        "emailPlaceholder": "Your email",
+        "message": "Message",
+        "messagePlaceholder": "Your message (min 10 chars)"
+      },
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "reset": "Reset",
+      "toastTitle": "Form submitted",
+      "toastDescription": "Test successful!"
+    }
+  },
+  "reference": {
+    "title": "Reference Implementation",
+    "form": {
+      "fields": {
+        "name": "Name",
+        "namePlaceholder": "Enter your name",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email"
+      },
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "simulateError": "Simulate Error",
+      "simErrorTitle": "Simulated error",
+      "simErrorDesc": "This is a simulated API error",
+      "toastTitle": "Form submitted",
+      "toastDescription": "Thank you, {{name}}!"
+    }
+  }
+}
