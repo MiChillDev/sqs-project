@@ -27,7 +27,7 @@ const referenceRoute = createRoute({
   path: '/reference',
   component: function ReferencePage() {
     const { theme, toggleTheme } = useTheme();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const schema = useMemo(() => createContactSchema(t), [t]);
     type ContactForm = z.infer<typeof schema>;
 
@@ -45,7 +45,8 @@ const referenceRoute = createRoute({
 
     useEffect(() => {
       trigger();
-    }, [trigger]);
+      i18n.language;
+    }, [trigger, i18n.language]);
 
     function onSubmit(data: ContactForm) {
       toast.success(t('forms.refToastTitle'), {

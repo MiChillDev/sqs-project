@@ -43,7 +43,7 @@ function createDemoSchema(t: TFunction) {
 }
 
 function ComponentDemoPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const schema = useMemo(() => createDemoSchema(t), [t]);
   type TestForm = z.infer<typeof schema>;
 
@@ -61,7 +61,8 @@ function ComponentDemoPage() {
 
   useEffect(() => {
     trigger();
-  }, [trigger]);
+    i18n.language;
+  }, [trigger, i18n.language]);
 
   async function onSubmit(_data: TestForm) {
     await new Promise((resolve) => setTimeout(resolve, 500));
