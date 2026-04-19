@@ -15,7 +15,13 @@ vi.mock('sonner', () => ({
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
-      const value = key.split('.').reduce((o: Record<string, unknown> | undefined, k) => o?.[k] as Record<string, unknown> | undefined, enTranslation as unknown as Record<string, unknown>);
+      const value = key
+        .split('.')
+        .reduce(
+          (o: Record<string, unknown> | undefined, k) =>
+            o?.[k] as Record<string, unknown> | undefined,
+          enTranslation as unknown as Record<string, unknown>
+        );
       return (value as string) ?? key;
     },
     i18n: { language: 'en' },
@@ -101,7 +107,10 @@ describe('ComponentDemoPage', () => {
     render(<Component />);
     await user.click(screen.getByRole('button', { name: enTranslation.demo.form.submit }));
     await waitFor(() => {
-      expect(screen.getByLabelText(enTranslation.demo.form.fields.name)).toHaveAttribute('aria-invalid', 'true');
+      expect(screen.getByLabelText(enTranslation.demo.form.fields.name)).toHaveAttribute(
+        'aria-invalid',
+        'true'
+      );
     });
   });
 
