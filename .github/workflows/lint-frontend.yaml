@@ -1,0 +1,23 @@
+name: Frontend Lint Pipeline
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: mongolyy/reviewdog-action-biome@af53890404baf4c945f275ce0e39b23c01e56fb0
+        with:
+          workdir: 'frontend'
+          reporter: github-pr-review
+          fail_level: any
+          filter_mode: file
