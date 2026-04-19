@@ -1,11 +1,10 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
-import { Toaster } from 'sonner';
-
 import { ConfigErrorBanner } from '@/shared/components/config-error-banner';
 import { I18nWatcher } from '@/shared/components/i18n-watcher';
 import { LanguageToggle } from '@/shared/components/language-toggle';
 import { ThemeToggle } from '@/shared/components/theme-toggle';
+import { Toaster } from '@/shared/components/toaster';
 import { useTheme } from '@/shared/hooks/use-theme';
 
 import { getUserSafeError } from '@/shared/lib/error-messages';
@@ -37,7 +36,7 @@ export const rootRoute = createRootRoute({
             <Outlet />
           </main>
         </div>
-        <Toaster position='top-right' richColors theme={theme} />
+        <Toaster />
       </>
     );
   },
