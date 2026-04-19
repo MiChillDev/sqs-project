@@ -5,7 +5,7 @@ import type { Plugin } from 'vite';
 const PLACEHOLDER = '<!-- %FOUC_STYLE% -->';
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{3,8}$/;
 
-const CSS_PATH = path.resolve(import.meta.dirname, 'src/index.css');
+const CSS_PATH = path.resolve(import.meta.dirname, '../src/index.css');
 
 let cachedStyleTag: string | null = null;
 

@@ -1,7 +1,7 @@
 /// <reference types="vitest/globals" />
 
 import fs from 'node:fs';
-import { extractColors, foucStylePlugin, generateStyleTag } from '../../vite-plugin-fouc-style';
+import { extractColors, foucStylePlugin, generateStyleTag } from '../../plugins/vite-plugin-fouc-style';
 
 const VALID_CSS = `@import "tailwindcss";
 
