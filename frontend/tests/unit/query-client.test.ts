@@ -2,8 +2,8 @@
 
 import { toast } from 'sonner';
 
-import { handleMutationError } from '@/app/providers/query-client';
-import { getUserSafeError } from '@/shared/lib/error-messages';
+import { handleMutationError } from '../../src/app/providers/query-client';
+import { getUserSafeError } from '../../src/shared/lib/error-messages';
 
 vi.mock('i18next', () => ({
   default: {
@@ -43,6 +43,18 @@ describe('getUserSafeError', () => {
 
   it('returns sanitized message for 500', () => {
     expect(getUserSafeError({ status: 500 })).toBe('Something went wrong. Please try again later.');
+  });
+
+  it('returns server error message for 501', () => {
+    expect(getUserSafeError({ status: 501 })).toBe('Something went wrong. Please try again later.');
+  });
+
+  it('returns server error message for 502', () => {
+    expect(getUserSafeError({ status: 502 })).toBe('Something went wrong. Please try again later.');
+  });
+
+  it('returns server error message for 503', () => {
+    expect(getUserSafeError({ status: 503 })).toBe('Something went wrong. Please try again later.');
   });
 
   it('returns default message for unrecognized status code', () => {

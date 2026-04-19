@@ -14,6 +14,10 @@ export function getUserSafeError(error: unknown): string {
         return i18next.t('error.notFound');
       case 500:
         return i18next.t('error.serverError');
+      default:
+        if (status >= 500) {
+          return i18next.t('error.serverError');
+        }
     }
   }
   return i18next.t('toast.unknownError');

@@ -12,4 +12,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api/': {
+        // TODO: fix CORS in backend instead of doing this
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
+  },
 });

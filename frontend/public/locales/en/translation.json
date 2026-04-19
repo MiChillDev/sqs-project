@@ -105,5 +105,11 @@
       "toastTitle": "Form submitted",
       "toastDescription": "Thank you, {{name}}!"
     }
+  },
+  "connectivityTest": {
+    "title": "Backend Connectivity Test",
+    "description": "Test the connection to the backend API",
+    "testButton": "Test Connection",
+    "testing": "Testing..."
   }
 }

@@ -105,5 +105,11 @@
       "toastTitle": "Formular gesendet",
       "toastDescription": "Danke, {{name}}!"
     }
+  },
+  "connectivityTest": {
+    "title": "Backend-Verbindungstest",
+    "description": "Testen Sie die Verbindung zur Backend-API",
+    "testButton": "Verbindung testen",
+    "testing": "Teste..."
   }
 }
