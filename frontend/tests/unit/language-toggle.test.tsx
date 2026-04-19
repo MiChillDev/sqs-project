@@ -32,7 +32,19 @@ describe('LanguageToggle', () => {
     expect(svg).toHaveClass('lucide-languages');
   });
 
-  it('click calls changeLanguage with "de" when English', async () => {
+  it('opens menu on button click and shows language options', async () => {
+    const user = userEvent.setup();
+
+    render(<LanguageToggle />);
+
+    const button = screen.getByRole('button');
+    await user.click(button);
+
+    expect(screen.getByText('English')).toBeInTheDocument();
+    expect(screen.getByText('Deutsch')).toBeInTheDocument();
+  });
+
+  it('current language is marked disabled with checkmark', async () => {
     const user = userEvent.setup();
     mockI18n.language = 'en';
 
@@ -40,12 +52,44 @@ describe('LanguageToggle', () => {
 
     const button = screen.getByRole('button');
     await user.click(button);
+
+    const englishItem = screen.getByText('English').closest('[role="menuitem"]');
+    expect(englishItem).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByText('✓')).toBeInTheDocument();
+  });
+
+  it('selecting a different language calls changeLanguage', async () => {
+    const user = userEvent.setup();
+    mockI18n.language = 'en';
+
+    render(<LanguageToggle />);
+
+    const button = screen.getByRole('button');
+    await user.click(button);
+
+    const deutschItem = screen.getByText('Deutsch');
+    await user.click(deutschItem);
 
     expect(mockChangeLanguage).toHaveBeenCalledOnce();
     expect(mockChangeLanguage).toHaveBeenCalledWith('de');
   });
 
-  it('click calls changeLanguage with "en" when German', async () => {
+  it('selecting the current language does not call changeLanguage', async () => {
+    const user = userEvent.setup();
+    mockI18n.language = 'en';
+
+    render(<LanguageToggle />);
+
+    const button = screen.getByRole('button');
+    await user.click(button);
+
+    const englishItem = screen.getByText('English');
+    await user.click(englishItem);
+
+    expect(mockChangeLanguage).not.toHaveBeenCalled();
+  });
+
+  it('works when current language is German', async () => {
     const user = userEvent.setup();
     mockI18n.language = 'de';
 
@@ -54,26 +98,14 @@ describe('LanguageToggle', () => {
     const button = screen.getByRole('button');
     await user.click(button);
 
+    const germanItem = screen.getByText('Deutsch').closest('[role="menuitem"]');
+    expect(germanItem).toHaveAttribute('aria-disabled', 'true');
+
+    const englishItem = screen.getByText('English');
+    await user.click(englishItem);
+
     expect(mockChangeLanguage).toHaveBeenCalledOnce();
     expect(mockChangeLanguage).toHaveBeenCalledWith('en');
-  });
-
-  it('aria-label is "Switch to German" in English mode', () => {
-    mockI18n.language = 'en';
-
-    render(<LanguageToggle />);
-
-    const button = screen.getByRole('button');
-    expect(button).toHaveAttribute('aria-label', 'Switch to German');
-  });
-
-  it('aria-label is "Switch to English" in German mode', () => {
-    mockI18n.language = 'de';
-
-    render(<LanguageToggle />);
-
-    const button = screen.getByRole('button');
-    expect(button).toHaveAttribute('aria-label', 'Switch to English');
   });
 
   it('button shows visible focus indicator when focused', async () => {
@@ -87,7 +119,7 @@ describe('LanguageToggle', () => {
     expect(button).toHaveFocus();
   });
 
-  it('Enter key activates toggle', async () => {
+  it('Enter key opens the menu', async () => {
     const user = userEvent.setup();
 
     render(<LanguageToggle />);
@@ -96,10 +128,11 @@ describe('LanguageToggle', () => {
     button.focus();
     await user.keyboard('{Enter}');
 
-    expect(mockChangeLanguage).toHaveBeenCalledOnce();
+    expect(screen.getByText('English')).toBeInTheDocument();
+    expect(screen.getByText('Deutsch')).toBeInTheDocument();
   });
 
-  it('Space key activates toggle', async () => {
+  it('Space key opens the menu', async () => {
     const user = userEvent.setup();
 
     render(<LanguageToggle />);
@@ -108,6 +141,7 @@ describe('LanguageToggle', () => {
     button.focus();
     await user.keyboard(' ');
 
-    expect(mockChangeLanguage).toHaveBeenCalledOnce();
+    expect(screen.getByText('English')).toBeInTheDocument();
+    expect(screen.getByText('Deutsch')).toBeInTheDocument();
   });
 });
