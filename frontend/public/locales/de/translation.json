@@ -69,6 +69,23 @@
       "reset": "Zurücksetzen",
       "toastTitle": "Formular gesendet",
       "toastDescription": "Test erfolgreich!"
+    },
+    "toasts": {
+      "triggerSuccess": "Erfolgs-Toast auslösen",
+      "triggerError": "Fehler-Toast auslösen",
+      "successTitle": "Erfolg",
+      "successDescription": "Dies ist ein Erfolgs-Toast.",
+      "errorTitle": "Fehler",
+      "errorDescription": "Dies ist ein Fehler-Toast.",
+      "triggerWarning": "Warnungs-Toast auslösen",
+      "warningTitle": "Warnung",
+      "warningDescription": "Dies ist ein Warnungs-Toast.",
+      "triggerInfo": "Info-Toast auslösen",
+      "infoTitle": "Info",
+      "infoDescription": "Dies ist ein Info-Toast.",
+      "triggerMessage": "Nachrichten-Toast auslösen",
+      "messageTitle": "Nachricht",
+      "messageDescription": "Dies ist ein einfacher Nachrichten-Toast."
     }
   },
   "reference": {

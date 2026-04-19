@@ -127,6 +127,66 @@ function ComponentDemoPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('demo.cards.buttons.title')}</CardTitle>
+          <CardDescription>{t('demo.cards.buttons.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='flex flex-wrap gap-2'>
+            <Button
+              onClick={() =>
+                toast.success(t('demo.toasts.successTitle'), {
+                  description: t('demo.toasts.successDescription'),
+                })
+              }
+            >
+              {t('demo.toasts.triggerSuccess')}
+            </Button>
+            <Button
+              variant='destructive'
+              onClick={() =>
+                toast.error(t('demo.toasts.errorTitle'), {
+                  description: t('demo.toasts.errorDescription'),
+                })
+              }
+            >
+              {t('demo.toasts.triggerError')}
+            </Button>
+            <Button
+              variant='outline'
+              onClick={() =>
+                toast.warning(t('demo.toasts.warningTitle'), {
+                  description: t('demo.toasts.warningDescription'),
+                })
+              }
+            >
+              {t('demo.toasts.triggerWarning')}
+            </Button>
+            <Button
+              variant='secondary'
+              onClick={() =>
+                toast.info(t('demo.toasts.infoTitle'), {
+                  description: t('demo.toasts.infoDescription'),
+                })
+              }
+            >
+              {t('demo.toasts.triggerInfo')}
+            </Button>
+            <Button
+              variant='ghost'
+              onClick={() =>
+                toast.message(t('demo.toasts.messageTitle'), {
+                  description: t('demo.toasts.messageDescription'),
+                })
+              }
+            >
+              {t('demo.toasts.triggerMessage')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
         <FieldSet>
           <FieldLegend>{t('demo.form.legend')}</FieldLegend>

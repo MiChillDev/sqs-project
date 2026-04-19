@@ -69,6 +69,23 @@
       "reset": "Reset",
       "toastTitle": "Form submitted",
       "toastDescription": "Test successful!"
+    },
+    "toasts": {
+      "triggerSuccess": "Trigger Success Toast",
+      "triggerError": "Trigger Error Toast",
+      "successTitle": "Success",
+      "successDescription": "This is a success toast.",
+      "errorTitle": "Error",
+      "errorDescription": "This is an error toast.",
+      "triggerWarning": "Trigger Warning Toast",
+      "warningTitle": "Warning",
+      "warningDescription": "This is a warning toast.",
+      "triggerInfo": "Trigger Info Toast",
+      "infoTitle": "Info",
+      "infoDescription": "This is an info toast.",
+      "triggerMessage": "Trigger Message Toast",
+      "messageTitle": "Message",
+      "messageDescription": "This is a plain message toast."
     }
   },
   "reference": {
