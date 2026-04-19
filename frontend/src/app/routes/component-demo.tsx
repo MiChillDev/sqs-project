@@ -72,12 +72,12 @@ function ComponentDemoPage() {
 
   return (
     <div className='mx-auto max-w-200 space-y-8 p-8'>
-      <h1 className='text-2xl font-bold'>Component Library Test</h1>
+      <h1 className='text-2xl font-bold'>{t('demo.title')}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>Button Variants</CardTitle>
-          <CardDescription>All available button variants and sizes</CardDescription>
+          <CardTitle>{t('demo.cards.buttons.title')}</CardTitle>
+          <CardDescription>{t('demo.cards.buttons.description')}</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='flex flex-wrap gap-2'>
@@ -99,35 +99,31 @@ function ComponentDemoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Simple Card</CardTitle>
-          <CardDescription>A basic card with header and content</CardDescription>
+          <CardTitle>{t('demo.cards.simple.title')}</CardTitle>
+          <CardDescription>{t('demo.cards.simple.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className='text-muted-foreground'>
-            This is a simple card example with just a header, description, and content area.
-          </p>
+          <p className='text-muted-foreground'>{t('demo.cards.simple.content')}</p>
         </CardContent>
         <CardFooter>
           <Button variant='outline' size='sm'>
-            Card Action
+            {t('demo.cards.simple.action')}
           </Button>
         </CardFooter>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Card with Action</CardTitle>
-          <CardDescription>A card that includes an action in the header</CardDescription>
+          <CardTitle>{t('demo.cards.action.title')}</CardTitle>
+          <CardDescription>{t('demo.cards.action.description')}</CardDescription>
           <CardAction>
             <Button variant='outline' size='sm'>
-              Header Action
+              {t('demo.cards.action.headerAction')}
             </Button>
           </CardAction>
         </CardHeader>
         <CardContent>
-          <p className='text-muted-foreground'>
-            This card demonstrates the CardAction component positioned in the header area.
-          </p>
+          <p className='text-muted-foreground'>{t('demo.cards.action.content')}</p>
         </CardContent>
       </Card>
 

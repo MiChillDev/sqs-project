@@ -35,6 +35,25 @@
     }
   },
   "demo": {
+    "title": "Komponentenbibliothek Test",
+    "cards": {
+      "buttons": {
+        "title": "Button-Varianten",
+        "description": "Alle verfügbaren Button-Varianten und -Größen"
+      },
+      "simple": {
+        "title": "Einfache Karte",
+        "description": "Eine einfache Karte mit Kopfzeile und Inhalt",
+        "content": "Dies ist ein einfaches Kartenbeispiel mit Kopfzeile, Beschreibung und Inhaltsbereich.",
+        "action": "Kartenaktion"
+      },
+      "action": {
+        "title": "Karte mit Aktion",
+        "description": "Eine Karte mit einer Aktion in der Kopfzeile",
+        "content": "Diese Karte demonstriert die CardAction-Komponente im Kopfbereich.",
+        "headerAction": "Kopfzeilenaktion"
+      }
+    },
     "form": {
       "legend": "Kontaktformular",
       "fields": {

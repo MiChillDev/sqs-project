@@ -35,6 +35,25 @@
     }
   },
   "demo": {
+    "title": "Component Library Test",
+    "cards": {
+      "buttons": {
+        "title": "Button Variants",
+        "description": "All available button variants and sizes"
+      },
+      "simple": {
+        "title": "Simple Card",
+        "description": "A basic card with header and content",
+        "content": "This is a simple card example with just a header, description, and content area.",
+        "action": "Card Action"
+      },
+      "action": {
+        "title": "Card with Action",
+        "description": "A card that includes an action in the header",
+        "content": "This card demonstrates the CardAction component positioned in the header area.",
+        "headerAction": "Header Action"
+      }
+    },
     "form": {
       "legend": "Contact Form",
       "fields": {

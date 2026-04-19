@@ -17,8 +17,8 @@ import { rootRoute } from './__root';
 
 function createContactSchema(t: TFunction) {
   return z.object({
-    name: z.string().min(2, { error: () => t('forms.nameMin') }),
-    email: z.email({ error: () => t('forms.emailInvalid') }),
+    name: z.string().min(2, { error: () => t('common.validation.nameMin') }),
+    email: z.email({ error: () => t('common.validation.emailInvalid') }),
   });
 }
 
@@ -49,57 +49,57 @@ const referenceRoute = createRoute({
     }, [trigger, i18n.language]);
 
     function onSubmit(data: ContactForm) {
-      toast.success(t('forms.refToastTitle'), {
-        description: t('forms.refToastDescription', { name: data.name }),
+      toast.success(t('reference.form.toastTitle'), {
+        description: t('reference.form.toastDescription', { name: data.name }),
       });
       reset();
     }
 
     return (
       <div className='mx-auto max-w-400 p-8'>
-        <h2 className='text-2xl font-bold'>{t('forms.refTitle')}</h2>
+        <h2 className='text-2xl font-bold'>{t('reference.title')}</h2>
         <div className='mt-4 flex gap-2'>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <Button
             variant='outline'
             size='sm'
             onClick={() =>
-              toast.error(t('forms.refSimErrorTitle'), {
-                description: t('forms.refSimErrorDesc'),
+              toast.error(t('reference.form.simErrorTitle'), {
+                description: t('reference.form.simErrorDesc'),
               })
             }
           >
-            {t('forms.refSimulateError')}
+            {t('reference.form.simulateError')}
           </Button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className='mt-6 space-y-4'>
           <Field data-invalid={!!errors.name}>
-            <FieldLabel htmlFor='name'>{t('forms.name')}</FieldLabel>
+            <FieldLabel htmlFor='name'>{t('reference.form.fields.name')}</FieldLabel>
             <FieldContent>
               <Input
                 id='name'
                 aria-invalid={!!errors.name}
                 {...register('name')}
-                placeholder={t('forms.refNamePlaceholder')}
+                placeholder={t('reference.form.fields.namePlaceholder')}
               />
             </FieldContent>
             <FieldError errors={[errors.name]} />
           </Field>
           <Field data-invalid={!!errors.email}>
-            <FieldLabel htmlFor='email'>{t('forms.email')}</FieldLabel>
+            <FieldLabel htmlFor='email'>{t('reference.form.fields.email')}</FieldLabel>
             <FieldContent>
               <Input
                 id='email'
                 type='email'
                 aria-invalid={!!errors.email}
                 {...register('email')}
-                placeholder={t('forms.refEmailPlaceholder')}
+                placeholder={t('reference.form.fields.emailPlaceholder')}
               />
             </FieldContent>
             <FieldError errors={[errors.email]} />
           </Field>
           <Button type='submit' disabled={isSubmitting}>
-            {isSubmitting ? t('forms.submitting') : t('forms.submit')}
+            {isSubmitting ? t('reference.form.submitting') : t('reference.form.submit')}
           </Button>
         </form>
       </div>
