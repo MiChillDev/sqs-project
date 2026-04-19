@@ -12,6 +12,7 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
+console.log('TEST: deliberate lint violation');
 const renderApp = () => {
   createRoot(rootElement).render(
     <StrictMode>
