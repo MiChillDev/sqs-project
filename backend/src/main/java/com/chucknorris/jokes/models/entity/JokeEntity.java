@@ -7,6 +7,7 @@ import java.util.UUID;
 @Table(name = "jokes")
 public class JokeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @Column(name = "external_id", nullable = false)
     private String externalId;
@@ -43,5 +44,21 @@ public class JokeEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof JokeEntity that)) {
+            return false;
+        }
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
