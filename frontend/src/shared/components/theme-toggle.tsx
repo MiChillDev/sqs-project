@@ -1,6 +1,6 @@
 import { Moon, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Theme } from '@/shared/hooks/use-theme';
+import type { Theme } from 'src/shared/hooks/use-theme';
 import { Button } from './ui/button';
 
 export function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {

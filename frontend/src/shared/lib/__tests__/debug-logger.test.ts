@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { debugLogger } from '@/shared/lib/debug-logger';
+import { debugLogger } from 'src/shared/lib/debug-logger';
 
 describe('debugLogger', () => {
   let errorSpy: ReturnType<typeof vi.spyOn>;

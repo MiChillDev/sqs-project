@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import { lazy, type ReactNode, Suspense } from 'react';
 import { toast } from 'sonner';
 
-import { getUserSafeError } from '@/shared/lib/error-messages';
+import { getUserSafeError } from 'src/shared/lib/error-messages';
 
 const LazyReactQueryDevtools = lazy(() =>
   import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools }))

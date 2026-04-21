@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { Button } from '@/shared/components/ui/button';
+import { Button } from 'src/shared/components/ui/button';
 import {
   Card,
   CardAction,
@@ -15,7 +15,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/shared/components/ui/card';
+} from 'src/shared/components/ui/card';
 import {
   Field,
   FieldContent,
@@ -25,9 +25,9 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-} from '@/shared/components/ui/field';
-import { Input } from '@/shared/components/ui/input';
-import { useZodResolver } from '@/shared/hooks/use-zod-resolver';
+} from 'src/shared/components/ui/field';
+import { Input } from 'src/shared/components/ui/input';
+import { useZodResolver } from 'src/shared/hooks/use-zod-resolver';
 
 import { rootRoute } from './__root';
 

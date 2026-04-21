@@ -1,15 +1,15 @@
 import { createRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-import { useJokes } from '@/shared/api/api';
-import { Button } from '@/shared/components/ui/button';
+import { useJokes } from 'src/shared/api/api';
+import { Button } from 'src/shared/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/shared/components/ui/card';
+} from 'src/shared/components/ui/card';
 
 import { rootRoute } from './__root';
 

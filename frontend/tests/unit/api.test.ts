@@ -1,6 +1,6 @@
 /// <reference types="vitest/globals" />
 
-import { fetchApi } from '@/shared/api/api';
+import { fetchApi } from '../../src/shared/api/api';
 
 describe('fetchApi', () => {
   afterEach(() => {

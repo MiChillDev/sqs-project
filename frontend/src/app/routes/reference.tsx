@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { ThemeToggle } from '@/shared/components/theme-toggle';
-import { Button } from '@/shared/components/ui/button';
-import { Field, FieldContent, FieldError, FieldLabel } from '@/shared/components/ui/field';
-import { Input } from '@/shared/components/ui/input';
-import { useTheme } from '@/shared/hooks/use-theme';
-import { useZodResolver } from '@/shared/hooks/use-zod-resolver';
+import { ThemeToggle } from 'src/shared/components/theme-toggle';
+import { Button } from 'src/shared/components/ui/button';
+import { Field, FieldContent, FieldError, FieldLabel } from 'src/shared/components/ui/field';
+import { Input } from 'src/shared/components/ui/input';
+import { useTheme } from 'src/shared/hooks/use-theme';
+import { useZodResolver } from 'src/shared/hooks/use-zod-resolver';
 
 import { rootRoute } from './__root';
 

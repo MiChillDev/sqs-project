@@ -1,13 +1,13 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
-import { ConfigErrorBanner } from '@/shared/components/config-error-banner';
-import { I18nWatcher } from '@/shared/components/i18n-watcher';
-import { LanguageToggle } from '@/shared/components/language-toggle';
-import { ThemeToggle } from '@/shared/components/theme-toggle';
-import { Toaster } from '@/shared/components/toaster';
-import { useTheme } from '@/shared/hooks/use-theme';
+import { ConfigErrorBanner } from 'src/shared/components/config-error-banner';
+import { I18nWatcher } from 'src/shared/components/i18n-watcher';
+import { LanguageToggle } from 'src/shared/components/language-toggle';
+import { ThemeToggle } from 'src/shared/components/theme-toggle';
+import { Toaster } from 'src/shared/components/toaster';
+import { useTheme } from 'src/shared/hooks/use-theme';
 
-import { getUserSafeError } from '@/shared/lib/error-messages';
+import { getUserSafeError } from 'src/shared/lib/error-messages';
 
 export const rootRoute = createRootRoute({
   component: function RootComponent() {
