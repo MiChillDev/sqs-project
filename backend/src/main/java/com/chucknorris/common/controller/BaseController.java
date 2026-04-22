@@ -1,18 +1,33 @@
 package com.chucknorris.common.controller;
 
+import com.chucknorris.auth.service.AuthService;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class BaseController {
 
-    protected <T> ResponseEntity<T> executeUnauthenticated(Either<ErrorResultStatus, T> result) {
-        return handleEither(result);
+    @Autowired
+    private AuthService authService;
+
+    protected <T> ResponseEntity<T> executeUnauthenticated(Supplier<Either<ErrorResultStatus, T>> action) {
+        return handleEither(action.get());
     }
 
-    protected <T> ResponseEntity<T> executeAuthenticated(Either<ErrorResultStatus, T> result) {
-        //TODO: auth
-        return handleEither(result);
+    protected <T> ResponseEntity<T> executeAuthenticated(Supplier<Either<ErrorResultStatus, T>> action) {
+        Optional<ServletRequestAttributes> attributes = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
+        Optional<String> token = attributes.flatMap(att -> Optional.ofNullable(att.getRequest().getHeader("Authorization")));
+        return handleEither(
+                Either.fromOptional(token, new ErrorResultStatus(401, "Missing token"))
+                        .flatMap(t -> authService.checkTokenIsValid(t))
+                        .validate(isValid -> isValid, new ErrorResultStatus(401, "Invalid token"))
+                        .flatMap(r -> action.get()));
     }
 
     @SuppressWarnings("unchecked")
