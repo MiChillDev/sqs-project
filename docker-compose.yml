@@ -38,6 +38,20 @@ services:
     networks:
       - sqs-network
 
+  k6:
+    image: grafana/k6
+    profiles: ["loadtest"]
+    depends_on:
+      app:
+        condition: service_started
+    volumes:
+      - ./test/load/scripts:/scripts
+    working_dir: /scripts
+    entrypoint: ["k6"]
+    command: ["run", "basic-test.js"]
+    networks:
+      - sqs-network
+
 volumes:
   postgres_data:
 
