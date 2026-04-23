@@ -1,8 +1,6 @@
 package com.chucknorris.jokes.controller;
 
 import com.chucknorris.common.controller.BaseController;
-import com.chucknorris.common.domain.models.Either;
-import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.jokes.models.dto.CreateJokeDto;
 import com.chucknorris.jokes.models.dto.JokeDto;
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
