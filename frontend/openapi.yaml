@@ -1,0 +1,200 @@
+openapi: 3.1.0
+info:
+  title: Chuck Norris API
+  version: 1.0.0
+  description: API for retrieving chuck norris jokes from the database and managing the joke collection
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic Authentication with generated token
+
+  schemas:
+    Joke:
+      type: object
+      required:
+        - id
+        - externalId
+        - content
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the joke
+        externalId:
+          type: string
+          description: Original ID from the chuck norris API
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: The joke text
+
+    SourceJoke:
+      type: object
+      required:
+        - externalId
+        - content
+      properties:
+        externalId:
+          type: string
+          description: Original ID from the chuck norris API
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: The joke text retrieved from the external API
+
+    JokeInput:
+      type: object
+      required:
+        - content
+        - externalId
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000
+          description: The joke text to add to the database
+        externalId:
+          type: string
+          description: Original ID from the chuck norris API
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP status code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+
+  responses:
+    BadRequest:
+      description: Bad Request - Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            message: Request validation failed
+
+    Unauthorized:
+      description: Unauthorized - Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            message: Missing or invalid authentication token
+
+    Forbidden:
+      description: Forbidden - Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 403
+            message: Only administrators can add jokes
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 500
+            message: An unexpected error occurred
+
+paths:
+  /source-joke:
+    get:
+      operationId: getRandomSourceJoke
+      summary: Get a random joke from the external API
+      description: Retrieves a random joke from the external chuck norris API
+      security:
+        - basicAuth: [ ]
+      tags:
+        - Source Jokes
+      responses:
+        '200':
+          description: Successfully retrieved a random joke from the external API
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceJoke'
+              example:
+                externalId: 12345
+                content: Why did Chuck Norris cross the road? To get to the other side... of the world!
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /jokes:
+    get:
+      operationId: getRandomJoke
+      summary: Get a random joke from the database
+      description: Retrieves a random joke from the database. No authentication required.
+      tags:
+        - Jokes
+      responses:
+        '200':
+          description: Successfully retrieved a random joke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Joke'
+              example:
+                id: 550e8400-e29b-41d4-a716-446655440000
+                content: Why did Chuck Norris cross the road? To get to the other side... of the world!
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      operationId: createJoke
+      summary: Add a new joke to the database
+      description: Creates a new joke and stores it in the database. Requires admin authentication.
+      tags:
+        - Jokes
+      security:
+        - basicAuth: [ ]
+      requestBody:
+        required: true
+        description: Joke data to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JokeInput'
+            examples:
+              example1:
+                value:
+                  content: Why did Chuck Norris go to the gym? To lift the world!
+                  externalId: 12345
+      responses:
+        '200':
+          description: Joke successfully created and stored in the database
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Joke'
+              example:
+                id: 550e8400-e29b-41d4-a716-446655440001
+                externalId: 12345
+                content: Why did Chuck Norris go to the gym? To lift the world!
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
