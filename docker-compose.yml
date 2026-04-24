@@ -37,18 +37,20 @@ services:
         condition: service_healthy
     networks:
       - sqs-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/v1/health"]      
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
 
   k6:
     image: grafana/k6
     profiles: ["loadtest"]
-    depends_on:
-      app:
-        condition: service_started
     volumes:
-      - ./test/load/scripts:/scripts
+      - ./test/load:/scripts
     working_dir: /scripts
     entrypoint: ["k6"]
-    command: ["run", "basic-test.js"]
     networks:
       - sqs-network
 
