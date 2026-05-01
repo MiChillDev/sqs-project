@@ -19,7 +19,11 @@ export function getSourceJoke() {
   return res;
 }
 
-export function createJoke(payload) {
+export function createJoke() {
+  const payload = {
+    content: `loadtest-${__VU}-${__ITER}`
+  };
+
   const res = http.post(`${BASE_URL}/jokes`, JSON.stringify(payload), {
     headers: { 'Content-Type': 'application/json' },
   });

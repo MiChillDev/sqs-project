@@ -30,7 +30,7 @@ Loadtests werden mit k6 in Docker ausgeführt.
 
 | Test     | p95 Dauer | Fehlerquote |
 |----------|----------|------------|
-| Baseline | < 300ms  | < 1%       |
+| Baseline | < 150ms  | < 1%       |
 | Stress   | < 600ms  | < 5%       |
 | Spike    | < 900ms  | < 10%      |
 

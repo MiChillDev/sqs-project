@@ -1,5 +1,5 @@
 import { sleep } from 'k6';
-import { getJokes, createJoke, getSourceJoke } from '../helpers.js';
+import { getJokes, createJoke, getSourceJoke } from '../scripts/helpers.js';
 
 export const options = {
   scenarios: {
@@ -27,7 +27,7 @@ export const options = {
         { duration: '1m', target: 8 },
         { duration: '30s', target: 0 },
       ],
-      exec: 'createJokesScenario',
+      exec: 'createJokeScenario',
     },
   },
   thresholds: {

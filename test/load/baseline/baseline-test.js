@@ -1,5 +1,5 @@
 import { sleep } from 'k6';
-import { getJokes, createJoke, getSourceJoke } from '../helpers.js';
+import { getJokes, createJoke, getSourceJoke } from '../scripts/helpers.js';
 
 export const options = {
   scenarios: {
@@ -23,7 +23,7 @@ export const options = {
     },
   },
   thresholds: {
-    http_req_duration: ['p(95)<300'],   // 95% der Requests < 300ms
+    http_req_duration: ['p(95)<150'],   // 95% der Requests < 150ms
     http_req_failed: ['rate<0.01'],     // max. 1% Fehler
   },
 };

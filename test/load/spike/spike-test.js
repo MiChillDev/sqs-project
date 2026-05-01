@@ -1,5 +1,5 @@
 import { sleep } from 'k6';
-import { getJokes, createJoke, getSourceJoke } from '../helpers.js';
+import { getJokes, createJoke, getSourceJoke } from '../scripts/helpers.js';
 
 export const options = {
   scenarios: {
