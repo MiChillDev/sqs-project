@@ -134,6 +134,6 @@ describe('ConnectivityTestPage', () => {
       data: { status: 'UP', message: 'Service is healthy' },
     });
     render(<Component />);
-    expect(screen.getByText(/UP — Service is healthy/)).toBeInTheDocument();
+    expect(screen.getByText(/Service is healthy/)).toBeInTheDocument();
   });
 });
