@@ -1,0 +1,41 @@
+name: Backend Load Test Pipeline
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  k6-load-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Start services
+        run: docker compose up -d --build app postgres
+
+      - name: Wait for API readiness
+        run: |
+          for i in {1..30}; do
+            curl -f http://localhost:8080/api/v1/health && exit 0
+            echo "Waiting for API..."
+            sleep 2
+          done
+          exit 1
+
+      - name: Run baseline test
+        run: docker compose run --rm k6 run baseline/baseline-test.js
+
+      - name: Run stress test
+        run: docker compose run --rm k6 run stress/stress-test.js
+
+      - name: Run spike test
+        if: github.event_name == 'workflow_dispatch'
+        run: docker compose run --rm k6 run spike/spike-test.js
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
