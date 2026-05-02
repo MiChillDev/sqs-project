@@ -15,11 +15,6 @@ FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-# Install curl
-RUN apt-get update \
-    && apt-get install -y curl \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy the built JAR from builder stage
 COPY --from=builder /build/target/sqs-project-*.jar app.jar
 
