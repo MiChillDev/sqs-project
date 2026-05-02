@@ -37,8 +37,8 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@/shared/api/api', () => ({
-  useJokes: () => mockMutationResult,
+vi.mock('src/shared/api/api', () => ({
+  useHealthCheck: () => mockMutationResult,
 }));
 
 describe('ConnectivityTestPage', () => {
@@ -46,7 +46,7 @@ describe('ConnectivityTestPage', () => {
 
   afterEach(() => {
     cleanup();
-    mockMutate.mockClear();
+    vi.clearAllMocks();
   });
 
   it('renders the page heading', () => {
@@ -72,11 +72,27 @@ describe('ConnectivityTestPage', () => {
 
   it('disables button and shows testing text when pending', () => {
     mockMutationResult.isPending = true;
-
     render(<Component />);
     const button = screen.getByRole('button', { name: enTranslation.connectivityTest.testing });
     expect(button).toBeDisabled();
-
     mockMutationResult.isPending = false;
+  });
+
+  it('calls toast.success with translated strings on successful mutation', async () => {
+    const { toast } = await import('sonner');
+    mockMutate.mockImplementationOnce((_arg: unknown, options?: { onSuccess?: () => void }) => {
+      options?.onSuccess?.();
+    });
+
+    const user = userEvent.setup();
+    render(<Component />);
+    await user.click(
+      screen.getByRole('button', { name: enTranslation.connectivityTest.testButton })
+    );
+
+    expect(toast.success).toHaveBeenCalledOnce();
+    expect(toast.success).toHaveBeenCalledWith(enTranslation.connectivityTest.toastTitle, {
+      description: enTranslation.connectivityTest.toastDescription,
+    });
   });
 });

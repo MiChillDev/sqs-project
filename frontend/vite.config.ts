@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [foucStylePlugin(), react(), tailwindcss()],
   resolve: {
     alias: {
-      'src': path.resolve(__dirname, './src'),
+      src: path.resolve(__dirname, './src'),
     },
   },
   server: {

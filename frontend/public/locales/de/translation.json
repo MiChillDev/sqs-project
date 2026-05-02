@@ -110,6 +110,8 @@
     "title": "Backend-Verbindungstest",
     "description": "Testen Sie die Verbindung zur Backend-API",
     "testButton": "Verbindung testen",
-    "testing": "Teste..."
+    "testing": "Teste...",
+    "toastTitle": "Verbindung erfolgreich",
+    "toastDescription": "Backend ist erreichbar"
   }
 }

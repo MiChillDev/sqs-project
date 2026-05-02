@@ -4,7 +4,6 @@ import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
 import { Button } from 'src/shared/components/ui/button';
 import {
@@ -28,6 +27,7 @@ import {
 } from 'src/shared/components/ui/field';
 import { Input } from 'src/shared/components/ui/input';
 import { useZodResolver } from 'src/shared/hooks/use-zod-resolver';
+import { z } from 'zod';
 
 import { rootRoute } from './__root';
 

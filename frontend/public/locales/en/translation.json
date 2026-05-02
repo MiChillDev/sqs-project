@@ -110,6 +110,8 @@
     "title": "Backend Connectivity Test",
     "description": "Test the connection to the backend API",
     "testButton": "Test Connection",
-    "testing": "Testing..."
+    "testing": "Testing...",
+    "toastTitle": "Connection successful",
+    "toastDescription": "Backend is healthy"
   }
 }

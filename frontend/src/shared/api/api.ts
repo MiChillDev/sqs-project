@@ -6,6 +6,11 @@ export interface Joke {
   content: string;
 }
 
+export interface HealthCheck {
+  status: string;
+  message: string;
+}
+
 export async function fetchApi<T>(path: string): Promise<T> {
   const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
   const response = await fetch(`${baseUrl}${path}`);
@@ -22,5 +27,11 @@ export async function fetchApi<T>(path: string): Promise<T> {
 export function useJokes() {
   return useMutation({
     mutationFn: () => fetchApi<Joke>('/v1/jokes'),
+  });
+}
+
+export function useHealthCheck() {
+  return useMutation({
+    mutationFn: () => fetchApi<HealthCheck>('/v1/health'),
   });
 }
