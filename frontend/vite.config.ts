@@ -15,15 +15,6 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/': {
-        // TODO: fix CORS in backend instead of doing this
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-      },
-    },
-  },
-  server: {
-    proxy: {
-      '/api': {
         target: process.env.API_TARGET || 'http://localhost:8080',
         changeOrigin: true,
       },
