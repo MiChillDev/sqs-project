@@ -45,7 +45,7 @@ vi.mock('react-i18next', () => ({
             o?.[k] as Record<string, unknown> | undefined,
           enTranslation as unknown as Record<string, unknown>
         );
-      return (value as string) ?? key;
+      return (value as unknown as string) ?? key;
     },
     i18n: { language: 'en' },
   }),
@@ -56,7 +56,9 @@ vi.mock('src/shared/api/hooks', () => ({
 }));
 
 describe('ConnectivityTestPage', () => {
-  const Component = apiTestRoute.options.component;
+  const Component = apiTestRoute.options.component as NonNullable<
+    typeof apiTestRoute.options.component
+  >;
 
   afterEach(() => {
     cleanup();

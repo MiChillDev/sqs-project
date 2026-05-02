@@ -1,11 +1,26 @@
 /// <reference types="vitest/globals" />
 
 import fs from 'node:fs';
+import type { Plugin } from 'vite';
 import {
   extractColors,
   foucStylePlugin,
   generateStyleTag,
 } from '../../plugins/vite-plugin-fouc-style';
+
+function callBuildStart(plugin: Plugin): void {
+  const hook = plugin.buildStart;
+  if (!hook) return;
+  const fn = (typeof hook === 'function' ? hook : hook.handler) as (options: unknown) => void;
+  fn({});
+}
+
+function callTransformHtml(plugin: Plugin, html: string): string {
+  const hook = plugin.transformIndexHtml;
+  if (!hook) throw new Error('transformIndexHtml not defined on plugin');
+  const fn = (typeof hook === 'function' ? hook : hook.handler) as (html: string) => string;
+  return fn(html);
+}
 
 const VALID_CSS = `@import "tailwindcss";
 
@@ -194,9 +209,7 @@ describe('foucStylePlugin', () => {
 
   beforeEach(() => {
     const plugin = foucStylePlugin();
-    plugin.buildStart?.(
-      {} as Parameters<NonNullable<Parameters<typeof foucStylePlugin>[0]['buildStart']>>[0]
-    );
+    callBuildStart(plugin);
     readFileSyncSpy = vi.spyOn(fs, 'readFileSync').mockReturnValue(VALID_CSS);
   });
 
@@ -206,7 +219,7 @@ describe('foucStylePlugin', () => {
 
   it('replaces placeholder with generated style tag', () => {
     const plugin = foucStylePlugin();
-    const result = plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
+    const result = callTransformHtml(plugin, HTML_WITH_PLACEHOLDER);
 
     expect(result).not.toContain('<!-- %FOUC_STYLE% -->');
     expect(result).toContain('<style>');
@@ -216,7 +229,7 @@ describe('foucStylePlugin', () => {
   it('throws when placeholder is missing from HTML', () => {
     const plugin = foucStylePlugin();
 
-    expect(() => plugin.transformIndexHtml?.('<html><head></head></html>')).toThrow(
+    expect(() => callTransformHtml(plugin, '<html><head></head></html>')).toThrow(
       '[vite-plugin-fouc-style] <!-- %FOUC_STYLE% --> placeholder not found in index.html'
     );
   });
@@ -224,8 +237,8 @@ describe('foucStylePlugin', () => {
   it('transformIndexHtml caches style tag across calls', () => {
     const plugin = foucStylePlugin();
 
-    plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
-    plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
+    callTransformHtml(plugin, HTML_WITH_PLACEHOLDER);
+    callTransformHtml(plugin, HTML_WITH_PLACEHOLDER);
 
     expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
   });
@@ -233,11 +246,9 @@ describe('foucStylePlugin', () => {
   it('cache invalidated on buildStart', () => {
     const plugin = foucStylePlugin();
 
-    plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
-    plugin.buildStart?.(
-      {} as Parameters<NonNullable<Parameters<typeof foucStylePlugin>[0]['buildStart']>>[0]
-    );
-    plugin.transformIndexHtml?.(HTML_WITH_PLACEHOLDER);
+    callTransformHtml(plugin, HTML_WITH_PLACEHOLDER);
+    callBuildStart(plugin);
+    callTransformHtml(plugin, HTML_WITH_PLACEHOLDER);
 
     expect(readFileSyncSpy).toHaveBeenCalledTimes(2);
   });

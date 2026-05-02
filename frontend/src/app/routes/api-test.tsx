@@ -45,8 +45,7 @@ function ApiTestPage() {
           )}
           {healthQuery.isSuccess && (
             <p className='mt-4 text-sm text-green-600'>
-              Status response:{' '}
-              {healthQuery.data.status}
+              Status response: {healthQuery.data.status}
               {': '}
               {healthQuery.data.message}
             </p>

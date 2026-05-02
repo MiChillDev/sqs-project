@@ -21,14 +21,16 @@ vi.mock('react-i18next', () => ({
             o?.[k] as Record<string, unknown> | undefined,
           enTranslation as unknown as Record<string, unknown>
         );
-      return (value as string) ?? key;
+      return (value as unknown as string) ?? key;
     },
     i18n: { language: 'en' },
   }),
 }));
 
 describe('ComponentDemoPage', () => {
-  const Component = componentDemoRoute.options.component;
+  const Component = componentDemoRoute.options.component as NonNullable<
+    typeof componentDemoRoute.options.component
+  >;
 
   afterEach(() => {
     cleanup();
