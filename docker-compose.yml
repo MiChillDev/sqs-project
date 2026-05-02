@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -51,6 +49,25 @@ services:
       - ./test/load:/scripts
     working_dir: /scripts
     entrypoint: ["k6"]
+    networks:
+      - sqs-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sqs-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+    environment:
+      - API_TARGET=http://app:8080
+      - VITE_API_BASE_URL=/api
+    depends_on:
+      - app
     networks:
       - sqs-network
 
