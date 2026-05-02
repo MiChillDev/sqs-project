@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/source-joke': {
+  '/api/v1/source-joke': {
     parameters: {
       query?: never;
       header?: never;
@@ -24,7 +24,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/jokes': {
+  '/api/v1/jokes': {
     parameters: {
       query?: never;
       header?: never;
@@ -42,6 +42,26 @@ export interface paths {
      * @description Creates a new joke and stores it in the database. Requires admin authentication.
      */
     post: operations['createJoke'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/health': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Health check
+     * @description Returns the service health status. No authentication required.
+     */
+    get: operations['healthCheck'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -74,6 +94,12 @@ export interface components {
       content: string;
       /** @description Original ID from the chuck norris API */
       externalId: string;
+    };
+    HealthCheck: {
+      /** @description Service status indicator */
+      status: string;
+      /** @description Human-readable status message */
+      message: string;
     };
     Error: {
       /** @description HTTP status code for programmatic handling */
@@ -238,6 +264,33 @@ export interface operations {
       400: components['responses']['BadRequest'];
       401: components['responses']['Unauthorized'];
       403: components['responses']['Forbidden'];
+      500: components['responses']['InternalServerError'];
+    };
+  };
+  healthCheck: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Service is healthy */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "status": "UP",
+           *       "message": "Service is healthy"
+           *     }
+           */
+          'application/json': components['schemas']['HealthCheck'];
+        };
+      };
       500: components['responses']['InternalServerError'];
     };
   };

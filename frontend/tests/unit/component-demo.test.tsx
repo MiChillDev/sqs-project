@@ -1,8 +1,7 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import componentDemoRoute from 'src/app/routes/component-demo';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import componentDemoRoute from '@/app/routes/component-demo';
 import enTranslation from '../../public/locales/en/translation.json';
 
 vi.mock('sonner', () => ({

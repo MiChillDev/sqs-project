@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { ConfigErrorBanner } from 'src/shared/components/config-error-banner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import { ConfigErrorBanner } from '@/shared/components/config-error-banner';
 
 describe('ConfigErrorBanner', () => {
   afterEach(() => {

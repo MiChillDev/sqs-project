@@ -9,29 +9,41 @@ const LazyReactQueryDevtools = lazy(() =>
   import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools }))
 );
 
-export { getUserSafeError };
-
-export function handleMutationError(error: unknown): void {
+export function handleQueryClientError(error: unknown): void {
+  if (import.meta.env.DEV) {
+    // biome-ignore lint/suspicious/noConsole: intentional dev-only error logging
+    console.error('[API Error]', error);
+  }
   toast.error(i18next.t('toast.errorTitle'), {
     description: getUserSafeError(error),
   });
 }
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 30,
-      refetchOnWindowFocus: true,
-    },
-    mutations: {
-      onError: handleMutationError,
-    },
-  },
-});
+let queryClient: QueryClient | undefined;
+
+function getQueryClient() {
+  if (!queryClient) {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 1000 * 30,
+          refetchOnWindowFocus: true,
+          retry: 1,
+        },
+        mutations: {
+          retry: 0,
+        },
+      },
+    });
+    queryClient.getQueryCache().config.onError = handleQueryClientError;
+    queryClient.getMutationCache().config.onError = handleQueryClientError;
+  }
+  return queryClient;
+}
 
 export function QueryClientProviderWrapper({ children }: { children: ReactNode }) {
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={getQueryClient()}>
       {children}
       {import.meta.env.DEV && (
         <Suspense fallback={null}>

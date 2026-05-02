@@ -4,15 +4,29 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import enTranslation from '../../public/locales/en/translation.json';
 import apiTestRoute from '../../src/app/routes/api-test';
 
-const mockMutate = vi.fn();
-const mockMutationResult = {
-  mutate: mockMutate,
-  isPending: false,
-  isError: false,
-  isSuccess: false,
-  data: null as unknown,
-  error: null as unknown,
-};
+const mockRefetch = vi.fn();
+function createMockQueryResult(
+  overrides?: Partial<{
+    refetch: ReturnType<typeof vi.fn>;
+    isFetching: boolean;
+    isError: boolean;
+    isSuccess: boolean;
+    data: unknown;
+    error: unknown;
+  }>
+) {
+  return {
+    refetch: mockRefetch,
+    isFetching: false,
+    isError: false,
+    isSuccess: false,
+    data: null as unknown,
+    error: null as unknown,
+    ...overrides,
+  };
+}
+
+let mockQueryResult = createMockQueryResult();
 
 vi.mock('sonner', () => ({
   toast: Object.assign(vi.fn(), {
@@ -37,8 +51,8 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('src/shared/api/api', () => ({
-  useHealthCheck: () => mockMutationResult,
+vi.mock('src/shared/api/hooks', () => ({
+  useHealthCheck: () => mockQueryResult,
 }));
 
 describe('ConnectivityTestPage', () => {
@@ -47,6 +61,7 @@ describe('ConnectivityTestPage', () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    mockQueryResult = createMockQueryResult();
   });
 
   it('renders the page heading', () => {
@@ -61,28 +76,26 @@ describe('ConnectivityTestPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('calls mutate when the test button is clicked', async () => {
+  it('calls refetch when the test button is clicked', async () => {
+    mockRefetch.mockResolvedValueOnce({ isSuccess: true });
     const user = userEvent.setup();
     render(<Component />);
     await user.click(
       screen.getByRole('button', { name: enTranslation.connectivityTest.testButton })
     );
-    expect(mockMutate).toHaveBeenCalledOnce();
+    expect(mockRefetch).toHaveBeenCalledOnce();
   });
 
-  it('disables button and shows testing text when pending', () => {
-    mockMutationResult.isPending = true;
+  it('disables button and shows testing text when fetching', () => {
+    mockQueryResult = createMockQueryResult({ isFetching: true });
     render(<Component />);
     const button = screen.getByRole('button', { name: enTranslation.connectivityTest.testing });
     expect(button).toBeDisabled();
-    mockMutationResult.isPending = false;
   });
 
-  it('calls toast.success with translated strings on successful mutation', async () => {
+  it('calls toast.success with translated strings on successful refetch', async () => {
     const { toast } = await import('sonner');
-    mockMutate.mockImplementationOnce((_arg: unknown, options?: { onSuccess?: () => void }) => {
-      options?.onSuccess?.();
-    });
+    mockRefetch.mockResolvedValueOnce({ isSuccess: true });
 
     const user = userEvent.setup();
     render(<Component />);
@@ -94,5 +107,33 @@ describe('ConnectivityTestPage', () => {
     expect(toast.success).toHaveBeenCalledWith(enTranslation.connectivityTest.toastTitle, {
       description: enTranslation.connectivityTest.toastDescription,
     });
+  });
+
+  it('does not show toast when refetch fails', async () => {
+    const { toast } = await import('sonner');
+    mockRefetch.mockResolvedValueOnce({ isSuccess: false });
+
+    const user = userEvent.setup();
+    render(<Component />);
+    await user.click(
+      screen.getByRole('button', { name: enTranslation.connectivityTest.testButton })
+    );
+
+    expect(toast.success).not.toHaveBeenCalled();
+  });
+
+  it('shows error text when query has error', () => {
+    mockQueryResult = createMockQueryResult({ isError: true });
+    render(<Component />);
+    expect(screen.getByText(enTranslation.connectivityTest.error)).toBeInTheDocument();
+  });
+
+  it('shows health data when query is successful', () => {
+    mockQueryResult = createMockQueryResult({
+      isSuccess: true,
+      data: { status: 'UP', message: 'Service is healthy' },
+    });
+    render(<Component />);
+    expect(screen.getByText(/UP — Service is healthy/)).toBeInTheDocument();
   });
 });

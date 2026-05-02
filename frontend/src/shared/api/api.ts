@@ -1,37 +1,54 @@
-import { useMutation } from '@tanstack/react-query';
+import { ApiError, NetworkError } from './api-error';
+import type { components } from './generated/api-types';
 
-export interface Joke {
-  id: string;
-  externalId: string;
-  content: string;
+export type Joke = components['schemas']['Joke'];
+export type SourceJoke = components['schemas']['SourceJoke'];
+export type JokeInput = components['schemas']['JokeInput'];
+export type HealthCheck = components['schemas']['HealthCheck'];
+export type ApiErrorBody = components['schemas']['Error'];
+
+export { ApiError, NetworkError } from './api-error';
+
+export function getApiBaseUrl(): string {
+  return import.meta.env.VITE_API_BASE_URL ?? '';
 }
 
-export interface HealthCheck {
-  status: string;
-  message: string;
-}
+const DEFAULT_TIMEOUT_MS = 10000;
 
-export async function fetchApi<T>(path: string): Promise<T> {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
-  const response = await fetch(`${baseUrl}${path}`);
+export async function fetchApi<T>(
+  path: string,
+  options?: RequestInit & { timeout?: number }
+): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), options?.timeout ?? DEFAULT_TIMEOUT_MS);
 
-  if (!response.ok) {
-    const error = new Error(`HTTP ${response.status}`) as Error & { status: number };
-    error.status = response.status;
-    throw error;
+  try {
+    let response: Response;
+    try {
+      response = await fetch(`${getApiBaseUrl()}${path}`, {
+        ...options,
+        signal: options?.signal ?? controller.signal,
+      });
+    } catch (err) {
+      throw new NetworkError(err instanceof Error ? err : undefined);
+    }
+
+    if (!response.ok) {
+      let body: unknown;
+      try {
+        body = await response.json();
+      } catch {
+        // response body not JSON
+      }
+      throw new ApiError(response.status, response.statusText, body);
+    }
+
+    try {
+      return (await response.json()) as T;
+    } catch {
+      throw new ApiError(response.status, 'Invalid JSON response from server');
+    }
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return response.json() as Promise<T>;
-}
-
-export function useJokes() {
-  return useMutation({
-    mutationFn: () => fetchApi<Joke>('/v1/jokes'),
-  });
-}
-
-export function useHealthCheck() {
-  return useMutation({
-    mutationFn: () => fetchApi<HealthCheck>('/v1/health'),
-  });
 }

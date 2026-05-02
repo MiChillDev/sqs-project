@@ -2,7 +2,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import referenceRoute from '@/app/routes/reference';
+import referenceRoute from 'src/app/routes/reference';
 
 vi.mock('sonner', () => ({
   toast: Object.assign(vi.fn(), {

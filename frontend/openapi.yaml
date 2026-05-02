@@ -4,6 +4,10 @@ info:
   version: 1.0.0
   description: API for retrieving chuck norris jokes from the database and managing the joke collection
 
+servers:
+  - url: http://localhost:8080
+    description: Local development
+
 components:
   securitySchemes:
     basicAuth:
@@ -62,6 +66,19 @@ components:
           type: string
           description: Original ID from the chuck norris API
 
+    HealthCheck:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Service status indicator
+        message:
+          type: string
+          description: Human-readable status message
+
     Error:
       type: object
       required:
@@ -117,7 +134,7 @@ components:
             message: An unexpected error occurred
 
 paths:
-  /source-joke:
+  /api/v1/source-joke:
     get:
       operationId: getRandomSourceJoke
       summary: Get a random joke from the external API
@@ -139,7 +156,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /jokes:
+  /api/v1/jokes:
     get:
       operationId: getRandomJoke
       summary: Get a random joke from the database
@@ -196,5 +213,25 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/health:
+    get:
+      operationId: healthCheck
+      summary: Health check
+      description: Returns the service health status. No authentication required.
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+              example:
+                status: UP
+                message: Service is healthy
         '500':
           $ref: '#/components/responses/InternalServerError'

@@ -3,7 +3,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { LanguageToggle } from '@/shared/components/language-toggle';
+import { LanguageToggle } from 'src/shared/components/language-toggle';
 
 const mockChangeLanguage = vi.fn();
 const mockI18n = {

@@ -1,6 +1,7 @@
 /// <reference types="vitest/globals" />
 
 import { fetchApi } from '../../src/shared/api/api';
+import { ApiError, NetworkError } from '../../src/shared/api/api-error';
 
 describe('fetchApi', () => {
   afterEach(() => {
@@ -22,22 +23,62 @@ describe('fetchApi', () => {
     expect(result).toEqual(data);
   });
 
-  it('throws error with status property on non-2xx response', async () => {
+  it('throws ApiError with status and body on non-2xx response', async () => {
+    const errorBody = { code: 501, message: 'Not Implemented' };
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
         ok: false,
         status: 501,
         statusText: 'Not Implemented',
-        json: () => Promise.resolve({ code: 501, message: 'Not Implemented' }),
+        json: () => Promise.resolve(errorBody),
       })
     );
 
-    await expect(fetchApi('/api/v1/jokes')).rejects.toThrow();
-    await expect(fetchApi('/api/v1/jokes')).rejects.toMatchObject({ status: 501 });
+    try {
+      await fetchApi('/api/v1/jokes');
+      expect.unreachable('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiError);
+      expect((error as ApiError).status).toBe(501);
+      expect((error as ApiError).body).toEqual(errorBody);
+    }
   });
 
-  it('uses VITE_API_BASE_URL env var in URL construction', async () => {
+  it('throws ApiError without body when error response is not JSON', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: () => Promise.reject(new SyntaxError('Unexpected token')),
+      })
+    );
+
+    try {
+      await fetchApi('/api/v1/jokes');
+      expect.unreachable('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiError);
+      expect((error as ApiError).status).toBe(500);
+      expect((error as ApiError).body).toBeUndefined();
+    }
+  });
+
+  it('throws NetworkError when fetch rejects with TypeError', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
+
+    try {
+      await fetchApi('/api/v1/jokes');
+      expect.unreachable('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(NetworkError);
+      expect((error as NetworkError).message).toBe('Failed to fetch');
+    }
+  });
+
+  it('uses VITE_API_BASE_URL as origin prefix', async () => {
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.com');
     const fetchSpy = vi.fn().mockResolvedValue({
       ok: true,
@@ -47,17 +88,13 @@ describe('fetchApi', () => {
 
     await fetchApi('/api/v1/jokes');
 
-    expect(fetchSpy).toHaveBeenCalledWith('https://api.example.com/api/v1/jokes');
+    expect(fetchSpy).toHaveBeenCalledWith(
+      'https://api.example.com/api/v1/jokes',
+      expect.any(Object)
+    );
   });
 
-  it('handles network error when fetch throws', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
-
-    await expect(fetchApi('/api/v1/jokes')).rejects.toThrow(TypeError);
-    await expect(fetchApi('/api/v1/jokes')).rejects.toThrow('Failed to fetch');
-  });
-
-  it('uses empty string as base URL when env var is not set', async () => {
+  it('defaults to empty base URL when env var not set', async () => {
     vi.stubEnv('VITE_API_BASE_URL', undefined);
     const fetchSpy = vi.fn().mockResolvedValue({
       ok: true,
@@ -67,6 +104,38 @@ describe('fetchApi', () => {
 
     await fetchApi('/api/v1/jokes');
 
-    expect(fetchSpy).toHaveBeenCalledWith('/api/v1/jokes');
+    expect(fetchSpy).toHaveBeenCalledWith('/api/v1/jokes', expect.any(Object));
+  });
+
+  it('throws ApiError when JSON parse fails on successful response', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: () => Promise.reject(new SyntaxError('Unexpected token')),
+      })
+    );
+
+    try {
+      await fetchApi('/api/v1/jokes');
+      expect.unreachable('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiError);
+      expect((error as ApiError).status).toBe(200);
+      expect((error as ApiError).statusText).toBe('Invalid JSON response from server');
+    }
+  });
+
+  it('throws NetworkError for non-Error fetch rejection', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue('something broke'));
+
+    try {
+      await fetchApi('/api/v1/jokes');
+      expect.unreachable('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(NetworkError);
+      expect((error as NetworkError).message).toBe('Network request failed');
+    }
   });
 });
