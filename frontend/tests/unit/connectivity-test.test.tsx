@@ -53,6 +53,7 @@ vi.mock('react-i18next', () => ({
 
 vi.mock('src/shared/api/hooks', () => ({
   useHealthCheck: () => mockQueryResult,
+  useRandomJoke: () => createMockQueryResult(),
 }));
 
 describe('ConnectivityTestPage', () => {

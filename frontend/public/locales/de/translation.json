@@ -116,5 +116,13 @@
     "toastTitle": "Verbindung erfolgreich",
     "toastDescription": "Backend ist erreichbar",
     "error": "Verbindungstest fehlgeschlagen. Bitte versuchen Sie es erneut."
+  },
+  "jokePreview": {
+    "title": "Zufälliger Witz",
+    "description": "Einen zufälligen Witz aus der Backend-API abrufen",
+    "fetchButton": "Witz abrufen",
+    "fetching": "Abrufen...",
+    "refetchButton": "Nächster Witz",
+    "error": "Witz konnte nicht abgerufen werden. Der Endpunkt ist möglicherweise noch nicht implementiert."
   }
 }

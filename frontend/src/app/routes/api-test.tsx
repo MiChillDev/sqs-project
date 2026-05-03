@@ -2,7 +2,7 @@ import { createRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { useHealthCheck } from 'src/shared/api/hooks';
+import { useHealthCheck, useRandomJoke } from 'src/shared/api/hooks';
 import { Button } from 'src/shared/components/ui/button';
 import {
   Card,
@@ -17,6 +17,7 @@ import { rootRoute } from './__root';
 function ApiTestPage() {
   const { t } = useTranslation();
   const healthQuery = useHealthCheck();
+  const jokeQuery = useRandomJoke();
 
   async function handleTest() {
     const result = await healthQuery.refetch();
@@ -28,7 +29,7 @@ function ApiTestPage() {
   }
 
   return (
-    <div className='mx-auto max-w-200 p-8'>
+    <div className='mx-auto max-w-200 space-y-6 p-8'>
       <Card>
         <CardHeader>
           <CardTitle>{t('connectivityTest.title')}</CardTitle>
@@ -49,6 +50,30 @@ function ApiTestPage() {
               {': '}
               {healthQuery.data.message}
             </p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('jokePreview.title')}</CardTitle>
+          <CardDescription>{t('jokePreview.description')}</CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <Button onClick={() => jokeQuery.refetch()} disabled={jokeQuery.isFetching}>
+            {jokeQuery.isFetching
+              ? t('jokePreview.fetching')
+              : jokeQuery.isSuccess
+                ? t('jokePreview.refetchButton')
+                : t('jokePreview.fetchButton')}
+          </Button>
+          {jokeQuery.isError && (
+            <p className='text-sm text-destructive'>{t('jokePreview.error')}</p>
+          )}
+          {jokeQuery.isSuccess && (
+            <blockquote className='border-l-4 border-primary pl-4 italic'>
+              {jokeQuery.data.content}
+            </blockquote>
           )}
         </CardContent>
       </Card>

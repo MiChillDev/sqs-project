@@ -116,5 +116,13 @@
     "toastTitle": "Connection successful",
     "toastDescription": "Backend is healthy",
     "error": "Connection test failed. Please try again."
+  },
+  "jokePreview": {
+    "title": "Random Joke Preview",
+    "description": "Fetch a random joke from the backend API",
+    "fetchButton": "Fetch Joke",
+    "fetching": "Fetching...",
+    "refetchButton": "Get Another Joke",
+    "error": "Failed to fetch joke. The endpoint may not be implemented yet."
   }
 }
