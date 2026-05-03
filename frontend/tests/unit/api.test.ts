@@ -169,6 +169,69 @@ describe('fetchApi', () => {
     vi.useRealTimers();
   });
 
+  it('timeout fires even when caller provides a signal', async () => {
+    vi.useFakeTimers();
+    const callerController = new AbortController();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((_url: string, opts: { signal?: AbortSignal }) => {
+        return new Promise((_resolve, reject) => {
+          const onAbort = () => reject(new DOMException('The operation was aborted', 'AbortError'));
+          if (opts.signal?.aborted) {
+            onAbort();
+          } else {
+            opts.signal?.addEventListener('abort', onAbort, { once: true });
+          }
+        });
+      })
+    );
+
+    let caughtError: unknown;
+    const fetchPromise = fetchApi('/api/v1/jokes', {
+      signal: callerController.signal,
+      timeout: 100,
+    }).catch((err) => {
+      caughtError = err;
+    });
+
+    await vi.advanceTimersByTimeAsync(150);
+    await fetchPromise;
+
+    expect(caughtError).toBeInstanceOf(DOMException);
+    expect((caughtError as DOMException).name).toBe('AbortError');
+
+    vi.useRealTimers();
+  });
+
+  it('caller signal aborts fetch and triggers timeout controller', async () => {
+    const callerController = new AbortController();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation((_url: string, opts: { signal?: AbortSignal }) => {
+        return new Promise((_resolve, reject) => {
+          const onAbort = () => reject(new DOMException('The operation was aborted', 'AbortError'));
+          if (opts.signal?.aborted) {
+            onAbort();
+          } else {
+            opts.signal?.addEventListener('abort', onAbort, { once: true });
+          }
+        });
+      })
+    );
+
+    callerController.abort();
+
+    try {
+      await fetchApi('/api/v1/jokes', { signal: callerController.signal });
+      expect.unreachable('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(DOMException);
+      expect((error as DOMException).name).toBe('AbortError');
+    }
+  });
+
   it('re-throws caller AbortError instead of wrapping in NetworkError', async () => {
     const abortError = new DOMException('The operation was aborted', 'AbortError');
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(abortError));

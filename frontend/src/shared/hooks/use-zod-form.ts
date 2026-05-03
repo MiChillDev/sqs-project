@@ -34,5 +34,5 @@ export function useZodForm<TSchema extends FormSchema>(
     }
   }, [i18n.language]);
 
-  return form as UseFormReturn<z.infer<TSchema>>;
+  return form;
 }

@@ -1,5 +1,5 @@
 # Frontend README
 
 
-Components Demo page: `/demo`
-Backend Connection sample page: `tbd`
+- Components Demo page: `/demo`
+- Backend API Demo page: `/demo/api`

@@ -22,12 +22,19 @@ export async function fetchApi<T>(
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), options?.timeout ?? DEFAULT_TIMEOUT_MS);
 
+  const onCallerAbort = () => controller.abort();
+  if (options?.signal?.aborted) {
+    controller.abort();
+  } else {
+    options?.signal?.addEventListener('abort', onCallerAbort, { once: true });
+  }
+
   try {
     let response: Response;
     try {
       response = await fetch(`${getApiBaseUrl()}${path}`, {
         ...options,
-        signal: options?.signal ?? controller.signal,
+        signal: controller.signal,
       });
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
@@ -53,5 +60,6 @@ export async function fetchApi<T>(
     }
   } finally {
     clearTimeout(timeoutId);
+    options?.signal?.removeEventListener('abort', onCallerAbort);
   }
 }
