@@ -4,9 +4,9 @@ export function ConfigErrorBanner() {
   const [dismissed, setDismissed] = useState(false);
   if (dismissed) return null;
 
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
-  if (import.meta.env.MODE === 'development') return null;
+  if (!import.meta.env.PROD) return null;
 
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
   if (apiUrl !== undefined && apiUrl !== '') return null;
 
   return (

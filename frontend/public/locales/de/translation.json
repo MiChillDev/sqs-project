@@ -19,7 +19,8 @@
     "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
     "serverError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut.",
     "networkError": "Verbindung zum Server nicht möglich. Bitte überprüfen Sie Ihre Internetverbindung.",
-    "timeout": "Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut."
+    "timeout": "Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.",
+    "clientError": "Die Anfrage konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut."
   },
   "notFound": {
     "title": "404 - Seite nicht gefunden",
@@ -115,7 +116,8 @@
     "testing": "Teste...",
     "toastTitle": "Verbindung erfolgreich",
     "toastDescription": "Backend ist erreichbar",
-    "error": "Verbindungstest fehlgeschlagen. Bitte versuchen Sie es erneut."
+    "error": "Verbindungstest fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "statusResponse": "Status-Antwort:"
   },
   "jokePreview": {
     "title": "Zufälliger Witz",
@@ -123,6 +125,6 @@
     "fetchButton": "Witz abrufen",
     "fetching": "Abrufen...",
     "refetchButton": "Nächster Witz",
-    "error": "Witz konnte nicht abgerufen werden. Der Endpunkt ist möglicherweise noch nicht implementiert."
+    "error": "Witz konnte nicht abgerufen werden."
   }
 }

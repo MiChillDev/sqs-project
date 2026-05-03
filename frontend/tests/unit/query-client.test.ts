@@ -17,6 +17,7 @@ vi.mock('i18next', () => ({
         'error.networkError':
           'Unable to connect to the server. Please check your internet connection.',
         'error.timeout': 'The request timed out. Please try again.',
+        'error.clientError': 'The request could not be processed. Please try again.',
       };
       return translations[key] ?? key;
     },
@@ -70,8 +71,10 @@ describe('getUserSafeError', () => {
     );
   });
 
-  it('returns unknown message for unrecognized ApiError status', () => {
-    expect(getUserSafeError(new ApiError(418, "I'm a Teapot"))).toBe('Unknown error');
+  it('returns client error message for unrecognized 4xx ApiError status', () => {
+    expect(getUserSafeError(new ApiError(418, "I'm a Teapot"))).toBe(
+      'The request could not be processed. Please try again.'
+    );
   });
 
   it('returns network error message for NetworkError', () => {

@@ -19,7 +19,8 @@
     "notFound": "The requested resource was not found.",
     "serverError": "Something went wrong. Please try again later.",
     "networkError": "Unable to connect to the server. Please check your internet connection.",
-    "timeout": "The request timed out. Please try again."
+    "timeout": "The request timed out. Please try again.",
+    "clientError": "The request could not be processed. Please try again."
   },
   "notFound": {
     "title": "404 - Page Not Found",
@@ -115,7 +116,8 @@
     "testing": "Testing...",
     "toastTitle": "Connection successful",
     "toastDescription": "Backend is healthy",
-    "error": "Connection test failed. Please try again."
+    "error": "Connection test failed. Please try again.",
+    "statusResponse": "Status response:"
   },
   "jokePreview": {
     "title": "Random Joke Preview",

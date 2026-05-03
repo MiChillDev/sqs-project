@@ -30,6 +30,9 @@ export async function fetchApi<T>(
         signal: options?.signal ?? controller.signal,
       });
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        throw err;
+      }
       throw new NetworkError(err instanceof Error ? err : undefined);
     }
 

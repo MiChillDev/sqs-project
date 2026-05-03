@@ -2,14 +2,11 @@
 
 set -e
 
-echo "Building backend image..."
-docker build -t sqs-project:latest ./backend
-
-echo "Building frontend image..."
-docker build -t sqs-frontend:latest ./frontend
+echo "Building Docker images..."
+docker compose build
 
 echo "Starting Docker Compose..."
-docker compose up -d --build
+docker compose up -d
 
 echo ""
 echo "✓ Services started successfully!"
@@ -25,6 +22,3 @@ echo "  docker compose logs -f app       # backend only"
 echo ""
 echo "To stop services:"
 echo "  docker compose down"
-echo ""
-echo "To rebuild after dependency changes:"
-echo "  docker compose up -d --build frontend"

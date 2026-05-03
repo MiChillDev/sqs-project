@@ -10,6 +10,7 @@ coverage
 *.local
 .env.local
 .env.production
+.vite
 
 # Editor directories and files
 .vscode/*

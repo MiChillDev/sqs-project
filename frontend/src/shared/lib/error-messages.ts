@@ -23,6 +23,9 @@ export function getUserSafeError(error: unknown): string {
         if (status >= 500) {
           return i18next.t('error.serverError');
         }
+        if (status >= 400) {
+          return i18next.t('error.clientError');
+        }
     }
   }
 

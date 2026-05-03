@@ -2,7 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import enTranslation from '../../public/locales/en/translation.json';
-import apiTestRoute from '../../src/app/routes/api-test';
+import demoApiRoute from '../../src/app/routes/demo-api';
 
 const mockRefetch = vi.fn();
 function createMockQueryResult(
@@ -27,6 +27,7 @@ function createMockQueryResult(
 }
 
 let mockQueryResult = createMockQueryResult();
+let mockJokeQueryResult = createMockQueryResult();
 
 vi.mock('sonner', () => ({
   toast: Object.assign(vi.fn(), {
@@ -53,18 +54,19 @@ vi.mock('react-i18next', () => ({
 
 vi.mock('src/shared/api/hooks', () => ({
   useHealthCheck: () => mockQueryResult,
-  useRandomJoke: () => createMockQueryResult(),
+  useRandomJoke: () => mockJokeQueryResult,
 }));
 
 describe('ConnectivityTestPage', () => {
-  const Component = apiTestRoute.options.component as NonNullable<
-    typeof apiTestRoute.options.component
+  const Component = demoApiRoute.options.component as NonNullable<
+    typeof demoApiRoute.options.component
   >;
 
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
     mockQueryResult = createMockQueryResult();
+    mockJokeQueryResult = createMockQueryResult();
   });
 
   it('renders the page heading', () => {
@@ -138,5 +140,44 @@ describe('ConnectivityTestPage', () => {
     });
     render(<Component />);
     expect(screen.getByText(/Service is healthy/)).toBeInTheDocument();
+  });
+
+  it('renders joke card with fetch button', () => {
+    render(<Component />);
+    expect(
+      screen.getByRole('button', { name: enTranslation.jokePreview.fetchButton })
+    ).toBeInTheDocument();
+  });
+
+  it('shows fetching text when joke query is loading', () => {
+    mockJokeQueryResult = createMockQueryResult({ isFetching: true });
+    render(<Component />);
+    expect(screen.getByRole('button', { name: enTranslation.jokePreview.fetching })).toBeDisabled();
+  });
+
+  it('shows error text when joke query fails', () => {
+    mockJokeQueryResult = createMockQueryResult({ isError: true });
+    render(<Component />);
+    expect(screen.getByText(enTranslation.jokePreview.error)).toBeInTheDocument();
+  });
+
+  it('shows joke content when joke query succeeds', () => {
+    mockJokeQueryResult = createMockQueryResult({
+      isSuccess: true,
+      data: { content: 'Why did the chicken cross the road?' },
+    });
+    render(<Component />);
+    expect(screen.getByText('Why did the chicken cross the road?')).toBeInTheDocument();
+  });
+
+  it('shows refetch button after successful joke fetch', () => {
+    mockJokeQueryResult = createMockQueryResult({
+      isSuccess: true,
+      data: { content: 'A joke' },
+    });
+    render(<Component />);
+    expect(
+      screen.getByRole('button', { name: enTranslation.jokePreview.refetchButton })
+    ).toBeInTheDocument();
   });
 });

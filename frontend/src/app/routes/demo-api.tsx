@@ -14,7 +14,7 @@ import {
 
 import { rootRoute } from './__root';
 
-function ApiTestPage() {
+function DemoApiPage() {
   const { t } = useTranslation();
   const healthQuery = useHealthCheck();
   const jokeQuery = useRandomJoke();
@@ -46,7 +46,7 @@ function ApiTestPage() {
           )}
           {healthQuery.isSuccess && (
             <p className='mt-4 text-sm text-green-600'>
-              Status response: {healthQuery.data.status}
+              {t('connectivityTest.statusResponse')} {healthQuery.data.status}
               {': '}
               {healthQuery.data.message}
             </p>
@@ -83,6 +83,6 @@ function ApiTestPage() {
 
 export default createRoute({
   getParentRoute: () => rootRoute,
-  path: '/api-test',
-  component: ApiTestPage,
+  path: '/demo/api',
+  component: DemoApiPage,
 });

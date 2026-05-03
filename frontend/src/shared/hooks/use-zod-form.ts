@@ -21,15 +21,18 @@ export function useZodForm<TSchema extends FormSchema>(
   const touchedFieldsRef = useRef(form.formState.touchedFields);
   touchedFieldsRef.current = form.formState.touchedFields;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: i18n.language is intentionally the trigger
+  const triggerRef = useRef(form.trigger);
+  triggerRef.current = form.trigger;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: i18n.language is the intentional trigger for revalidation
   useEffect(() => {
     const touchedKeys = Object.keys(touchedFieldsRef.current).filter(
       (key) => (touchedFieldsRef.current as Record<string, boolean | undefined>)[key]
     ) as Path<z.infer<TSchema>>[];
     if (touchedKeys.length > 0) {
-      form.trigger(touchedKeys);
+      triggerRef.current(touchedKeys);
     }
-  }, [i18n.language, form.trigger]);
+  }, [i18n.language]);
 
   return form as UseFormReturn<z.infer<TSchema>>;
 }

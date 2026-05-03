@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import i18next from 'i18next';
 import { lazy, type ReactNode, Suspense } from 'react';
 import { toast } from 'sonner';
@@ -24,6 +24,8 @@ let queryClient: QueryClient | undefined;
 function getQueryClient() {
   if (!queryClient) {
     queryClient = new QueryClient({
+      queryCache: new QueryCache({ onError: handleQueryClientError }),
+      mutationCache: new MutationCache({ onError: handleQueryClientError }),
       defaultOptions: {
         queries: {
           staleTime: 1000 * 30,
@@ -35,8 +37,6 @@ function getQueryClient() {
         },
       },
     });
-    queryClient.getQueryCache().config.onError = handleQueryClientError;
-    queryClient.getMutationCache().config.onError = handleQueryClientError;
   }
   return queryClient;
 }
