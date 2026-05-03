@@ -1,28 +1,50 @@
 package com.chucknorris.jokes.service;
 
 import com.chucknorris.common.domain.service.BaseService;
-import com.chucknorris.jokes.models.CreateJokeDto;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
-import com.chucknorris.jokes.models.JokeDto;
-import com.chucknorris.jokes.models.SourceJokeDto;
+import com.chucknorris.jokes.models.dto.CreateJokeDto;
+import com.chucknorris.jokes.models.dto.JokeDto;
+import com.chucknorris.jokes.models.dto.SourceJokeDto;
+import com.chucknorris.jokes.repository.ChuckNorrisJokeRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class JokeService extends BaseService {
 
+    private final ChuckNorrisJokeRepository chuckNorrisJokeRepository;
+
+    public JokeService(ChuckNorrisJokeRepository chuckNorrisJokeRepository) {
+        this.chuckNorrisJokeRepository = chuckNorrisJokeRepository;
+    }
+
     public Either<ErrorResultStatus, JokeDto> getRandomJoke() {
         // TODO: Implement domain logic to retrieve a random joke from the database
-        return Either.left(new ErrorResultStatus(501, "Not implemented yet"));
+        //return Either.left(new ErrorResultStatus(501, "Not implemented yet"));
+        JokeDto dummy = new JokeDto(
+                UUID.randomUUID(),
+                "123",
+                "This is a dummy joke for load testing"
+        );
+
+        return Either.right(dummy);
     }
 
     public Either<ErrorResultStatus, JokeDto> createJoke(CreateJokeDto input) {
         // TODO: Implement domain logic to create a new joke in the database
-        return Either.left(new ErrorResultStatus(501, "Not implemented yet"));
+        //return Either.left(new ErrorResultStatus(201, "Not implemented yet"));
+        JokeDto created = new JokeDto(
+                UUID.randomUUID(),
+                "123",
+                input.content()
+        );
+
+        return Either.right(created);
     }
 
     public Either<ErrorResultStatus, SourceJokeDto> getRandomSourceJoke() {
-        // TODO: Implement domain logic to retrieve a random joke from the external API
-        return Either.left(new ErrorResultStatus(501, "Not implemented yet"));
+        return chuckNorrisJokeRepository.getRandomSourceJoke();
     }
 }

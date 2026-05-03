@@ -1,4 +1,4 @@
-package com.chucknorris.jokes.models;
+package com.chucknorris.jokes.models.dto;
 
 public record CreateJokeDto(
         String content,
