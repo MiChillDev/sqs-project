@@ -8,6 +8,7 @@ import com.chucknorris.jokes.models.dto.SourceJokeDto;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
+//TODO: create interface
 @Repository
 public class ChuckNorrisJokeRepository extends ApiRepository {
 

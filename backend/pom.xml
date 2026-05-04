@@ -8,8 +8,8 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.4</version>
     </parent>
-    <groupId>com.chuck-norris</groupId>
-    <artifactId>joke-service</artifactId>
+    <groupId>com.chucknorris</groupId>
+    <artifactId>sqs-project</artifactId>
     <version>1.0.0</version>
     <name>joke.service</name>
     <description>joke-service</description>
@@ -32,6 +32,7 @@
 
     <properties>
         <java.version>21</java.version>
+        <spring-boot.version>4.0.4</spring-boot.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
@@ -47,17 +48,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
-    </dependency>
-    <!-- JPA -->
+            <scope>test</scope>
+        </dependency>
+        <!-- JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <!-- DB -->
+        </dependency>
+        <!-- DB -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>42.7.10</version>
             <scope>runtime</scope>
         </dependency>
         <!-- Migration -->
@@ -68,6 +70,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+            <version>12.0.3</version>
         </dependency>
     </dependencies>
 
