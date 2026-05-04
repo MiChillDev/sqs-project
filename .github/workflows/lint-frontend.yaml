@@ -2,25 +2,23 @@ name: Frontend Lint Pipeline
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - 'frontend/**'
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
-
-      - uses: mongolyy/reviewdog-action-biome@4792aa557f8ba2932ce3445c9ca10d88f2c73409
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workdir: 'frontend'
-          reporter: github-pr-review
-          fail_level: any
-          filter_mode: file
+          node-version: 22
+      - run: npm install -g pnpm@10
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint

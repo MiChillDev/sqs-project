@@ -109,13 +109,13 @@ describe('extractColors', () => {
     );
   });
 
-  it('throws when color value is not a valid hex', () => {
+  it('throws when color value is not valid hex or space-separated RGB', () => {
     const badHex = VALID_CSS.replace(
       '--color-background: #ffffff;',
       '--color-background: rgb(255, 255, 255);'
     );
     expect(() => extractColors(badHex)).toThrow(
-      '[vite-plugin-fouc-style] Invalid hex color for --color-background: "rgb(255, 255, 255)" in index.css'
+      '[vite-plugin-fouc-style] Invalid color for --color-background: "rgb(255, 255, 255)" in index.css (expected hex or space-separated RGB)'
     );
   });
 

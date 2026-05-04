@@ -1,4 +1,4 @@
-name: Frontend Test Pipeline
+name: Frontend Unit Test Pipeline
 
 on:
   pull_request:
@@ -14,14 +14,9 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - uses: pnpm/action-setup@5d6f3fe6c685be83c141aea1141d8a825903c82a
-        with:
-          version: 10
-          cache: true
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
-          cache: 'pnpm'
-          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: npm install -g pnpm@10
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test
