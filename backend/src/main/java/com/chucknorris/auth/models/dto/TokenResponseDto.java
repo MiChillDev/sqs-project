@@ -1,3 +1,5 @@
 package com.chucknorris.auth.models.dto;
 
-public record TokenResponseDto(String token, long expiresInMillis) {}
+import java.time.LocalDateTime;
+
+public record TokenResponseDto(String token, LocalDateTime expiresAt) {}

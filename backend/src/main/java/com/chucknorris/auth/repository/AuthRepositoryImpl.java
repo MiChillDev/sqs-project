@@ -27,7 +27,7 @@ public class AuthRepositoryImpl implements AuthRepository  {
             entity.setToken(token);
             entity.setExpiresAt(LocalDateTime.now().plusSeconds(expirationTimeSeconds));
             repository.save(entity);
-            return new Either.Right<>(null);
+            return new Either.Right<>(entity);
         } catch (Exception e) {
             return new Either.Left<>(new ErrorResultStatus(500, "Failed to save token"));
         }

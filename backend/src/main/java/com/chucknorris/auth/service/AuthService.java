@@ -2,9 +2,8 @@ package com.chucknorris.auth.service;
 
 import com.chucknorris.auth.models.dto.LoginRequestDto;
 import com.chucknorris.auth.models.dto.TokenResponseDto;
-import com.chucknorris.auth.models.entity.AuthSessionEntity;
-import com.chucknorris.users.models.entity.UserEntity;
 import com.chucknorris.auth.repository.AuthRepository;
+import com.chucknorris.common.utils.PasswordHasher;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.users.service.UserService;
@@ -25,31 +24,16 @@ public class AuthService {
         this.userService = userService;
     }
 
-    //TODO: refactor
     public Either<ErrorResultStatus, TokenResponseDto> login(LoginRequestDto request) {
-        Either<ErrorResultStatus, Optional<UserEntity>> userEither = userService.findByUsername(request.username());
-
-        if (userEither instanceof Either.Left<ErrorResultStatus, Optional<UserEntity>>(ErrorResultStatus value1)) {
-            return new Either.Left<>(value1);
-        }
-
-        Optional<UserEntity> optionalUser = ((Either.Right<ErrorResultStatus, Optional<UserEntity>>) userEither).value();
-
-        // TODO: In a real application, you should hash request.password() and compare it.
-        if (optionalUser.isEmpty() || !optionalUser.get().getPasswordHash().equals(request.password())) {
-            return new Either.Left<>(new ErrorResultStatus(401, "Invalid credentials"));
-        }
-
-        UserEntity user = optionalUser.get();
-        String token = UUID.randomUUID().toString();
-        long expirationTimeSeconds = System.currentTimeMillis() + EXPIRATION_TIME_SECONDS;
-
-        Either<ErrorResultStatus, AuthSessionEntity> saveResult = tokenRepository.saveToken(user.getId(), token, expirationTimeSeconds);
-        if (saveResult instanceof Either.Left<ErrorResultStatus, AuthSessionEntity>(ErrorResultStatus value)) {
-            return new Either.Left<>(value);
-        }
-
-        return new Either.Right<>(new TokenResponseDto(token, expirationTimeSeconds));
+        return userService.findByUsername(request.username())
+                .validate(Optional::isPresent, new ErrorResultStatus(404, "User Not Found"))
+                .map(Optional::get)
+                // error when credentials are incorrect must be the same as when user is not found to prevent information leakage.
+                .validate(user -> PasswordHasher.verifyPassword(request.password(), user.getPasswordHash()), new ErrorResultStatus(404, "User Not Found"))
+                .flatMap(user -> {
+                    String token = UUID.randomUUID().toString();
+                    return tokenRepository.saveToken(user.getId(), token, EXPIRATION_TIME_SECONDS);
+                }).map(authSession -> new TokenResponseDto(authSession.getToken(), authSession.getExpiresAt()));
     }
 
     public Either<ErrorResultStatus, Boolean> checkTokenIsValid(String token) {
