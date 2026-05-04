@@ -27,13 +27,13 @@ components:
       type: object
       required:
         - token
-        - expiresIn
+        - expiresAt
       properties:
         token:
           type: string
-        expiresIn:
-          type: integer
-          format: int64
+        expiresAt:
+          type: string
+          format: date-time
 
     Joke:
       type: object
