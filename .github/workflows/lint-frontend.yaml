@@ -14,9 +14,12 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
-      - uses: mongolyy/reviewdog-action-biome@v2.11.0
         with:
+          fetch-depth: 0
+
+      - uses: mongolyy/reviewdog-action-biome@4792aa557f8ba2932ce3445c9ca10d88f2c73409
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           workdir: 'frontend'
           reporter: github-pr-review
           fail_level: any
