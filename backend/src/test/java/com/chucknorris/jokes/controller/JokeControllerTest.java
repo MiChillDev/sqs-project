@@ -44,36 +44,30 @@ class JokeControllerTest {
     }
 
     @Test
-    void createJoke_shouldFailWith501NotImplemented() {
-        when(jokeService.createJoke(any(CreateJokeDto.class)))
-                .thenReturn(Either.left(new ErrorResultStatus(501, "Not implemented yet")));
+    void createJoke_shouldFailWith401Unauthorized() {
+        assertThat(mvc.post().uri("/api/v1/jokes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"text\":\"A funny joke\",\"sourceId\":\"external-123\"}"))
+                .hasStatus(401)
+                .bodyJson()
+                .extractingPath("$.code").asNumber().isEqualTo(401);
 
         assertThat(mvc.post().uri("/api/v1/jokes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"text\":\"A funny joke\",\"sourceId\":\"external-123\"}"))
-                .hasStatus(501)
+                .hasStatus(401)
                 .bodyJson()
-                .extractingPath("$.code").asNumber().isEqualTo(501);
-
-        assertThat(mvc.post().uri("/api/v1/jokes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"text\":\"A funny joke\",\"sourceId\":\"external-123\"}"))
-                .hasStatus(501)
-                .bodyJson()
-                .extractingPath("$.message").asString().isEqualTo("Not implemented yet");
+                .extractingPath("$.message").asString().isEqualTo("Missing token");
     }
 
     @Test
-    void getRandomSourceJoke_shouldFailWith501NotImplemented() {
-        when(jokeService.getRandomSourceJoke())
-                .thenReturn(Either.left(new ErrorResultStatus(501, "Not implemented yet")));
-
-        assertThat(mvc.get().uri("/api/v1/source-joke")).hasStatus(501)
+    void getRandomSourceJoke_shouldFailWith401Unauthorized() {
+        assertThat(mvc.get().uri("/api/v1/source-joke")).hasStatus(401)
                 .bodyJson()
-                .extractingPath("$.code").asNumber().isEqualTo(501);
+                .extractingPath("$.code").asNumber().isEqualTo(401);
 
-        assertThat(mvc.get().uri("/api/v1/source-joke")).hasStatus(501)
+        assertThat(mvc.get().uri("/api/v1/source-joke")).hasStatus(401)
                 .bodyJson()
-                .extractingPath("$.message").asString().isEqualTo("Not implemented yet");
+                .extractingPath("$.message").asString().isEqualTo("Missing token");
     }
 }
