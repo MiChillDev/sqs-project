@@ -1,14 +1,13 @@
-package com.chucknorris.auth.repository;
+package com.chucknorris.jokes.repository;
 
-import com.chucknorris.auth.models.entity.AuthSessionEntity;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
+import com.chucknorris.jokes.models.entity.JokeEntity;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public interface AuthRepository {
-    Either<ErrorResultStatus, AuthSessionEntity> saveToken(UUID userId, String token, long expirationTimeSeconds);
+public interface JokeRepository {
+    Either<ErrorResultStatus, JokeEntity> saveJoke();
 
-    Either<ErrorResultStatus, Optional<UUID>> getUserIdByToken(String token);
+    Either<ErrorResultStatus, Optional<JokeEntity>> getRandomJoke();
 }

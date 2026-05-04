@@ -1,8 +1,8 @@
-package com.chucknorris.jokes.models.repository;
+package com.chucknorris.jokes.repository.spring;
 
 import com.chucknorris.jokes.models.entity.JokeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
-public interface JokeRepository extends JpaRepository<JokeEntity, UUID> {
+public interface SpringJokeRepository extends JpaRepository<JokeEntity, UUID> {
 }

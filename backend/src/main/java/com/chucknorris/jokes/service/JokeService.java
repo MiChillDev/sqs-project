@@ -6,7 +6,7 @@ import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.jokes.models.dto.CreateJokeDto;
 import com.chucknorris.jokes.models.dto.JokeDto;
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
-import com.chucknorris.jokes.repository.ChuckNorrisJokeRepository;
+import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -14,9 +14,9 @@ import java.util.UUID;
 @Service
 public class JokeService extends BaseService {
 
-    private final ChuckNorrisJokeRepository chuckNorrisJokeRepository;
+    private final ChuckNorrisApiJokeRepositoryImpl chuckNorrisJokeRepository;
 
-    public JokeService(ChuckNorrisJokeRepository chuckNorrisJokeRepository) {
+    public JokeService(ChuckNorrisApiJokeRepositoryImpl chuckNorrisJokeRepository) {
         this.chuckNorrisJokeRepository = chuckNorrisJokeRepository;
     }
 
