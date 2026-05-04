@@ -4,8 +4,14 @@ import { rootRoute } from './routes/__root';
 import componentTestRoute from './routes/component-demo';
 import indexRoute from './routes/index';
 import referenceRoute from './routes/reference';
+import jokePageRoute from './routes/joke-page';
 
-const routeTree = rootRoute.addChildren([indexRoute, componentTestRoute, referenceRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute, 
+  componentTestRoute, 
+  referenceRoute,
+  jokePageRoute
+]);
 
 export const router = createRouter({ routeTree });
 
