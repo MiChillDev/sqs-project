@@ -17,7 +17,10 @@
     "unauthorized": "Bitte melden Sie sich an, um fortzufahren.",
     "forbidden": "Sie haben keine Berechtigung für diese Aktion.",
     "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
-    "serverError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut."
+    "serverError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut.",
+    "networkError": "Verbindung zum Server nicht möglich. Bitte überprüfen Sie Ihre Internetverbindung.",
+    "timeout": "Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.",
+    "clientError": "Die Anfrage konnte nicht verarbeitet werden. Bitte versuchen Sie es erneut."
   },
   "notFound": {
     "title": "404 - Seite nicht gefunden",
@@ -105,5 +108,23 @@
       "toastTitle": "Formular gesendet",
       "toastDescription": "Danke, {{name}}!"
     }
+  },
+  "connectivityTest": {
+    "title": "Backend-Verbindungstest",
+    "description": "Testen Sie die Verbindung zur Backend-API",
+    "testButton": "Verbindung testen",
+    "testing": "Teste...",
+    "toastTitle": "Verbindung erfolgreich",
+    "toastDescription": "Backend ist erreichbar",
+    "error": "Verbindungstest fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "statusResponse": "Status-Antwort:"
+  },
+  "jokePreview": {
+    "title": "Zufälliger Witz",
+    "description": "Einen zufälligen Witz aus der Backend-API abrufen",
+    "fetchButton": "Witz abrufen",
+    "fetching": "Abrufen...",
+    "refetchButton": "Nächster Witz",
+    "error": "Witz konnte nicht abgerufen werden."
   }
 }

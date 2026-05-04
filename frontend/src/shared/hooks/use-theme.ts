@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { debugLogger } from '@/shared/lib/debug-logger';
+import { debugLogger } from 'src/shared/lib/debug-logger';
 
 export type Theme = 'light' | 'dark';
 export const LIGHT: Theme = 'light';

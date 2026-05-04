@@ -2,7 +2,7 @@
 
 import { render } from '@testing-library/react';
 
-import { I18nWatcher } from '@/shared/components/i18n-watcher';
+import { I18nWatcher } from 'src/shared/components/i18n-watcher';
 
 const mockChangeLanguage = vi.fn();
 const mockI18n = {

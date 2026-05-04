@@ -9,7 +9,15 @@ export default defineConfig({
   plugins: [foucStylePlugin(), react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      src: path.resolve(__dirname, './src'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: process.env.API_TARGET || 'http://localhost:8080',
+        changeOrigin: true,
+      },
     },
   },
 });

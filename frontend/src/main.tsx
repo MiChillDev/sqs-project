@@ -2,17 +2,16 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import { QueryClientProviderWrapper } from '@/app/providers/query-client';
-import { router } from '@/app/router';
-import { debugLogger } from '@/shared/lib/debug-logger';
-import { initI18n } from '@/shared/lib/i18n';
+import { QueryClientProviderWrapper } from 'src/app/providers/query-client';
+import { router } from 'src/app/router';
+import { debugLogger } from 'src/shared/lib/debug-logger';
+import { initI18n } from 'src/shared/lib/i18n';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-console.log('TEST: deliberate lint violation');
 const renderApp = () => {
   createRoot(rootElement).render(
     <StrictMode>

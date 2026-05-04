@@ -2,8 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { getZodLocale } from 'src/shared/lib/zod-locales';
 import type { $ZodType } from 'zod/v4/core';
-import { getZodLocale } from '@/shared/lib/zod-locales';
 
 type FormSchema = $ZodType<unknown, FieldValues>;
 
