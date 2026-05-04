@@ -12,6 +12,29 @@ components:
       description: HTTP Basic Authentication with generated token
 
   schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          
+    TokenResponse:
+      type: object
+      required:
+        - token
+        - expiresIn
+      properties:
+        token:
+          type: string
+        expiresIn:
+          type: integer
+          format: int64
+
     Joke:
       type: object
       required:
@@ -117,6 +140,28 @@ components:
             message: An unexpected error occurred
 
 paths:
+  /auth/login:
+    post:
+      operationId: login
+      summary: Authenticate and get a token
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /source-joke:
     get:
       operationId: getRandomSourceJoke
