@@ -2,7 +2,7 @@
 
 import { act, renderHook } from '@testing-library/react';
 
-import { useTheme } from '@/shared/hooks/use-theme';
+import { useTheme } from 'src/shared/hooks/use-theme';
 
 class MockMediaQueryList {
   matches = false;

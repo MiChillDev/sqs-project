@@ -1,13 +1,11 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
     container_name: sqs-postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sqs_db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-sqs_db}
     ports:
       - "5432:5432"
     volumes:
@@ -27,9 +25,9 @@ services:
       dockerfile: Dockerfile
     container_name: sqs-app
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sqs_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-sqs_db}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-postgres}
     ports:
       - "8080:8080"
     depends_on:
@@ -51,6 +49,26 @@ services:
       - ./test/load:/scripts
     working_dir: /scripts
     entrypoint: ["k6"]
+    networks:
+      - sqs-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sqs-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+    environment:
+      - API_TARGET=http://app:8080
+      - VITE_API_BASE_URL=
+    depends_on:
+      - app
     networks:
       - sqs-network
 

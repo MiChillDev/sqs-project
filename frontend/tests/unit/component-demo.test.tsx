@@ -1,8 +1,7 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import componentDemoRoute from 'src/app/routes/component-demo';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import componentDemoRoute from '@/app/routes/component-demo';
 import enTranslation from '../../public/locales/en/translation.json';
 
 vi.mock('sonner', () => ({
@@ -22,14 +21,16 @@ vi.mock('react-i18next', () => ({
             o?.[k] as Record<string, unknown> | undefined,
           enTranslation as unknown as Record<string, unknown>
         );
-      return (value as string) ?? key;
+      return (value as unknown as string) ?? key;
     },
     i18n: { language: 'en' },
   }),
 }));
 
 describe('ComponentDemoPage', () => {
-  const Component = componentDemoRoute.options.component;
+  const Component = componentDemoRoute.options.component as NonNullable<
+    typeof componentDemoRoute.options.component
+  >;
 
   afterEach(() => {
     cleanup();

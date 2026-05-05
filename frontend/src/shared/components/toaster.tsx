@@ -1,6 +1,6 @@
 import { Toaster as SonnerToaster } from 'sonner';
 
-import { useTheme } from '@/shared/hooks/use-theme';
+import { useTheme } from 'src/shared/hooks/use-theme';
 
 const toastClassNames = {
   toast: 'relative flex items-start gap-3 border shadow-lg rounded-xl p-4 w-full',

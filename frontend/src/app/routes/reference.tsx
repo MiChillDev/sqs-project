@@ -1,17 +1,16 @@
 import { createRoute } from '@tanstack/react-router';
 import type { TFunction } from 'i18next';
-import { useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
-import { ThemeToggle } from '@/shared/components/theme-toggle';
-import { Button } from '@/shared/components/ui/button';
-import { Field, FieldContent, FieldError, FieldLabel } from '@/shared/components/ui/field';
-import { Input } from '@/shared/components/ui/input';
-import { useTheme } from '@/shared/hooks/use-theme';
-import { useZodResolver } from '@/shared/hooks/use-zod-resolver';
+import { ThemeToggle } from 'src/shared/components/theme-toggle';
+import { Button } from 'src/shared/components/ui/button';
+import { Field, FieldContent, FieldError, FieldLabel } from 'src/shared/components/ui/field';
+import { Input } from 'src/shared/components/ui/input';
+import { useTheme } from 'src/shared/hooks/use-theme';
+import { useZodForm } from 'src/shared/hooks/use-zod-form';
+import { z } from 'zod';
 
 import { rootRoute } from './__root';
 
@@ -27,7 +26,7 @@ const referenceRoute = createRoute({
   path: '/reference',
   component: function ReferencePage() {
     const { theme, toggleTheme } = useTheme();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const schema = useMemo(() => createContactSchema(t), [t]);
     type ContactForm = z.infer<typeof schema>;
 
@@ -35,18 +34,11 @@ const referenceRoute = createRoute({
       register,
       handleSubmit,
       reset,
-      trigger,
       formState: { errors, isSubmitting },
-    } = useForm<ContactForm>({
-      resolver: useZodResolver(schema),
+    } = useZodForm(schema, {
       defaultValues: { name: '', email: '' },
       mode: 'onTouched',
     });
-
-    useEffect(() => {
-      trigger();
-      i18n.language;
-    }, [trigger, i18n.language]);
 
     function onSubmit(data: ContactForm) {
       toast.success(t('reference.form.toastTitle'), {

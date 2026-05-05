@@ -17,7 +17,10 @@
     "unauthorized": "Please sign in to continue.",
     "forbidden": "You do not have permission to perform this action.",
     "notFound": "The requested resource was not found.",
-    "serverError": "Something went wrong. Please try again later."
+    "serverError": "Something went wrong. Please try again later.",
+    "networkError": "Unable to connect to the server. Please check your internet connection.",
+    "timeout": "The request timed out. Please try again.",
+    "clientError": "The request could not be processed. Please try again."
   },
   "notFound": {
     "title": "404 - Page Not Found",
@@ -105,5 +108,23 @@
       "toastTitle": "Form submitted",
       "toastDescription": "Thank you, {{name}}!"
     }
+  },
+  "connectivityTest": {
+    "title": "Backend Connectivity Test",
+    "description": "Test the connection to the backend API",
+    "testButton": "Test Connection",
+    "testing": "Testing...",
+    "toastTitle": "Connection successful",
+    "toastDescription": "Backend is healthy",
+    "error": "Connection test failed. Please try again.",
+    "statusResponse": "Status response:"
+  },
+  "jokePreview": {
+    "title": "Random Joke Preview",
+    "description": "Fetch a random joke from the backend API",
+    "fetchButton": "Fetch Joke",
+    "fetching": "Fetching...",
+    "refetchButton": "Get Another Joke",
+    "error": "Failed to fetch joke. The endpoint may not be implemented yet."
   }
 }

@@ -1,0 +1,16 @@
+node_modules
+dist
+coverage
+.git
+*.local
+.env.local
+.env.production
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.idea
+.vscode
+zed

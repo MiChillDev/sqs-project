@@ -1,12 +1,10 @@
 import { createRoute } from '@tanstack/react-router';
 import type { TFunction } from 'i18next';
-import { useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
-import { Button } from '@/shared/components/ui/button';
+import { Button } from 'src/shared/components/ui/button';
 import {
   Card,
   CardAction,
@@ -15,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/shared/components/ui/card';
+} from 'src/shared/components/ui/card';
 import {
   Field,
   FieldContent,
@@ -25,9 +23,10 @@ import {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-} from '@/shared/components/ui/field';
-import { Input } from '@/shared/components/ui/input';
-import { useZodResolver } from '@/shared/hooks/use-zod-resolver';
+} from 'src/shared/components/ui/field';
+import { Input } from 'src/shared/components/ui/input';
+import { useZodForm } from 'src/shared/hooks/use-zod-form';
+import { z } from 'zod';
 
 import { rootRoute } from './__root';
 
@@ -43,7 +42,7 @@ function createDemoSchema(t: TFunction) {
 }
 
 function ComponentDemoPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const schema = useMemo(() => createDemoSchema(t), [t]);
   type TestForm = z.infer<typeof schema>;
 
@@ -51,18 +50,11 @@ function ComponentDemoPage() {
     register,
     handleSubmit,
     reset,
-    trigger,
     formState: { errors, isSubmitting },
-  } = useForm<TestForm>({
-    resolver: useZodResolver(schema),
+  } = useZodForm(schema, {
     defaultValues: { name: '', email: '', message: '' },
     mode: 'onTouched',
   });
-
-  useEffect(() => {
-    trigger();
-    i18n.language;
-  }, [trigger, i18n.language]);
 
   async function onSubmit(_data: TestForm) {
     await new Promise((resolve) => setTimeout(resolve, 500));

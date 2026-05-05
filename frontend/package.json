@@ -1,18 +1,21 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "start": "vite",
+    "prebuild": "pnpm generate-api-types",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "generate-api-types": "openapi-typescript openapi.yaml -o src/shared/api/generated/api-types.ts",
+    "generate-api-types:watch": "openapi-typescript openapi.yaml -o src/shared/api/generated/api-types.ts --watch"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -48,6 +51,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.1",
     "jsdom": "29.0.1",
+    "openapi-typescript": "7.13.0",
     "tailwindcss": "4.2.2",
     "typescript": "6.0.2",
     "vite": "8.0.8",
