@@ -2,11 +2,9 @@ import { createRoute } from '@tanstack/react-router';
 import { rootRoute } from './__root';
 import { useState } from 'react';
 
-export const jokePageRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/jokes',
-  component: JokePage,
-});
+import { Card, CardContent } from 'src/shared/components/ui/card';
+import { Button } from 'src/shared/components/ui/button';
+
 
 const jokes = [
   { setup: "Chuck Norris kennt die letzte Ziffer von Pi." },
@@ -15,39 +13,13 @@ const jokes = [
     setup: "Why don't scientists trust atoms?",
     punchline: "Because they make up everything!",
   },
-  {
-    setup: "What do you call a bear with no teeth?",
-    punchline: "A gummy bear!",
-  },
-  {
-    setup: "Why did the scarecrow win an award?",
-    punchline: "He was outstanding in his field!",
-  },
-  {
-    setup: "What do you call a fake noodle?",
-    punchline: "An impasta!",
-  },
-  {
-    setup: "Why don't eggs tell jokes?",
-    punchline: "They'd crack each other up!",
-  },
-  {
-    setup: "What did the ocean say to the beach?",
-    punchline: "Nothing, it just waved!",
-  },
-  {
-    setup: "Why did the math book look so sad?",
-    punchline: "Because it had too many problems!",
-  },
-  {
-    setup: "What do you call a dinosaur that crashes his car?",
-    punchline: "Tyrannosaurus Wrecks!",
-  },
 ];
 
 function JokePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const currentJoke = jokes[currentIndex];
 
   const handleNext = () => {
     setIsAnimating(true);
@@ -57,44 +29,55 @@ function JokePage() {
     }, 300);
   };
 
-  const currentJoke = jokes[currentIndex];
-
   return (
-    <div className="size-full flex flex-col items-center justify-center gap-12 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #FFF5E1 0%, #FFE4C4 50%, #FFDAB9 100%)",
-        fontFamily: "Nunito, sans-serif",
-      }}
-    >
-      <h1 className="relative z-10 tracking-wide"
-        style={{
-          fontFamily: "Lilita One, cursive",
-          fontSize: "4rem",
-          color: "#2C3E50",
-        }}
-      >
+    <div className="min-h-screen flex flex-col items-center justify-center gap-12 bg-gradient-to-br from-[#FFF5E1] via-[#FFE4C4] to-[#FFDAB9] font-[Nunito] relative overflow-hidden">
+
+      {/* Titel */}
+      <h1 className="text-[4rem] font-heading text-[#2C3E50] drop-shadow-[3px_3px_0px_#FF6B35] rotate-[-2deg] tracking-wide">
         Chuck Norris Jokes
       </h1>
 
-      <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-2xl w-[600px] min-h-[320px] flex flex-col items-center justify-center gap-8"
-        style={{
-          border: "3px solid #FF6B35",
-        }}
+      {/* Card */}
+      <Card className={`
+          w-[600px] h-[300px] p-8 overflow-hidden border-[3px] border-[#FF6B35]
+          shadow-[0_20px_40px_rgba(255,107,53,0.25)]
+          transition-all duration-300 ease-in-out
+          ${isAnimating ? 'scale-95 opacity-60' : 'scale-100 opacity-100'}
+      `}>
+
+        <CardContent className="h-full flex flex-col items-center justify-center gap-6 text-center">
+          <div className="text-3xl font-heading text-[#2C3E50]">
+            {currentJoke.setup}
+          </div>
+
+          {currentJoke.punchline && (
+            <div className="text-xl font-bold text-[#FF6B35]">
+              {currentJoke.punchline}
+            </div>
+          )}
+
+        </CardContent>
+      </Card>
+
+      {/* Button */}
+      <Button
+        onClick={handleNext}
+        disabled={isAnimating}
+        className="px-10 py-4 text-xl font-heading bg-gradient-to-r from-[#FF6B35] to-[#F7931E] text-white rounded-full shadow-lg hover:scale-105 transition"
       >
-        <div style={{ fontSize: "2rem", textAlign: "center" }}>
-          {currentJoke.setup}
-        </div>
-
-        <div style={{ fontSize: "1.5rem", color: "#FF6B35", textAlign: "center" }}>
-          {currentJoke.punchline}
-        </div>
-      </div>
-
-      <button onClick={handleNext}>
         NEXT JOKE →
-      </button>
+      </Button>
+
+      {/* Counter */}
+      <div className="absolute bottom-6 right-6 text-sm text-[#2C3E50]/60 font-semibold">
+        {currentIndex + 1} of {jokes.length}
+      </div>
     </div>
   );
 }
 
-export default jokePageRoute;
+export default createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/jokes',
+  component: JokePage,
+});;
