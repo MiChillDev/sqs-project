@@ -1,77 +1,104 @@
-import { createRoute } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Button } from 'src/shared/components/ui/button';
-
-import { Card, CardContent } from 'src/shared/components/ui/card';
-import { rootRoute } from './__root';
-
-const jokes = [
-  { setup: 'Chuck Norris kennt die letzte Ziffer von Pi.' },
-  { setup: 'Chuck Norris bringt Zwiebeln zum Weinen.' },
-  {
-    setup: "Why don't scientists trust atoms?",
-    punchline: 'Because they make up everything!',
-  },
-];
+import { createRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useRandomJoke } from "src/shared/api/hooks";
+import { Button } from "src/shared/components/ui/button";
+import { Card, CardContent } from "src/shared/components/ui/card";
+import { rootRoute } from "./__root";
 
 function JokePage() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+	const [isAnimating, setIsAnimating] = useState(false);
+	const [hasFetched, setHasFetched] = useState(false);
 
-  const currentJoke = jokes[currentIndex];
+	const jokeQuery = useRandomJoke();
+	const { t } = useTranslation();
 
-  const handleNext = () => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % jokes.length);
-      setIsAnimating(false);
-    }, 300);
-  };
+	const joke = jokeQuery.data?.content;
+	const [count, setCount] = useState(0);
 
-  return (
-    <div className='min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-[#FFF5E1] via-[#FFE4C4] to-[#FFDAB9] font-[Nunito] relative overflow-hidden'>
-      {/* Titel */}
-      <h1 className='text-[4rem] font-heading text-[#2C3E50] drop-shadow-[3px_3px_0px_#FF6B35] -rotate-2 tracking-wide'>
-        Chuck Norris Jokes
-      </h1>
+	const handleFetch = async () => {
+		setIsAnimating(true);
+		const result = await jokeQuery.refetch();
+		setHasFetched(true);
+		setIsAnimating(false);
+		if (result.status === "success") {
+			setCount((prev) => (prev + 1) % 100);
+		}
+	};
 
-      {/* Card */}
-      <Card
-        className={`
-          w-150 h-75 p-8 overflow-hidden border-[3px] border-[#FF6B35]
+	return (
+		<div className="min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-[#FFF5E1] via-[#FFE4C4] to-[#FFDAB9] font-[Nunito] relative overflow-hidden">
+			<h1 className="text-[4rem] font-heading text-[#2C3E50] drop-shadow-[3px_3px_0px_#FF6B35] -rotate-2 tracking-wide">
+				{t("jokePage.heading")}
+			</h1>
+
+			{/* CARD */}
+			<Card
+				className={`
+          relative w-150 h-75 p-8 border-[3px] border-[#FF6B35]
           shadow-[0_20px_40px_rgba(255,107,53,0.25)]
           transition-all duration-300 ease-in-out
-          ${isAnimating ? 'scale-95 opacity-60' : 'scale-100 opacity-100'}
-      `}
-      >
-        <CardContent className='h-full flex flex-col items-center justify-center gap-6 text-center'>
-          <div className='text-3xl font-heading text-[#2C3E50]'>{currentJoke.setup}</div>
+          ${isAnimating ? "scale-95 opacity-60" : "scale-100 opacity-100"}
+        `}
+			>
+				<div
+					className={`
+		        absolute -top-5 -right-5
+		        w-12 h-12
+		        flex items-center justify-center
+		        rounded-full
+		        bg-[#FF6B35]/90 backdrop-blur-md
+		        text-white
+		        font-bold
+		        text-sm
+		        border-[3px] border-[#FF6B35]
+		        shadow-[0_10px_25px_rgba(255,107,53,0.35)]
+		        transition-all duration-300 ease-in-out
+		        ${isAnimating ? "scale-90 opacity-95" : "scale-100 opacity-100"}
+	      `}
+				>
+					{count}
+				</div>
+				<CardContent className="h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden">
+					{/* PLACEHOLDER */}
+					{!hasFetched && !jokeQuery.isError && (
+						<div className="text-xl text-[#2C3E50]">
+							{t("jokePage.placeholder")}
+						</div>
+					)}
 
-          {currentJoke.punchline && (
-            <div className='text-xl font-bold text-[#FF6B35]'>{currentJoke.punchline}</div>
-          )}
-        </CardContent>
-      </Card>
+					{/* ERROR */}
+					{jokeQuery.isError && (
+						<div className="text-xl text-destructive">
+							{t("jokePage.error")}
+						</div>
+					)}
 
-      {/* Button */}
-      <Button
-        onClick={handleNext}
-        disabled={isAnimating}
-        className='px-10 py-4 text-xl font-heading bg-linear-to-r from-[#FF6B35] to-[#F7931E] text-white rounded-full shadow-lg hover:scale-105 transition'
-      >
-        NEXT JOKE →
-      </Button>
+					{/* SUCCESS */}
+					{jokeQuery.isSuccess && joke && (
+						<div className="text-3xl font-heading text-[#2C3E50]">{joke}</div>
+					)}
+				</CardContent>
+			</Card>
 
-      {/* Counter */}
-      <div className='absolute bottom-6 right-6 text-sm text-[#2C3E50]/60 font-semibold'>
-        {currentIndex + 1} of {jokes.length}
-      </div>
-    </div>
-  );
+			{/* BUTTON */}
+			<Button
+				onClick={handleFetch}
+				disabled={jokeQuery.isFetching || isAnimating}
+				className="px-10 py-4 text-xl font-heading bg-linear-to-r from-[#FF6B35] to-[#F7931E] text-white rounded-full shadow-lg hover:scale-105 transition"
+			>
+				{jokeQuery.isFetching
+					? t("jokePage.fetching")
+					: jokeQuery.isSuccess
+						? t("jokePage.refetchButton")
+						: t("jokePage.fetchButton")}
+			</Button>
+		</div>
+	);
 }
 
 export default createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/jokes',
-  component: JokePage,
+	getParentRoute: () => rootRoute,
+	path: "/jokes",
+	component: JokePage,
 });

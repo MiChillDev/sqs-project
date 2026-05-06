@@ -1,130 +1,139 @@
 {
-  "a11y": {
-    "skipToContent": "Skip to content"
-  },
-  "app": {
-    "headerTitle": "SQS Preparation",
-    "documentTitle": "SQS Preparation",
-    "toggleTheme": "Toggle theme"
-  },
-  "home": {
-    "title": "SQS Frontend",
-    "description": "some paragraph"
-  },
-  "error": {
-    "title": "Something went wrong",
-    "badRequest": "Invalid request. Please check your input.",
-    "unauthorized": "Please sign in to continue.",
-    "forbidden": "You do not have permission to perform this action.",
-    "notFound": "The requested resource was not found.",
-    "serverError": "Something went wrong. Please try again later.",
-    "networkError": "Unable to connect to the server. Please check your internet connection.",
-    "timeout": "The request timed out. Please try again.",
-    "clientError": "The request could not be processed. Please try again."
-  },
-  "notFound": {
-    "title": "404 - Page Not Found",
-    "description": "The page you are looking for does not exist."
-  },
-  "toast": {
-    "errorTitle": "An error occurred",
-    "unknownError": "Unknown error"
-  },
-  "common": {
-    "validation": {
-      "nameMin": "Name must be at least 2 characters",
-      "emailInvalid": "Please enter a valid email address",
-      "messageMin": "Message must be at least 10 characters"
-    }
-  },
-  "demo": {
-    "title": "Component Library Test",
-    "cards": {
-      "buttons": {
-        "title": "Button Variants",
-        "description": "All available button variants and sizes"
-      },
-      "simple": {
-        "title": "Simple Card",
-        "description": "A basic card with header and content",
-        "content": "This is a simple card example with just a header, description, and content area.",
-        "action": "Card Action"
-      },
-      "action": {
-        "title": "Card with Action",
-        "description": "A card that includes an action in the header",
-        "content": "This card demonstrates the CardAction component positioned in the header area.",
-        "headerAction": "Header Action"
-      }
-    },
-    "form": {
-      "legend": "Contact Form",
-      "fields": {
-        "name": "Name",
-        "namePlaceholder": "Your name",
-        "email": "Email",
-        "emailPlaceholder": "Your email",
-        "message": "Message",
-        "messagePlaceholder": "Your message (min 10 chars)"
-      },
-      "submit": "Submit",
-      "submitting": "Submitting...",
-      "reset": "Reset",
-      "toastTitle": "Form submitted",
-      "toastDescription": "Test successful!"
-    },
-    "toasts": {
-      "triggerSuccess": "Trigger Success Toast",
-      "triggerError": "Trigger Error Toast",
-      "successTitle": "Success",
-      "successDescription": "This is a success toast.",
-      "errorTitle": "Error",
-      "errorDescription": "This is an error toast.",
-      "triggerWarning": "Trigger Warning Toast",
-      "warningTitle": "Warning",
-      "warningDescription": "This is a warning toast.",
-      "triggerInfo": "Trigger Info Toast",
-      "infoTitle": "Info",
-      "infoDescription": "This is an info toast.",
-      "triggerMessage": "Trigger Message Toast",
-      "messageTitle": "Message",
-      "messageDescription": "This is a plain message toast."
-    }
-  },
-  "reference": {
-    "title": "Reference Implementation",
-    "form": {
-      "fields": {
-        "name": "Name",
-        "namePlaceholder": "Enter your name",
-        "email": "Email",
-        "emailPlaceholder": "Enter your email"
-      },
-      "submit": "Submit",
-      "submitting": "Submitting...",
-      "simulateError": "Simulate Error",
-      "simErrorTitle": "Simulated error",
-      "simErrorDesc": "This is a simulated API error",
-      "toastTitle": "Form submitted",
-      "toastDescription": "Thank you, {{name}}!"
-    }
-  },
-  "connectivityTest": {
-    "title": "Backend Connectivity Test",
-    "description": "Test the connection to the backend API",
-    "testButton": "Test Connection",
-    "testing": "Testing...",
-    "toastTitle": "Connection successful",
-    "toastDescription": "Backend is healthy",
-    "error": "Connection test failed. Please try again.",
-    "statusResponse": "Status response:"
-  },
-  "jokePreview": {
-    "title": "Random Joke Preview",
-    "description": "Fetch a random joke from the backend API",
-    "fetchButton": "Fetch Joke",
-    "fetching": "Fetching...",
-    "refetchButton": "Get Another Joke",
-    "error": "Failed to fetch joke. The endpoint may not be implemented yet."
-  }
+	"a11y": {
+		"skipToContent": "Skip to content"
+	},
+	"app": {
+		"headerTitle": "SQS Preparation",
+		"documentTitle": "SQS Preparation",
+		"toggleTheme": "Toggle theme"
+	},
+	"home": {
+		"title": "SQS Frontend",
+		"description": "some paragraph"
+	},
+	"error": {
+		"title": "Something went wrong",
+		"badRequest": "Invalid request. Please check your input.",
+		"unauthorized": "Please sign in to continue.",
+		"forbidden": "You do not have permission to perform this action.",
+		"notFound": "The requested resource was not found.",
+		"serverError": "Something went wrong. Please try again later.",
+		"networkError": "Unable to connect to the server. Please check your internet connection.",
+		"timeout": "The request timed out. Please try again.",
+		"clientError": "The request could not be processed. Please try again."
+	},
+	"notFound": {
+		"title": "404 - Page Not Found",
+		"description": "The page you are looking for does not exist."
+	},
+	"toast": {
+		"errorTitle": "An error occurred",
+		"unknownError": "Unknown error"
+	},
+	"common": {
+		"validation": {
+			"nameMin": "Name must be at least 2 characters",
+			"emailInvalid": "Please enter a valid email address",
+			"messageMin": "Message must be at least 10 characters"
+		}
+	},
+	"demo": {
+		"title": "Component Library Test",
+		"cards": {
+			"buttons": {
+				"title": "Button Variants",
+				"description": "All available button variants and sizes"
+			},
+			"simple": {
+				"title": "Simple Card",
+				"description": "A basic card with header and content",
+				"content": "This is a simple card example with just a header, description, and content area.",
+				"action": "Card Action"
+			},
+			"action": {
+				"title": "Card with Action",
+				"description": "A card that includes an action in the header",
+				"content": "This card demonstrates the CardAction component positioned in the header area.",
+				"headerAction": "Header Action"
+			}
+		},
+		"form": {
+			"legend": "Contact Form",
+			"fields": {
+				"name": "Name",
+				"namePlaceholder": "Your name",
+				"email": "Email",
+				"emailPlaceholder": "Your email",
+				"message": "Message",
+				"messagePlaceholder": "Your message (min 10 chars)"
+			},
+			"submit": "Submit",
+			"submitting": "Submitting...",
+			"reset": "Reset",
+			"toastTitle": "Form submitted",
+			"toastDescription": "Test successful!"
+		},
+		"toasts": {
+			"triggerSuccess": "Trigger Success Toast",
+			"triggerError": "Trigger Error Toast",
+			"successTitle": "Success",
+			"successDescription": "This is a success toast.",
+			"errorTitle": "Error",
+			"errorDescription": "This is an error toast.",
+			"triggerWarning": "Trigger Warning Toast",
+			"warningTitle": "Warning",
+			"warningDescription": "This is a warning toast.",
+			"triggerInfo": "Trigger Info Toast",
+			"infoTitle": "Info",
+			"infoDescription": "This is an info toast.",
+			"triggerMessage": "Trigger Message Toast",
+			"messageTitle": "Message",
+			"messageDescription": "This is a plain message toast."
+		}
+	},
+	"reference": {
+		"title": "Reference Implementation",
+		"form": {
+			"fields": {
+				"name": "Name",
+				"namePlaceholder": "Enter your name",
+				"email": "Email",
+				"emailPlaceholder": "Enter your email"
+			},
+			"submit": "Submit",
+			"submitting": "Submitting...",
+			"simulateError": "Simulate Error",
+			"simErrorTitle": "Simulated error",
+			"simErrorDesc": "This is a simulated API error",
+			"toastTitle": "Form submitted",
+			"toastDescription": "Thank you, {{name}}!"
+		}
+	},
+	"connectivityTest": {
+		"title": "Backend Connectivity Test",
+		"description": "Test the connection to the backend API",
+		"testButton": "Test Connection",
+		"testing": "Testing...",
+		"toastTitle": "Connection successful",
+		"toastDescription": "Backend is healthy",
+		"error": "Connection test failed. Please try again.",
+		"statusResponse": "Status response:"
+	},
+	"jokePreview": {
+		"title": "Random Joke Preview",
+		"heading": "Get your Chuck Norris joke!",
+		"description": "Fetch a random joke from the backend API",
+		"fetchButton": "Fetch Joke",
+		"fetching": "Fetching...",
+		"refetchButton": "Get Another Joke",
+		"error": "Failed to fetch joke. The endpoint may not be implemented yet."
+	},
+	"jokePage": {
+		"heading": "Get your Chuck Norris joke!",
+		"fetchButton": "Fetch Joke",
+		"fetching": "Fetching...",
+		"refetchButton": "Get Another Joke",
+		"error": "Failed to fetch joke.",
+		"placeholder": "Click the button to fetch a joke!"
+	}
 }
