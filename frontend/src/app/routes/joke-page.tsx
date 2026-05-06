@@ -2,28 +2,40 @@ import { createRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRandomJoke } from "src/shared/api/hooks";
+import { Confetti } from "src/shared/components/animations/confetti";
 import { Button } from "src/shared/components/ui/button";
 import { Card, CardContent } from "src/shared/components/ui/card";
 import { rootRoute } from "./__root";
 
 function JokePage() {
+	const { t } = useTranslation();
+
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [hasFetched, setHasFetched] = useState(false);
 
 	const jokeQuery = useRandomJoke();
-	const { t } = useTranslation();
-
 	const joke = jokeQuery.data?.content;
+
+	const maxCount = 100;
 	const [count, setCount] = useState(0);
+	const [showConfetti, setShowConfetti] = useState(false);
 
 	const handleFetch = async () => {
 		setIsAnimating(true);
 		const result = await jokeQuery.refetch();
 		setHasFetched(true);
-		setIsAnimating(false);
+
+		const prev = count;
 		if (result.status === "success") {
-			setCount((prev) => (prev + 1) % 100);
+			const next = (prev + 1) % maxCount;
+			setCount(next);
+			if (prev === maxCount - 1 && next === 0) {
+				setShowConfetti(true);
+				setTimeout(() => setShowConfetti(false), 1500);
+			}
 		}
+
+		setIsAnimating(false);
 	};
 
 	return (
@@ -41,10 +53,12 @@ function JokePage() {
           ${isAnimating ? "scale-95 opacity-60" : "scale-100 opacity-100"}
         `}
 			>
+				{/* COUNTER */}
 				<div
 					className={`
 		        absolute -top-5 -right-5
 		        w-12 h-12
+            overflow-visible
 		        flex items-center justify-center
 		        rounded-full
 		        bg-[#FF6B35]/90 backdrop-blur-md
@@ -57,8 +71,11 @@ function JokePage() {
 		        ${isAnimating ? "scale-90 opacity-95" : "scale-100 opacity-100"}
 	      `}
 				>
+					<Confetti trigger={showConfetti} />
 					{count}
 				</div>
+
+				{/* CONTENT */}
 				<CardContent className="h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden">
 					{/* PLACEHOLDER */}
 					{!hasFetched && !jokeQuery.isError && (
