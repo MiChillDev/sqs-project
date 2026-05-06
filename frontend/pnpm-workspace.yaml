@@ -1,4 +1,2 @@
-allowBuilds:
-  msw: false
 minimumReleaseAge: 4320
 strictDepBuilds: true
