@@ -1,0 +1,54 @@
+name: E2E Test Pipeline
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'test/e2e/**'
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start application services
+        run: docker compose up -d --build --wait
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: 'test/e2e/pnpm-lock.yaml'
+
+      - name: Install e2e dependencies
+        run: cd test/e2e && pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: cd test/e2e && pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: cd test/e2e && pnpm test
+        env:
+          BASE_URL: http://localhost:5173
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
+
+      - name: Upload test results (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-output
+          path: test/e2e/test-results/
+          retention-days: 7
