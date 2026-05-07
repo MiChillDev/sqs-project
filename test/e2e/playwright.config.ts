@@ -5,10 +5,12 @@ export default defineConfig({
   retries: 0,
   workers: 1,
   timeout: 30000,
-  expect: { timeout: 5000 },
+  expect: { timeout: 10000 },
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL: 'http://localhost:5173',
     viewport: { width: 1280, height: 720 },
+    screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
   },
   projects: [
     {

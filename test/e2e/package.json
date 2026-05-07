@@ -9,8 +9,7 @@
     "test:debug": "playwright test --debug"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
-    "@types/node": "^25.6.0"
+    "@playwright/test": "^1.52.0"
   },
   "engines": {
     "node": ">=18.0.0"
