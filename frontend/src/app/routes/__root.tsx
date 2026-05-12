@@ -25,7 +25,7 @@ export const rootRoute = createRootRoute({
           >
             {t('a11y.skipToContent')}
           </a>
-          <header className='flex items-center justify-between border-b px-6 py-3'>
+          <header className='sticky top-0 z-10 flex items-center justify-between border-b bg-background/60 backdrop-blur-xl px-6 py-3'>
             <h1 className='text-lg font-semibold'>{t('app.headerTitle')}</h1>
             <div className='flex items-center gap-1'>
               <LanguageToggle />

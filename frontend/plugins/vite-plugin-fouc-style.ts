@@ -4,6 +4,7 @@ import type { Plugin } from 'vite';
 
 const PLACEHOLDER = '<!-- %FOUC_STYLE% -->';
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{3,8}$/;
+const RGB_CHANNELS_RE = /^\d{1,3}\s+\d{1,3}\s+\d{1,3}$/;
 
 const CSS_PATH = path.resolve(import.meta.dirname, '../src/index.css');
 
@@ -18,6 +19,12 @@ function getVar(block: string, name: string): string | null {
   return m?.[1]?.trim() ?? null;
 }
 
+function toCssColor(value: string): string {
+  if (HEX_COLOR_RE.test(value)) return value;
+  if (RGB_CHANNELS_RE.test(value)) return `rgb(${value})`;
+  return value;
+}
+
 function requireColor(block: string, blockName: string, name: string): string {
   const value = getVar(block, name);
   if (!value) {
@@ -25,9 +32,9 @@ function requireColor(block: string, blockName: string, name: string): string {
       `[vite-plugin-fouc-style] Could not extract --color-${name} from ${blockName} in index.css`
     );
   }
-  if (!HEX_COLOR_RE.test(value)) {
+  if (!HEX_COLOR_RE.test(value) && !RGB_CHANNELS_RE.test(value)) {
     throw new Error(
-      `[vite-plugin-fouc-style] Invalid hex color for --color-${name}: "${value}" in index.css`
+      `[vite-plugin-fouc-style] Invalid color for --color-${name}: "${value}" in index.css (expected hex or space-separated RGB)`
     );
   }
   return value;
@@ -56,12 +63,12 @@ function extractColors(css: string) {
 function generateStyleTag(colors: ReturnType<typeof extractColors>): string {
   return `<style>
       :root {
-        --color-background: ${colors.lightBg};
-        --color-foreground: ${colors.lightFg};
+        --color-background: ${toCssColor(colors.lightBg)};
+        --color-foreground: ${toCssColor(colors.lightFg)};
       }
       .dark {
-        --color-background: ${colors.darkBg};
-        --color-foreground: ${colors.darkFg};
+        --color-background: ${toCssColor(colors.darkBg)};
+        --color-foreground: ${toCssColor(colors.darkFg)};
       }
       body {
         background: var(--color-background);
