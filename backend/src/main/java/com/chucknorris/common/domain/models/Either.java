@@ -34,14 +34,14 @@ public sealed interface Either<L, R> permits Either.Left, Either.Right {
         }
     }
 
-    static  <L, R> Either<L, R> tryCatch(Function<? super R, R> function, L onException) {
-        try {
-            R result = function.apply();
-            return right(result);
-        } catch (Exception e) {
-            return left(onException);
-        }
-    }
+//    static  <L, R> Either<L, R> tryCatch(Function<? super R, R> function, L onException) {
+//        try {
+//            R result = function.apply();
+//            return right(result);
+//        } catch (Exception e) {
+//            return left(onException);
+//        }
+//    }
 
     default Either<L, R> validate(Function<? super R, Boolean> predicate, L errorValue) {
         if (this instanceof Right<L, R>(R value)) {
