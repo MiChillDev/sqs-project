@@ -55,8 +55,23 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     container_name: sqs-frontend
+    profiles: ["prod"]
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=
+    depends_on:
+      - app
+    networks:
+      - sqs-network
+
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sqs-frontend-dev
     ports:
       - "5173:5173"
     volumes:

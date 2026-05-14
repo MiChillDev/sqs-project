@@ -1,6 +1,5 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
-import { ConfigErrorBanner } from 'src/shared/components/config-error-banner';
 import { I18nWatcher } from 'src/shared/components/i18n-watcher';
 import { LanguageToggle } from 'src/shared/components/language-toggle';
 import { ThemeToggle } from 'src/shared/components/theme-toggle';
@@ -16,7 +15,6 @@ export const rootRoute = createRootRoute({
 
     return (
       <>
-        <ConfigErrorBanner />
         <I18nWatcher />
         <div className='flex min-h-dvh flex-col'>
           <a

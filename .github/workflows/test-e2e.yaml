@@ -34,7 +34,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Start application stack
-        run: docker compose up -d --build --wait
+        run: docker compose --profile prod up -d --build --wait postgres app frontend
 
       - name: Wait for frontend dev server
         run: timeout 60 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 2; done'
