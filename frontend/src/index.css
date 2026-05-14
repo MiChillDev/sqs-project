@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-background: #ffffff;
+  --color-background: 255 255 255;
   --color-foreground: #0f172a;
   --color-card: #ffffff;
   --color-card-foreground: #0f172a;
@@ -26,12 +26,12 @@
 }
 
 body {
-  background: var(--color-background);
+  background-color: rgb(var(--color-background));
   color: var(--color-foreground);
 }
 
 .dark {
-  --color-background: #0f172a;
+  --color-background: 15 23 42;
   --color-foreground: #f8fafc;
   --color-card: #0f172a;
   --color-card-foreground: #f8fafc;
