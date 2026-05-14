@@ -1,5 +1,7 @@
 package com.chucknorris.common.domain.models;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -29,6 +31,15 @@ public sealed interface Either<L, R> permits Either.Left, Either.Right {
             return right(optional.get());
         } else {
             return left(leftValue);
+        }
+    }
+
+    static  <L, R> Either<L, R> tryCatch(Function<? super R, R> function, L onException) {
+        try {
+            R result = function.apply();
+            return right(result);
+        } catch (Exception e) {
+            return left(onException);
         }
     }
 

@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class BaseController {
@@ -24,7 +25,8 @@ public class BaseController {
         Optional<ServletRequestAttributes> attributes = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
         Optional<String> token = attributes.flatMap(att -> Optional.ofNullable(att.getRequest().getHeader("Authorization")));
         return handleEither(
-                Either.fromOptional(token, new ErrorResultStatus(401, "Missing token"))
+//                Either.fromOptional(token, new ErrorResultStatus(401, "Missing token"))
+                Either.fromOptional(token, new ErrorResultStatus(401, UUID.randomUUID().toString()))
                         .flatMap(t -> authService.checkTokenIsValid(t))
                         .validate(isValid -> isValid, new ErrorResultStatus(401, "Invalid token"))
                         .flatMap(r -> action.get()));

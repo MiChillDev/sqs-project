@@ -15,7 +15,7 @@ public class ChuckNorrisApiJokeRepositoryImpl extends ApiRepository implements A
 
     public ChuckNorrisApiJokeRepositoryImpl() {
         super();
-    }
+    } //TODO: do we need this?
 
     public ChuckNorrisApiJokeRepositoryImpl(RestTemplate restTemplate) {
         super(restTemplate);
