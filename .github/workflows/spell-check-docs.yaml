@@ -1,17 +1,17 @@
-name: Frontend Lint Pipeline
+name: Docs Spell Check
 
 on:
   pull_request:
     branches: ["main"]
     paths:
-      - 'frontend/**'
+      - 'docs/**'
 
 jobs:
-  lint:
+  spell-check:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: frontend
+        working-directory: docs
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -21,4 +21,4 @@ jobs:
           node-version: 22
       - run: npm install -g pnpm@10
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
+      - run: pnpm run spell-check
