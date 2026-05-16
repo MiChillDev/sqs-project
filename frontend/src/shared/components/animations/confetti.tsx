@@ -1,15 +1,15 @@
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 type ConfettiProps = {
-	trigger: boolean;
+  trigger: boolean;
 };
 
 export function Confetti({ trigger }: ConfettiProps) {
-	if (!trigger) return null;
+  if (!trigger) return null;
 
-	return (
-		<div
-			className="
+  return (
+    <div
+      className='
                 absolute 
                 left-1/2 
                 top-1/2 
@@ -18,14 +18,10 @@ export function Confetti({ trigger }: ConfettiProps) {
                 pointer-events-none 
                 z-50 
                 overflow-visible
-            "
-			style={{ width: 200, height: 200 }}
-		>
-			<DotLottieReact
-				src="/src/shared/animations/Confetti.json"
-				autoplay
-				loop={false}
-			/>
-		</div>
-	);
+            '
+      style={{ width: 200, height: 200 }}
+    >
+      <DotLottieReact src='/src/shared/animations/Confetti.json' autoplay loop={false} />
+    </div>
+  );
 }

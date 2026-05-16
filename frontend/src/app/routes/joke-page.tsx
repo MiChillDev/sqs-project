@@ -7,6 +7,14 @@ import { Button } from "src/shared/components/ui/button";
 import { Card, CardContent } from "src/shared/components/ui/card";
 import { rootRoute } from "./__root";
 
+export function getNextCount(prev: number, max: number) {
+	return (prev + 1) % max;
+}
+
+export function shouldShowConfetti(prev: number, max: number) {
+	return prev === max - 1;
+}
+
 function JokePage() {
 	const { t } = useTranslation();
 
@@ -26,10 +34,13 @@ function JokePage() {
 		setHasFetched(true);
 
 		const prev = count;
+
 		if (result.status === "success") {
-			const next = (prev + 1) % maxCount;
+			const next = getNextCount(prev, maxCount);
+
 			setCount(next);
-			if (prev === maxCount - 1 && next === 0) {
+
+			if (shouldShowConfetti(prev, maxCount)) {
 				setShowConfetti(true);
 				setTimeout(() => setShowConfetti(false), 1500);
 			}

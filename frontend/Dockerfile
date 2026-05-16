@@ -10,9 +10,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
-    && chown -R appuser:appgroup /app
-USER appuser
+#RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
+#    && chown -R appuser:appgroup /app
+#USER appuser
 
 EXPOSE 5173
 

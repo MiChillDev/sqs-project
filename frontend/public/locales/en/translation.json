@@ -121,7 +121,6 @@
 	},
 	"jokePreview": {
 		"title": "Random Joke Preview",
-		"heading": "Get your Chuck Norris joke!",
 		"description": "Fetch a random joke from the backend API",
 		"fetchButton": "Fetch Joke",
 		"fetching": "Fetching...",
