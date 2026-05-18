@@ -15,6 +15,10 @@ export function shouldShowConfetti(prev: number, max: number) {
 	return prev === max - 1;
 }
 
+export function scheduleConfettiReset(fn: () => void, delay = 1500) {
+	return setTimeout(fn, delay);
+}
+
 function JokePage() {
 	const { t } = useTranslation();
 
@@ -42,7 +46,10 @@ function JokePage() {
 
 			if (shouldShowConfetti(prev, maxCount)) {
 				setShowConfetti(true);
-				setTimeout(() => setShowConfetti(false), 1500);
+
+				scheduleConfettiReset(() => {
+					setShowConfetti(false);
+				});
 			}
 		}
 
