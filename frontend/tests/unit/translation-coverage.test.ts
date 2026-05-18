@@ -1,4 +1,4 @@
-/// <reference types="vitest/globals" />
+import { describe, expect, it } from 'vitest';
 
 import deTranslations from '../../public/locales/de/translation.json';
 import enTranslations from '../../public/locales/en/translation.json';
@@ -22,21 +22,5 @@ describe('Translation Coverage', () => {
     const deKeys = getKeys(deTranslations as Record<string, unknown>);
 
     expect(enKeys).toEqual(deKeys);
-  });
-
-  it('has no extra keys in German file', () => {
-    const enKeys = new Set(getKeys(enTranslations as Record<string, unknown>));
-    const deKeys = getKeys(deTranslations as Record<string, unknown>);
-
-    const extraKeys = deKeys.filter((key) => !enKeys.has(key));
-    expect(extraKeys).toEqual([]);
-  });
-
-  it('has no missing keys in German file', () => {
-    const deKeys = new Set(getKeys(deTranslations as Record<string, unknown>));
-    const enKeys = getKeys(enTranslations as Record<string, unknown>);
-
-    const missingKeys = enKeys.filter((key) => !deKeys.has(key));
-    expect(missingKeys).toEqual([]);
   });
 });
