@@ -4,11 +4,15 @@ WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@10.12.1 --activate
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+#COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+USER node
 
 RUN pnpm install --frozen-lockfile
 
-COPY . .
+COPY --chown=node:node . .
+#COPY . .
 
 #RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
 #    && chown -R appuser:appgroup /app
