@@ -20,16 +20,16 @@ public class JokeController extends BaseController {
 
     @GetMapping("/jokes")
     public ResponseEntity<JokeDto> getRandomJoke() {
-        return executeUnauthenticated(jokeService.getRandomJoke());
+        return executeUnauthenticated(jokeService::getRandomJoke);
     }
 
     @PostMapping("/jokes")
     public ResponseEntity<JokeDto> createJoke(@RequestBody CreateJokeDto input) {
-        return executeAuthenticated(jokeService.createJoke(input));
+        return executeAuthenticated(() -> jokeService.createJoke(input));
     }
 
     @GetMapping("/source-joke")
     public ResponseEntity<SourceJokeDto> getRandomSourceJoke() {
-        return executeAuthenticated(jokeService.getRandomSourceJoke());
+        return executeAuthenticated(jokeService::getRandomSourceJoke);
     }
 }

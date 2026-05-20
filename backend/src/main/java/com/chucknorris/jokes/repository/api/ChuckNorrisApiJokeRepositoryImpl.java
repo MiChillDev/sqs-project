@@ -1,4 +1,4 @@
-package com.chucknorris.jokes.repository;
+package com.chucknorris.jokes.repository.api;
 
 import com.chucknorris.jokes.models.api.ChuckNorrisResponse;
 import com.chucknorris.common.domain.models.Either;
@@ -9,15 +9,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 @Repository
-public class ChuckNorrisJokeRepository extends ApiRepository {
+public class ChuckNorrisApiJokeRepositoryImpl extends ApiRepository implements ApiJokeRepository {
 
     private final String API_BASE_URL = "https://api.chucknorris.io";
 
-    public ChuckNorrisJokeRepository() {
+    public ChuckNorrisApiJokeRepositoryImpl() {
         super();
-    }
+    } //TODO: do we need this?
 
-    public ChuckNorrisJokeRepository(RestTemplate restTemplate) {
+    public ChuckNorrisApiJokeRepositoryImpl(RestTemplate restTemplate) {
         super(restTemplate);
     }
 
