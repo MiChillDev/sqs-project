@@ -109,7 +109,7 @@ class ChuckNorrisJokeRepositoryTest {
 
         if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
             assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(500);
+            assertThat(value.code()).isEqualTo(502);
             assertThat(value.message())
                     .contains("API request failed")
                     .contains("503");
@@ -139,7 +139,7 @@ class ChuckNorrisJokeRepositoryTest {
 
         if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
             assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(500);
+            assertThat(value.code()).isEqualTo(502);
             assertThat(value.message())
                     .contains("API request failed or returned empty body");
         } else {

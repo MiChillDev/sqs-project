@@ -41,6 +41,7 @@ public class PasswordHasher {
             byte[] salt = Base64.getDecoder().decode(parts[1]);
             byte[] hash = Base64.getDecoder().decode(parts[2]);
 
+            //TODO: use Argon2?
             byte[] testHash = pbkdf2(password.toCharArray(), salt, iterations, hash.length * 8);
 
             return slowEquals(hash, testHash);
