@@ -15,7 +15,7 @@ export function login(username = 'admin', password = 'superSecurePassword123') {
     try {
       AUTH_TOKEN = res.json()?.token;
     } catch (e) {
-      // leave AUTH_TOKEN as null
+      AUTH_TOKEN = null;
     }
   }
 
