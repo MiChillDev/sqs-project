@@ -11,10 +11,9 @@ export function login(username = 'admin', password = 'superSecurePassword123') {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  if (res && res.status === 200) {
+  if (res?.status === 200) {
     try {
-      const body = res.json();
-      AUTH_TOKEN = body.token;
+      AUTH_TOKEN = res.json()?.token;
     } catch (e) {
       // leave AUTH_TOKEN as null
     }
