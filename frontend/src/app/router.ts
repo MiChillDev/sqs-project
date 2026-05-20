@@ -4,6 +4,7 @@ import { rootRoute } from './routes/__root';
 import componentTestRoute from './routes/component-demo';
 import demoApiRoute from './routes/demo-api';
 import indexRoute from './routes/index';
+import jokePageRoute from './routes/joke-page';
 import referenceRoute from './routes/reference';
 
 const routeTree = rootRoute.addChildren([
@@ -11,6 +12,7 @@ const routeTree = rootRoute.addChildren([
   componentTestRoute,
   referenceRoute,
   demoApiRoute,
+  jokePageRoute,
 ]);
 
 export const router = createRouter({ routeTree });

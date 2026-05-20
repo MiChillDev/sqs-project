@@ -57,5 +57,8 @@
         "organizeImports": "on"
       }
     }
+  },
+  "files": {
+    "includes": ["**", "!**/*.json"]
   }
 }
