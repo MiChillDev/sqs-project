@@ -6,6 +6,7 @@ export function useRandomJoke() {
   return useQuery({
     queryKey: ['jokes', 'random'],
     queryFn: ({ signal }) => fetchApi<Joke>('/api/v1/jokes', { signal }),
+    enabled: false,
   });
 }
 

@@ -5,6 +5,7 @@ coverage
 *.local
 .env.local
 .env.production
+.env.*
 .DS_Store
 *.suo
 *.ntvs*
@@ -14,3 +15,6 @@ coverage
 .idea
 .vscode
 zed
+*.log
+Dockerfile
+docker-compose.yml
