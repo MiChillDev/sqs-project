@@ -2,17 +2,16 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@10.12.1 --activate
+RUN npm install -g pnpm@10.12.1 \
+    && chown -R node:node /app
 
 COPY --chmod=644 package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-#COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 USER node
 
 RUN pnpm install --frozen-lockfile
 
 COPY --chmod=644 . .
-RUN chown -R node:node /app
 #COPY . .
 
 #RUN addgroup -S appgroup && adduser -S appuser -G appgroup \

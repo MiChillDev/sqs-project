@@ -1,3 +1,4 @@
+import { authStorage } from 'src/shared/lib/auth-storage';
 import { ApiError, NetworkError } from './api-error';
 import type { components } from './generated/api-types';
 
@@ -6,6 +7,8 @@ export type SourceJoke = components['schemas']['SourceJoke'];
 export type JokeInput = components['schemas']['JokeInput'];
 export type HealthCheck = components['schemas']['HealthCheck'];
 export type ApiErrorBody = components['schemas']['Error'];
+export type LoginRequest = components['schemas']['LoginRequest'];
+export type TokenResponse = components['schemas']['TokenResponse'];
 
 export { ApiError, NetworkError } from './api-error';
 
@@ -17,7 +20,7 @@ const DEFAULT_TIMEOUT_MS = 10000;
 
 export async function fetchApi<T>(
   path: string,
-  options?: RequestInit & { timeout?: number }
+  options?: RequestInit & { timeout?: number; auth?: boolean }
 ): Promise<T> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), options?.timeout ?? DEFAULT_TIMEOUT_MS);
@@ -30,10 +33,19 @@ export async function fetchApi<T>(
   }
 
   try {
+    const headers = new Headers(options?.headers);
+    if (options?.auth) {
+      const stored = authStorage.get();
+      if (stored) {
+        headers.set('Authorization', `Bearer ${stored.token}`);
+      }
+    }
+
     let response: Response;
     try {
       response = await fetch(`${getApiBaseUrl()}${path}`, {
         ...options,
+        headers,
         signal: controller.signal,
       });
     } catch (err) {
@@ -47,7 +59,8 @@ export async function fetchApi<T>(
       let body: unknown;
       try {
         body = await response.json();
-      } catch {
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') throw err;
         // response body not JSON
       }
       throw new ApiError(response.status, response.statusText, body);
@@ -55,7 +68,8 @@ export async function fetchApi<T>(
 
     try {
       return (await response.json()) as T;
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') throw err;
       throw new ApiError(response.status, 'Invalid JSON response from server');
     }
   } finally {

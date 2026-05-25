@@ -5,6 +5,7 @@ import { I18nWatcher } from 'src/shared/components/i18n-watcher';
 import { LanguageToggle } from 'src/shared/components/language-toggle';
 import { ThemeToggle } from 'src/shared/components/theme-toggle';
 import { Toaster } from 'src/shared/components/toaster';
+import { UserMenu } from 'src/shared/components/user-menu';
 import { useTheme } from 'src/shared/hooks/use-theme';
 
 import { getUserSafeError } from 'src/shared/lib/error-messages';
@@ -30,6 +31,7 @@ export const rootRoute = createRootRoute({
             <div className='flex items-center gap-1'>
               <LanguageToggle />
               <ThemeToggle theme={theme} onToggle={toggleTheme} />
+              <UserMenu />
             </div>
           </header>
           <main id='main-content' className='flex-1'>

@@ -134,5 +134,34 @@
 		"refetchButton": "Nächster Witz",
 		"error": "Witz konnte nicht abgerufen werden.",
 		"placeholder": "Klick auf den Button, um einen Witz abzufragen!"
+	},
+	"login": {
+		"title": "Anmelden",
+		"fields": {
+			"username": "Benutzername",
+			"password": "Passwort"
+		},
+		"submit": "Anmelden",
+		"errors": {
+			"invalidCredentials": "Ungültiger Benutzername oder Passwort.",
+			"required": "Dieses Feld ist erforderlich."
+		}
+	},
+	"admin": {
+		"title": "Admin",
+		"createJoke": "Witz erstellen",
+		"contentLabel": "Inhalt",
+		"externalIdLabel": "Externe ID",
+		"fetchSourceJoke": "Quellenwitz abrufen",
+		"logout": "Abmelden",
+		"fetching": "Wird abgerufen...",
+		"submitting": "Wird gesendet...",
+		"save": "Speichern",
+		"saving": "Wird gespeichert...",
+		"saved": "Erfolgreich gespeichert!",
+		"error": {
+			"networkError": "Verbindung nicht möglich. Bitte überprüfe deine Internetverbindung.",
+			"serverError": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+		}
 	}
 }
