@@ -8,14 +8,14 @@ if [[ "${1:-}" == "--prod" ]]; then
 fi
 
 echo "Building Docker images..."
-if [ "$MODE" == "prod" ]; then
+if [[ "$MODE" == "prod" ]]; then
   docker compose --profile prod build frontend app postgres
 else
   docker compose build
 fi
 
 echo "Starting Docker Compose ($MODE mode)..."
-if [ "$MODE" == "prod" ]; then
+if [[ "$MODE" == "prod" ]]; then
   docker compose --profile prod up -d postgres app frontend
 else
   docker compose up -d

@@ -1,23 +1,23 @@
 FROM node:22-alpine
 
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@10.12.1 --activate
+RUN corepack enable && corepack prepare pnpm@11.1.2 --activate
 
-COPY --chmod=644 package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-#COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-USER node
+RUN pnpm install --frozen-lockfile && chown -R appuser:appgroup /app/node_modules
 
-RUN pnpm install --frozen-lockfile
+COPY src/ ./src/
+COPY public/ ./public/
+COPY plugins/ ./plugins/
+COPY index.html vite.config.ts components.json ./
+COPY tsconfig.json tsconfig.app.json tsconfig.node.json ./
+COPY openapi.yaml ./
 
-COPY --chmod=644 . .
-RUN chown -R node:node /app
-#COPY . .
-
-#RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
-#    && chown -R appuser:appgroup /app
-#USER appuser
+USER appuser
 
 EXPOSE 5173
 
