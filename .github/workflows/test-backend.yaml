@@ -23,5 +23,20 @@ jobs:
       - name: Compile backend
         run: cd backend && mvn clean compile
 
-      - name: Run unit tests
-        run: cd backend && mvn test
+      - name: Run unit tests with coverage
+        run: cd backend && mvn verify
+
+      - name: Upload JaCoCo coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-coverage-report
+          path: backend/target/site/jacoco/
+          retention-days: 7
+
+      - name: Upload coverage XML for SonarCloud
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-xml-report
+          path: backend/target/site/jacoco/jacoco.xml
+          retention-days: 7
+
