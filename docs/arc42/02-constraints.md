@@ -34,7 +34,7 @@
 
 | Convention            | Details                                                                                     |
 | --------------------- | ------------------------------------------------------------------------------------------- |
-| Backend Architecture  | Feature-based packages (jokes, auth, users, health, common) with hexagonal ports & adapters |
+| Backend Architecture  | Feature-based packages (jokes, auth, users, health, common) with layered Controller → Service → Repository; port/adapter separation in the repository layer |
 | Frontend Architecture | Feature-based routes with shared components, hooks, and API layer                           |
 | Error Handling        | Functional: custom `Either<L, R>` monad (backend), typed error classes (frontend)           |
 | Form Validation       | Zod schemas + react-hook-form with i18n-aware error messages                                |

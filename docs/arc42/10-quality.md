@@ -19,7 +19,7 @@
 ### 3. Maintainability
 
 - **Feature-based package structure** keeps related code together and reduces cognitive load
-- **Hexagonal ports & adapters** enable isolated unit testing of domain logic
+- **Port/adapter separation in the repository layer** enables isolated unit testing of service logic by mocking repository interfaces
 - **Biome** linting with strict rules (e.g., `noConsole=error`, consistent formatting)
 - **SonarQube** for continuous static analysis and code quality tracking
 

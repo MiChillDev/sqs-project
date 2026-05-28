@@ -5,24 +5,24 @@ graph TB
     subgraph JokesDomain[" Jokes Domain"]
         JokeCtrl["JokeController<br/>GET /jokes<br/>POST /jokes<br/>GET /source-joke<br/>[RestController]"]
         JokeSvc["JokeService<br/>[Business Logic]"]
-        JokeRepo["JokeRepository<br/>[Port Interface]"]
-        JokeRepoImpl["JokeRepositoryImpl<br/>[Adapter]"]
+        JokeRepo["JokeRepository<br/>[Interface]"]
+        JokeRepoImpl["JokeRepositoryImpl<br/>[Delegates to Spring]"]
         SpringJokeRepo["SpringJokeRepository<br/>[JpaRepository]"]
-        ChuckNorrisRepo["ChuckNorrisApiJokeRepositoryImpl<br/>extends ApiRepository<br/>[Adapter]"]
+        ChuckNorrisRepo["ChuckNorrisApiJokeRepositoryImpl<br/>extends ApiRepository<br/>[External API Client]"]
     end
 
     subgraph AuthDomain[" Auth Domain"]
         AuthCtrl["AuthController<br/>POST /auth/login<br/>[RestController]"]
         AuthSvc["AuthService<br/>Login + Token Validation"]
-        AuthRepo["AuthRepository<br/>[Port Interface]"]
-        AuthRepoImpl["AuthRepositoryImpl<br/>[Adapter]"]
+        AuthRepo["AuthRepository<br/>[Interface]"]
+        AuthRepoImpl["AuthRepositoryImpl<br/>[Delegates to Spring]"]
         SpringAuthRepo["SpringAuthSessionRepository<br/>[JpaRepository]"]
     end
 
     subgraph UsersDomain[" Users Domain"]
         UserSvc["UserService"]
-        UserRepo["UserRepository<br/>[Port Interface]"]
-        UserRepoImpl["UserRepositoryImpl<br/>[Adapter]"]
+        UserRepo["UserRepository<br/>[Interface]"]
+        UserRepoImpl["UserRepositoryImpl<br/>[Delegates to Spring]"]
         SpringUserRepo["SpringUserRepository<br/>[JpaRepository]"]
     end
 

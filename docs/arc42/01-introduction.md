@@ -2,7 +2,9 @@
 
 ## Overview
 
-Chuck Norris Joke Page (project name: **sqs-project**) is a web application that allows users to fetch, display, and manage Chuck Norris jokes. Unauthenticated users can browse jokes from the local database. Administrators can import jokes from the external Chuck Norris API and create new jokes.
+Chuck Norris Joke Page (project name: **sqs-project**) is a web application that allows users to fetch, display, and manage Chuck Norris jokes. 
+Unauthenticated users can browse jokes from the local database. 
+Administrators can import jokes from the external Chuck Norris API and save them or create new jokes.
 
 The system aggregates jokes from an external API (chucknorris.io) and provides a local database-backed joke repository with CRUD operations.
 

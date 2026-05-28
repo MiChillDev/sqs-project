@@ -2,13 +2,13 @@
 
 ## Key Architectural Decisions
 
-### 1. Feature-Based Package Structure with Hexagonal Influences
+### 1. Feature-Based Package Structure with Layered Architecture
 
-The backend organizes code by **feature/domain** (jokes, auth, users, health) rather than by technical layer. Within each feature, a hexagonal ports-and-adapters pattern separates domain interfaces from infrastructure:
+The backend organizes code by **feature/domain** (jokes, auth, users, health) rather than by technical layer. Within each feature, a classic layered pattern (Controller → Service → Repository) is applied. The repository layer uses port/adapter separation to isolate infrastructure:
 
-- **Ports**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`)
-- **Adapters**: Infrastructure implementations in `spring/` (Spring Data JPA) and `api/` (external API calls)
-- **Benefit**: Spring Data JPA details are isolated; external API details are isolated; domain logic is framework-independent
+- **Port interfaces**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`) define repository contracts
+- **Adapter implementations**: Infrastructure classes in `spring/` (Spring Data JPA) and `api/` (external API calls) implement the port interfaces
+- **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic
 
 ### 2. Functional Error Handling via Either Monad
 
@@ -63,7 +63,7 @@ UI components are built on shadcn/ui (new-york style) with Radix UI primitives:
 | Server State     | TanStack React Query                 | Caching, deduplication, error handling       |
 | Forms            | react-hook-form + Zod                | Performant validation with i18n              |
 | Backend          | Spring Boot 4 + Java 21              | Enterprise-grade, mature ecosystem           |
-| Architecture     | Hexagonal-lite with feature packages | Domain isolation, testability                |
+| Architecture     | Layered (Controller→Service→Repository) with feature packages and port/adapter repos | Simple, testable, familiar |
 | Database         | PostgreSQL 16                        | Reliable, ACID-compliant relational DB       |
 | Migrations       | Flyway                               | Version-controlled schema evolution          |
 | Auth             | Custom token-based (UUID + PBKDF2)   | Lightweight, suitable for scope              |

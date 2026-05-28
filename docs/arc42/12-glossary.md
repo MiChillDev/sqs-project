@@ -5,8 +5,8 @@
 | **sqs-project**      | Internal project name; the Chuck Norris Joke Page application                                            |
 | **Chuck Norris API** | External REST API at `api.chucknorris.io` providing random Chuck Norris jokes                            |
 | **Either Monad**     | Custom sealed interface (`Either<L,R>`) for functional error handling; `Left` = error, `Right` = success |
-| **Port**             | In hexagonal architecture: a domain-facing interface (e.g., `JokeRepository`)                            |
-| **Adapter**          | In hexagonal architecture: an infrastructure implementation of a port (e.g., `SpringJokeRepository`)     |
+| **Port**             | A repository interface defining domain-facing data access contracts (e.g., `JokeRepository`, `UserRepository`) |
+| **Adapter**          | An infrastructure implementation of a port interface (e.g., `JokeRepositoryImpl` wraps `SpringJokeRepository`) |
 | **Bearer Token**     | Authentication token sent in `Authorization` header as `Bearer <uuid>`                                   |
 | **PBKDF2**           | Password-Based Key Derivation Function 2; used for password hashing                                      |
 | **Flyway**           | Database migration tool; manages versioned SQL scripts for schema evolution                              |

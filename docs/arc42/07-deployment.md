@@ -1,5 +1,7 @@
 # 7. Deployment View
 
+<!-- TODO: Add deployment diagram (mermaid) showing Docker Compose network topology and service dependencies -->
+
 ## Docker Compose Setup
 
 The development environment uses Docker Compose with three services on a single host:
