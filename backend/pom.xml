@@ -8,12 +8,11 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.4</version>
     </parent>
-
-    <groupId>com.michilldev</groupId>
+    <groupId>com.chucknorris</groupId>
     <artifactId>sqs-project</artifactId>
     <version>1.0.0</version>
-    <name>sqs-project</name>
-    <description>sqs-project</description>
+    <name>joke.service</name>
+    <description>joke-service</description>
     <url/>
 
     <licenses>
@@ -33,8 +32,13 @@
 
     <properties>
         <java.version>21</java.version>
+        <spring-boot.version>4.0.4</spring-boot.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <jacoco.version>0.8.11</jacoco.version>
+        <!-- Coverage thresholds -->
+        <jacoco.line.coverage>0.80</jacoco.line.coverage>
+        <jacoco.branch.coverage>0.75</jacoco.branch.coverage>
     </properties>
 
     <dependencies>
@@ -48,17 +52,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
-    </dependency>
-    <!-- JPA -->
+            <scope>test</scope>
+        </dependency>
+        <!-- JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <!-- DB -->
+        </dependency>
+        <!-- DB -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>42.7.10</version>
             <scope>runtime</scope>
         </dependency>
         <!-- Migration -->
@@ -69,6 +74,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+            <version>12.0.3</version>
         </dependency>
     </dependencies>
 
@@ -84,6 +90,59 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.line.coverage}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.branch.coverage}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/ChuckNorrisApplication.class</exclude>
+                        <exclude>**/config/**</exclude>
+                        <exclude>**/entity/**</exclude>
+                        <exclude>**/dto/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

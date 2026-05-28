@@ -24,7 +24,7 @@ public abstract class ApiRepository {
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 return Either.right(response.getBody());
             } else {
-                return Either.left(new ErrorResultStatus(500, "API request failed or returned empty body with status: " + response.getStatusCode()));
+                return Either.left(new ErrorResultStatus(502, "API request failed or returned empty body with status: " + response.toString()));
             }
         } catch (Exception e) {
             return Either.left(new ErrorResultStatus(500, "Error communicating with external API: " + e.getMessage()));
