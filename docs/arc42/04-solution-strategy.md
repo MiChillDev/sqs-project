@@ -1,3 +1,76 @@
 # 4. Solution Strategy
 
-_TBD_
+## Key Architectural Decisions
+
+### 1. Feature-Based Package Structure with Layered Architecture
+
+The backend organizes code by **feature/domain** (jokes, auth, users, health) rather than by technical layer. Within each feature, a classic layered pattern (Controller → Service → Repository) is applied. The repository layer uses port/adapter separation to isolate infrastructure:
+
+- **Port interfaces**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`) define repository contracts
+- **Adapter implementations**: Infrastructure classes in `spring/` (Spring Data JPA) and `api/` (external API calls) implement the port interfaces
+- **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic
+
+### 2. Functional Error Handling via Either Monad
+
+Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface:
+
+- `Right<L, R>` = success
+- `Left<L, R>` = error (carries `ErrorResultStatus` with HTTP code and message)
+- Chained via `map()`, `flatMap()`, `validate()` operations
+- `BaseController.handleEither()` converts to `ResponseEntity` at the controller boundary
+
+### 3. OpenAPI-First Type Contract
+
+The API contract is defined in OpenAPI 3.1.0 YAML. The frontend auto-generates TypeScript types from this spec using `openapi-typescript`. This provides:
+
+- Single source of truth for API shapes
+- Compile-time type safety on the frontend
+- No shared package needed between frontend and backend
+
+### 4. Custom Token-Based Authentication
+
+Authentication is implemented without Spring Security, using a custom mechanism:
+
+- Login validates credentials against `users` table with strong PBKDF2 password hashing
+- On success, a random UUID token is stored in `auth_sessions` with a configurable expiration
+- Protected endpoints validate `Authorization: Bearer <token>` header via `BaseController.executeAuthenticated()`
+- Security hardening: identical error messages for wrong password / missing user (prevents username enumeration); obfuscated error messages for missing tokens
+
+### 5. Modern React Stack with Manual API Client
+
+The frontend uses React 19 with TanStack Router and React Query:
+
+- File-based routing with type-safe navigation
+- Server state managed via React Query (no global client state store)
+- Custom `fetchApi<T>()` wrapper around native `fetch` (not a generated client)
+- Hooks pattern: `useRandomJoke()`, `useHealthCheck()`, etc.
+
+### 6. Component Library via shadcn/ui
+
+UI components are built on shadcn/ui (new-york style) with Radix UI primitives:
+
+- Copy-pasted components (not a dependency), fully customizable
+- CVA (class-variance-authority) for variant-based styling
+- TailwindCSS 4 for utility-first CSS with design tokens
+
+## Technology Selection Summary
+
+| Layer            | Technology                           | Rationale                                    |
+| ---------------- | ------------------------------------ | -------------------------------------------- |
+| Frontend         | React 19 + Vite 8 + TypeScript 6     | Modern, type-safe, fast DX                   |
+| UI Components    | shadcn/ui + Radix UI + TailwindCSS 4 | Accessible, customizable, modern             |
+| Routing          | TanStack Router                      | Type-safe file-based routing                 |
+| Server State     | TanStack React Query                 | Caching, deduplication, error handling       |
+| Forms            | react-hook-form + Zod                | Performant validation with i18n              |
+| Backend          | Spring Boot 4 + Java 21              | Enterprise-grade, mature ecosystem           |
+| Architecture     | Layered (Controller→Service→Repository) with feature packages and port/adapter repos | Simple, testable, familiar |
+| Database         | PostgreSQL 16                        | Reliable, ACID-compliant relational DB       |
+| Migrations       | Flyway                               | Version-controlled schema evolution          |
+| Auth             | Custom token-based (UUID + PBKDF2)   | Lightweight, suitable for scope              |
+| Error Handling   | Either monad                         | Functional, explicit, no hidden control flow |
+| API Contract     | OpenAPI 3.1.0                        | Type generation, documentation               |
+| Containerization | Docker + Docker Compose              | Reproducible environments                    |
+| CI/CD            | GitHub Actions                       | Automated testing and quality gates          |
+| Code Quality     | Biome + SonarQube                    | Linting, static analysis, coverage           |
+| Load Testing     | k6 (Grafana)                         | Baseline, stress, and spike scenarios        |
+| i18n             | i18next                              | EN/DE support from day one                   |

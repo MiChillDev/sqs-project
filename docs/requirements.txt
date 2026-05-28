@@ -1,2 +1,2 @@
-mkdocs-material
-pymdown-extensions
+mkdocs-material>=9,<10
+pymdown-extensions>=10,<11
