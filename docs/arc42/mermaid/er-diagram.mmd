@@ -1,0 +1,24 @@
+%% Entity-Relationship Diagram
+%% Chuck Norris Joke Page - Database Schema
+
+erDiagram
+    USER ||--o| AUTH_SESSION : "has (1:1)"
+    USER {
+        uuid id PK "UUID primary key"
+        string username UK "unique username"
+        string password_hash "PBKDF2 hashed password"
+        timestamp created_at
+        timestamp updated_at
+    }
+    AUTH_SESSION {
+        uuid user_id PK "FK -> users.id ON DELETE CASCADE"
+        string token UK "UUID token"
+        timestamp expires_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    JOKE {
+        uuid id PK "UUID primary key"
+        string external_id "from Chuck Norris API"
+        text content "joke text"
+    }
