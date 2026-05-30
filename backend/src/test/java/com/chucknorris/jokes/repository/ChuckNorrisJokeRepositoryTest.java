@@ -4,6 +4,7 @@ import com.chucknorris.jokes.models.api.ChuckNorrisResponse;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
+import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,14 +24,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ChuckNorrisJokeRepositoryTest {
 
-    private ChuckNorrisJokeRepository repository;
+    private ChuckNorrisApiJokeRepositoryImpl repository;
 
     @Mock
     private RestTemplate mockRestTemplate;
 
     @BeforeEach
     void setUp() {
-        repository = new ChuckNorrisJokeRepository(mockRestTemplate);
+        repository = new ChuckNorrisApiJokeRepositoryImpl(mockRestTemplate);
     }
 
     @Test
@@ -108,7 +109,7 @@ class ChuckNorrisJokeRepositoryTest {
 
         if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
             assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(500);
+            assertThat(value.code()).isEqualTo(502);
             assertThat(value.message())
                     .contains("API request failed")
                     .contains("503");
@@ -138,7 +139,7 @@ class ChuckNorrisJokeRepositoryTest {
 
         if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
             assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(500);
+            assertThat(value.code()).isEqualTo(502);
             assertThat(value.message())
                     .contains("API request failed or returned empty body");
         } else {
