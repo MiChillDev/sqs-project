@@ -1,16 +1,21 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from './shared';
 import {
+  afterEach,
+  beforeEach,
   cleanup,
-  screen,
-  waitFor,
-  userEvent,
-  mockNavigate,
-  mockAuthStorageSet,
+  describe,
+  enTranslation,
+  expect,
+  it,
   mockAuthStorageGet,
+  mockAuthStorageSet,
   mockLoginMutation,
+  mockNavigate,
   mockUseSearch,
   renderComponent,
-  enTranslation,
+  screen,
+  userEvent,
+  vi,
+  waitFor,
 } from './shared';
 
 describe('LoginPage — redirect search parameter', () => {

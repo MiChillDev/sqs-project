@@ -1,6 +1,6 @@
 /// <reference types="vitest/globals" />
 
-import { fetchApi, ApiError, NetworkError } from './shared';
+import { ApiError, fetchApi, NetworkError } from './shared';
 
 describe('fetchApi', () => {
   afterEach(() => {

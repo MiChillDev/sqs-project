@@ -1,5 +1,15 @@
-import { afterEach, beforeEach, describe, expect, it } from './shared';
-import { resetMocks, renderComponent, screen, cleanup, adminRoute } from './shared';
+import {
+  adminRoute,
+  afterEach,
+  beforeEach,
+  cleanup,
+  describe,
+  expect,
+  it,
+  renderComponent,
+  resetMocks,
+  screen,
+} from './shared';
 
 describe('AdminPage', () => {
   beforeEach(resetMocks);
