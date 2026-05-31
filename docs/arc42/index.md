@@ -1,20 +1,39 @@
-# Architecture Documentation (arc42)
+# Architecture Documentation
 
-This section follows the [arc42](https://arc42.org) template for software architecture documentation.
+## Chuck Norris Joke Page
 
-arc42 provides a structured approach to documenting architecture across 12 sections:
+Welcome to the architecture documentation for the Chuck Norris Joke Page, a web application for fetching, displaying, and managing Chuck Norris jokes. 
+Developed as a university project by a team of three students for a software quality assurance course.
 
-| #  | Section                                                               |
-|----|-----------------------------------------------------------------------|
-| 1  | [Introduction](01-introduction.md)                                    |
-| 2  | [Constraints](02-constraints.md)                                      |
-| 3  | [Context](03-context.md)                                              |
-| 4  | [Solution Strategy](04-solution-strategy.md)                          |
-| 5  | [Building Blocks](05-building-blocks.md)                              |
-| 6  | [Runtime View](06-runtime.md)                                         |
-| 7  | [Deployment](07-deployment.md)                                        |
-| 8  | [Cross-cutting](08-crosscutting.md)                                   |
-| 9  | [Decisions](09-decisions.md)                                          |
-| 10 | [Quality](10-quality.md)                                              |
-| 11 | [Risks](11-risks.md)                                                  |
-| 12 | [Glossary](12-glossary.md)                                            |
+## Documentation Structure
+
+This documentation follows the [arc42](https://arc42.org/) template (Version 8.2 EN) for software architecture documentation.
+
+| Chapter                      | Title                    |
+| ---------------------------- | ------------------------ |
+| [1](01-introduction.md)      | Introduction and Goals   |
+| [2](02-constraints.md)       | Architecture Constraints |
+| [3](03-context.md)           | Context and Scope        |
+| [4](04-solution-strategy.md) | Solution Strategy        |
+| [5](05-building-blocks.md)   | Building Block View      |
+| [6](06-runtime.md)           | Runtime View             |
+| [7](07-deployment.md)        | Deployment View          |
+| [8](08-crosscutting.md)      | Cross-cutting Concepts   |
+| [9](09-decisions.md)         | Architecture Decisions   |
+| [10](10-quality.md)          | Quality Requirements     |
+| [11](11-risks.md)            | Risks and Technical Debt |
+| [12](12-glossary.md)         | Glossary                 |
+
+## Architecture Decision Records
+
+| ADR                                                 | Title                                            |
+| --------------------------------------------------- | ------------------------------------------------ |
+| [ADR-001](ards/adr-01-feature-packages.md)          | Layered Architecture with Feature-Based Packages |
+| [ADR-002](ards/adr-02-technology-stack.md)          | Technology Stack Selection                       |
+| [ADR-003](ards/adr-03-authentication.md)            | Token-Based Authentication                       |
+| [ADR-004](ards/adr-04-database-and-orm.md)          | PostgreSQL with JPA and Flyway                   |
+| [ADR-005](ards/adr-05-monorepo-organization.md)     | Monorepo Organization                            |
+| [ADR-006](ards/adr-06-functional-error-handling.md) | Functional Error Handling via Either Monad       |
+| [ADR-007](ards/adr-07-testing-strategy.md)          | Multi-Layer Testing Strategy                     |
+
+

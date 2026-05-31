@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+  '/api/v1/auth/login': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Authenticate and get a bearer token
+     * @description Authenticates a user with username and password and returns a bearer token for subsequent authenticated requests
+     */
+    post: operations['login'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/source-joke': {
     parameters: {
       query?: never;
@@ -107,6 +127,18 @@ export interface components {
       /** @description Human-readable error message */
       message: string;
     };
+    LoginRequest: {
+      /** @description Username for authentication */
+      username: string;
+      /** @description Password for authentication */
+      password: string;
+    };
+    TokenResponse: {
+      /** @description Authentication token (UUID format) */
+      token: string;
+      /** @description Token expiration timestamp (ISO-8601 local date-time without timezone) */
+      expiresAt: string;
+    };
   };
   responses: {
     /** @description Bad Request - Invalid input */
@@ -177,6 +209,48 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LoginRequest'];
+      };
+    };
+    responses: {
+      /** @description Successfully authenticated */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TokenResponse'];
+        };
+      };
+      /** @description Client error - invalid credentials or bad request */
+      '4XX': {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Server error */
+      '5XX': {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
   getRandomSourceJoke: {
     parameters: {
       query?: never;

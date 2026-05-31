@@ -1,4 +1,10 @@
-import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  type Mutation,
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import i18next from 'i18next';
 import { lazy, type ReactNode, Suspense } from 'react';
 import { toast } from 'sonner';
@@ -19,13 +25,23 @@ export function handleQueryClientError(error: unknown): void {
   });
 }
 
+function handleMutationClientError(
+  error: unknown,
+  _variables: unknown,
+  _context: unknown,
+  mutation: Mutation<unknown, unknown, unknown>
+): void {
+  if (mutation.meta?.skipGlobalErrorToast) return;
+  handleQueryClientError(error);
+}
+
 let queryClient: QueryClient | undefined;
 
 function getQueryClient() {
   if (!queryClient) {
     queryClient = new QueryClient({
       queryCache: new QueryCache({ onError: handleQueryClientError }),
-      mutationCache: new MutationCache({ onError: handleQueryClientError }),
+      mutationCache: new MutationCache({ onError: handleMutationClientError }),
       defaultOptions: {
         queries: {
           staleTime: 1000 * 30,

@@ -134,5 +134,34 @@
 		"refetchButton": "Get Another Joke",
 		"error": "Failed to fetch joke.",
 		"placeholder": "Click the button to fetch a joke!"
+	},
+	"login": {
+		"title": "Sign in",
+		"fields": {
+			"username": "Username",
+			"password": "Password"
+		},
+		"submit": "Sign in",
+		"errors": {
+			"invalidCredentials": "Invalid username or password.",
+			"required": "This field is required."
+		}
+	},
+	"admin": {
+		"title": "Admin",
+		"createJoke": "Create Joke",
+		"contentLabel": "Content",
+		"externalIdLabel": "External ID",
+		"fetchSourceJoke": "Fetch Source Joke",
+		"logout": "Log out",
+		"fetching": "Fetching...",
+		"submitting": "Submitting...",
+		"save": "Save",
+		"saving": "Saving...",
+		"saved": "Saved successfully!",
+		"error": {
+			"networkError": "Unable to connect. Please check your internet connection.",
+			"serverError": "Something went wrong. Please try again."
+		}
 	}
 }
