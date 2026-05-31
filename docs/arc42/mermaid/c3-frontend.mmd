@@ -1,0 +1,76 @@
+%% C4 Level 3 - Frontend Components
+%% Chuck Norris Joke Page
+
+graph TB
+    subgraph Pages[" Pages/Routes"]
+        IndexPage["IndexPage<br/>/"]
+        JokePage["JokePage<br/>/jokes"]
+        DemoApiPage["DemoApiPage<br/>/demo/api"]
+        ComponentDemo["ComponentDemoPage<br/>/demo"]
+        RefPage["ReferencePage<br/>/reference"]
+    end
+
+    subgraph APILayer[" API Layer"]
+        FetchApi["fetchApi<br/>HTTP Client"]
+        Hooks["useRandomJoke<br/>useHealthCheck<br/>useCreateJoke<br/>useSourceJoke<br/>[React Query Hooks]"]
+        GenTypes["Generated Types<br/>openapi.yaml"]
+    end
+
+    subgraph SharedComponents[" Shared Components"]
+        subgraph UILib["UI Library"]
+            Button["Button"]
+            Card["Card"]
+            Field["Field"]
+            Input["Input"]
+            Label["Label"]
+            Separator["Separator"]
+            DropdownMenu["DropdownMenu"]
+        end
+        subgraph AppComponents["App Components"]
+            ThemeToggle["ThemeToggle"]
+            LangToggle["LanguageToggle"]
+            Toaster["Toaster"]
+            Confetti["Confetti"]
+            ConfigBanner["ConfigErrorBanner"]
+            I18nWatcher["I18nWatcher"]
+        end
+    end
+
+    subgraph Hooks[" Hooks"]
+        UseTheme["useTheme"]
+        UseZodForm["useZodForm"]
+        UseZodResolver["useZodResolver"]
+    end
+
+    subgraph Libraries[" Libraries"]
+        Utils["utils<br/>cn()"]
+        I18n["i18n<br/>i18next"]
+        ErrorMsgs["error-messages"]
+        DebugLogger["debug-logger"]
+        ZodLocales["zod-locales"]
+    end
+
+    API["API Backend<br/>Spring Boot REST"]
+
+    Pages --> APILayer
+    Pages --> SharedComponents
+    APILayer --> API
+    Pages --> Hooks
+    Hooks --> Libraries
+    SharedComponents --> Hooks
+    SharedComponents --> Libraries
+
+    classDef section fill:#1168bd,color:#fff,stroke:#0b4884
+    classDef page fill:#438dd5,color:#fff,stroke:#2a6bab
+    classDef api fill:#2e8b57,color:#fff,stroke:#1d5c37
+    classDef component fill:#6a5acd,color:#fff,stroke:#483d8b
+    classDef library fill:#999,color:#fff,stroke:#6b6b6b
+    classDef external fill:#d2691e,color:#fff,stroke:#a0522d
+
+    class Pages,APILayer,SharedComponents,UILib,AppComponents,Hooks,Libraries section
+    class IndexPage,JokePage,DemoApiPage,ComponentDemo,RefPage page
+    class FetchApi,Hooks,GenTypes api
+    class Button,Card,Field,Input,Label,Separator,DropdownMenu,ThemeToggle,LangToggle,Toaster,Confetti,ConfigBanner,I18nWatcher component
+    class UseTheme,UseZodForm,UseZodResolver component
+    class Utils,I18n,ErrorMsgs,DebugLogger,ZodLocales library
+    class API external

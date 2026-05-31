@@ -1,32 +1,29 @@
-site_name: Chuck Norris Jokes
+site_name: sqs-project
 docs_dir: .
 
-repo_name: stopwatch571/read-the-docs-test
-repo_url: https://github.com/stopwatch571/read-the-docs-test
-
+repo_name: sqs-project
+repo_url: https://github.com/MiChillDev/sqs-project
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - Architecture (arc42):
-    - arc42/index.md
-    - "1. Introduction": arc42/01-introduction.md
-    - "2. Constraints": arc42/02-constraints.md
-    - "3. Context": arc42/03-context.md
-    - "4. Solution Strategy": arc42/04-solution-strategy.md
-    - "5. Building Blocks": arc42/05-building-blocks.md
-    - "6. Runtime View": arc42/06-runtime.md
-    - "7. Deployment": arc42/07-deployment.md
-    - "8. Cross-cutting": arc42/08-crosscutting.md
-    - "9. Decisions": arc42/09-decisions.md
-    - "10. Quality": arc42/10-quality.md
-    - "11. Risks": arc42/11-risks.md
-    - "12. Glossary": arc42/12-glossary.md
+      - arc42/index.md
+      - "1. Introduction": arc42/01-introduction.md
+      - "2. Constraints": arc42/02-constraints.md
+      - "3. Context": arc42/03-context.md
+      - "4. Solution Strategy": arc42/04-solution-strategy.md
+      - "5. Building Blocks": arc42/05-building-blocks.md
+      - "6. Runtime View": arc42/06-runtime.md
+      - "7. Deployment": arc42/07-deployment.md
+      - "8. Cross-cutting": arc42/08-crosscutting.md
+      - "9. Decisions": arc42/09-decisions.md
+      - "10. Quality": arc42/10-quality.md
+      - "11. Risks": arc42/11-risks.md
+      - "12. Glossary": arc42/12-glossary.md
 
 theme:
   name: material
   features:
-    - content.action.edit
-    - content.action.view
     - content.code.copy
     - navigation.expand
     - navigation.footer
@@ -40,10 +37,6 @@ theme:
     - search.suggest
     - toc.follow
   palette:
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-7
-        name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: teal
@@ -68,6 +61,7 @@ plugins:
 markdown_extensions:
   - admonition
   - pymdownx.superfences
+  - pymdownx.snippets
   - pymdownx.tabbed:
       alternate_style: true
   - md_in_html

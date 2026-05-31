@@ -9,5 +9,5 @@ if ! command -v pnpm &>/dev/null; then
   exit 1
 fi
 
-pnpm install --frozen-lockfile 2>/dev/null || pnpm install
+pnpm install --frozen-lockfile
 pnpm run spell-check
