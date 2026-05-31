@@ -37,20 +37,19 @@ function JokePage() {
     const result = await jokeQuery.refetch();
     setHasFetched(true);
 
-    const prev = count;
-
     if (result.status === 'success') {
-      const next = getNextCount(prev, maxCount);
+      setCount((prev) => {
+        const next = getNextCount(prev, maxCount);
 
-      setCount(next);
+        if (shouldShowConfetti(prev, maxCount)) {
+          setShowConfetti(true);
+          scheduleConfettiReset(() => {
+            setShowConfetti(false);
+          });
+        }
 
-      if (shouldShowConfetti(prev, maxCount)) {
-        setShowConfetti(true);
-
-        scheduleConfettiReset(() => {
-          setShowConfetti(false);
-        });
-      }
+        return next;
+      });
     }
 
     setIsAnimating(false);

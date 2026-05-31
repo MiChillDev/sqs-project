@@ -1,4 +1,5 @@
 allowBuilds:
   msw: true
 minimumReleaseAge: 4320
-strictDepBuilds: true
+onlyBuiltDependencies:
+  - msw

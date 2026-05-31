@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { HealthCheck, Joke, JokeInput, SourceJoke } from './api';
+import type { HealthCheck, Joke, JokeInput, LoginRequest, SourceJoke, TokenResponse } from './api';
 import { fetchApi } from './api';
 
 export function useRandomJoke() {
@@ -27,14 +27,27 @@ export function useCreateJoke() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
+        auth: true,
       }),
+  });
+}
+
+export function useLogin() {
+  return useMutation<TokenResponse, Error, LoginRequest>({
+    mutationFn: (input) =>
+      fetchApi<TokenResponse>('/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      }),
+    meta: { skipGlobalErrorToast: true },
   });
 }
 
 export function useSourceJoke() {
   return useQuery({
     queryKey: ['source-joke'],
-    queryFn: ({ signal }) => fetchApi<SourceJoke>('/api/v1/source-joke', { signal }),
+    queryFn: ({ signal }) => fetchApi<SourceJoke>('/api/v1/source-joke', { signal, auth: true }),
     enabled: false,
   });
 }

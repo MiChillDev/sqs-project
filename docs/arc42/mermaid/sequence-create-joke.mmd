@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant Client
+    participant JokeController as Joke Controller
+    participant AuthService as Auth Service
+    participant JokeService as Joke Service
+    participant JokeRepo as Joke Repository
+    participant Database
+
+    Client->>JokeController: POST /api/v1/jokes (token + joke content)
+    JokeController->>AuthService: validateToken(token)
+
+    alt Invalid or missing token
+        AuthService-->>JokeController: invalid
+        JokeController-->>Client: 401 Unauthorized
+    else Token valid
+        AuthService-->>JokeController: valid
+        JokeController->>JokeService: createJoke(content)
+        JokeService->>JokeRepo: saveJoke(joke)
+        JokeRepo->>Database: save joke
+        Database-->>JokeRepo: saved
+        JokeRepo-->>JokeService: saved joke
+        JokeService-->>JokeController: joke data
+        JokeController-->>Client: 200 OK
+    end
