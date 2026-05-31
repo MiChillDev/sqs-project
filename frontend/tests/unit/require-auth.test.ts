@@ -41,7 +41,6 @@ describe('requireAuth', () => {
     }
 
     expect(isRedirect(thrown)).toBe(true);
-    // TanStack Router v1 wraps redirect details in .options
     expect((thrown as Record<string, unknown>).options).toMatchObject({
       to: '/login',
       search: { redirect: '/admin' },
@@ -92,7 +91,6 @@ describe('requireAuth', () => {
       search: { redirect: '/admin' },
     });
 
-    // authStorage should have cleaned up the malformed entry
     expect(localStorage.getItem(KEY)).toBeNull();
   });
 
@@ -116,7 +114,6 @@ describe('requireAuth', () => {
   it('allows reusing the same guard across multiple calls', () => {
     const guard = requireAuth();
 
-    // First call — no token, should redirect
     let thrown1: unknown;
     try {
       guard({ location: { pathname: '/admin' } });
@@ -125,7 +122,6 @@ describe('requireAuth', () => {
     }
     expect(isRedirect(thrown1)).toBe(true);
 
-    // Store a valid token
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-05-25T12:00:00Z'));
 
@@ -135,7 +131,6 @@ describe('requireAuth', () => {
     };
     localStorage.setItem(KEY, JSON.stringify(valid));
 
-    // Second call — valid token, should pass
     expect(() => guard({ location: { pathname: '/admin' } })).not.toThrow();
   });
 });

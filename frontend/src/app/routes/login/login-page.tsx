@@ -1,7 +1,6 @@
-import { createRoute, useNavigate } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApiError, NetworkError } from 'src/shared/api/api-error';
 import { useLogin } from 'src/shared/api/hooks';
 import { Button } from 'src/shared/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from 'src/shared/components/ui/card';
@@ -10,59 +9,11 @@ import { Input } from 'src/shared/components/ui/input';
 import { useZodForm } from 'src/shared/hooks/use-zod-form';
 import { authStorage } from 'src/shared/lib/auth-storage';
 import { loginSchema } from 'src/shared/lib/login-schema';
-import { rootRoute } from './__root';
+import { loginErrorKey, resolveRedirect } from './login-helpers';
+import { loginRoute } from './route';
+import { useBanner } from './use-banner';
 
-/* ------------------------------------------------------------------ */
-/*  helper: resolve redirect target with open-redirect protection      */
-/* ------------------------------------------------------------------ */
-
-/**
- * Resolve the post-login redirect target from a search parameter.
- * Blocks open redirects: external URLs, protocol-relative URLs, and
- * non-absolute paths all fall back to the default `/admin`.
- */
-export function resolveRedirect(redirect?: string): string {
-  if (!redirect) return '/admin';
-  // Block protocol-relative and absolute URLs (open redirect prevention)
-  if (redirect.includes('://') || redirect.includes('//')) return '/admin';
-  // Only allow local absolute paths
-  if (!redirect.startsWith('/')) return '/admin';
-  return redirect;
-}
-
-/* ------------------------------------------------------------------ */
-/*  helper: classify login error → i18n key                           */
-/* ------------------------------------------------------------------ */
-
-export function loginErrorKey(error: unknown): string {
-  if (error instanceof NetworkError) return 'error.networkError';
-  if (error instanceof DOMException && error.name === 'AbortError') return 'error.timeout';
-  if (error instanceof ApiError) {
-    if (error.status >= 500) return 'error.serverError';
-    return 'login.errors.invalidCredentials';
-  }
-  return 'toast.unknownError';
-}
-
-/* ------------------------------------------------------------------ */
-/*  internal hook: banner state with stable setter reference           */
-/* ------------------------------------------------------------------ */
-
-function useBanner(): [string | null, (v: string | null) => void] {
-  const [key, setKey] = useState<string | null>(null);
-
-  const setBannerKey = useCallback((v: string | null) => {
-    setKey(v);
-  }, []);
-
-  return [key, setBannerKey] as const;
-}
-
-/* ------------------------------------------------------------------ */
-/*  component                                                         */
-/* ------------------------------------------------------------------ */
-
-function LoginPage() {
+export function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const login = useLogin();
@@ -70,7 +21,6 @@ function LoginPage() {
   const { redirect } = loginRoute.useSearch();
   const target = resolveRedirect(redirect);
 
-  // React to auth changes across tabs — redirect when token appears
   const [hasToken, setHasToken] = useState(() => !!authStorage.get());
 
   useEffect(() => {
@@ -85,7 +35,6 @@ function LoginPage() {
     });
   }, []);
 
-  // All hooks called unconditionally (Rules of Hooks) before conditional render
   const form = useZodForm(loginSchema);
 
   const watchedUsername = form.watch('username');
@@ -107,7 +56,6 @@ function LoginPage() {
     }
   });
 
-  // Guard: skip rendering the form when already logged in
   if (hasToken) {
     return null;
   }
@@ -191,18 +139,3 @@ function LoginPage() {
     </div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/*  route export                                                      */
-/* ------------------------------------------------------------------ */
-
-export const loginRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/login',
-  validateSearch: (search: Record<string, unknown>) => ({
-    redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
-  }),
-  component: LoginPage,
-});
-
-export default loginRoute;

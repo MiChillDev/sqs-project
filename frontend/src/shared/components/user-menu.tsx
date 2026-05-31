@@ -26,7 +26,7 @@ export function UserMenu() {
         <DropdownMenuItem
           onSelect={() => {
             authStorage.clear();
-            navigate({ to: '/login' });
+            navigate({ to: '/login', search: { redirect: undefined } });
           }}
         >
           {t('admin.logout')}
