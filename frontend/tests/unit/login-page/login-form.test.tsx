@@ -1,3 +1,4 @@
+import './mocks';
 import {
   ApiError,
   afterEach,
@@ -6,6 +7,7 @@ import {
   describe,
   enTranslation,
   expect,
+  fillLoginForm,
   it,
   mockAuthStorageGet,
   mockAuthStorageSet,
@@ -31,7 +33,7 @@ describe('LoginPage', () => {
     mockAuthStorageSet.mockReset();
     mockAuthStorageGet.mockReset();
     mockAuthStorageGet.mockReturnValue(null);
-    mockUseSearch(undefined);
+    mockUseSearch();
   });
 
   afterEach(() => {
@@ -62,19 +64,13 @@ describe('LoginPage', () => {
   });
 
   it('submits valid form → calls mutateAsync, stores token, and navigates to /admin', async () => {
-    const user = userEvent.setup();
-
     mockLoginMutation.mutateAsync.mockResolvedValue({
       token: 'tok',
       expiresAt: '2026-06-25T10:30:00',
     });
 
     renderComponent();
-
-    await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'john');
-    await user.type(screen.getByLabelText(enTranslation.login.fields.password), 'secret');
-
-    await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+    await fillLoginForm();
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith({ to: '/admin' });
@@ -82,8 +78,6 @@ describe('LoginPage', () => {
   });
 
   it('shows invalid credentials banner on 404; does NOT expose backend message', async () => {
-    const user = userEvent.setup();
-
     mockLoginMutation.mutateAsync.mockRejectedValue(
       new ApiError(404, 'Not Found', {
         code: 404,
@@ -92,10 +86,7 @@ describe('LoginPage', () => {
     );
 
     renderComponent();
-
-    await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'baduser');
-    await user.type(screen.getByLabelText(enTranslation.login.fields.password), 'badpass');
-    await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+    await fillLoginForm('baduser', 'badpass');
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(
@@ -107,15 +98,10 @@ describe('LoginPage', () => {
   });
 
   it('shows server error banner on 500 ApiError', async () => {
-    const user = userEvent.setup();
-
     mockLoginMutation.mutateAsync.mockRejectedValue(new ApiError(500, 'Server Error', {}));
 
     renderComponent();
-
-    await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'john');
-    await user.type(screen.getByLabelText(enTranslation.login.fields.password), 'secret');
-    await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+    await fillLoginForm();
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(enTranslation.error.serverError);
@@ -123,15 +109,10 @@ describe('LoginPage', () => {
   });
 
   it('shows network error banner on NetworkError', async () => {
-    const user = userEvent.setup();
-
     mockLoginMutation.mutateAsync.mockRejectedValue(new NetworkError(new Error('Failed')));
 
     renderComponent();
-
-    await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'john');
-    await user.type(screen.getByLabelText(enTranslation.login.fields.password), 'secret');
-    await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+    await fillLoginForm();
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(enTranslation.error.networkError);
@@ -139,15 +120,10 @@ describe('LoginPage', () => {
   });
 
   it('shows timeout error banner on DOMException AbortError', async () => {
-    const user = userEvent.setup();
-
     mockLoginMutation.mutateAsync.mockRejectedValue(new DOMException('Aborted', 'AbortError'));
 
     renderComponent();
-
-    await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'john');
-    await user.type(screen.getByLabelText(enTranslation.login.fields.password), 'secret');
-    await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+    await fillLoginForm();
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(enTranslation.error.timeout);
@@ -155,15 +131,10 @@ describe('LoginPage', () => {
   });
 
   it('clears banner when any field changes after an error', async () => {
-    const user = userEvent.setup();
-
     mockLoginMutation.mutateAsync.mockRejectedValue(new ApiError(404, 'Not Found', {}));
 
     renderComponent();
-
-    await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'john');
-    await user.type(screen.getByLabelText(enTranslation.login.fields.password), 'secret');
-    await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+    await fillLoginForm();
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(
@@ -171,6 +142,7 @@ describe('LoginPage', () => {
       );
     });
 
+    const user = userEvent.setup();
     await user.type(screen.getByLabelText(enTranslation.login.fields.username), 'a');
 
     await waitFor(() => {

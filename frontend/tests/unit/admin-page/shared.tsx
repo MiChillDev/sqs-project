@@ -1,71 +1,43 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
-import { ApiError, NetworkError } from 'src/shared/api/api-error';
-import type { AuthStorageValue } from 'src/shared/lib/auth-storage';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import enTranslation from '../../../public/locales/en/translation.json';
-
-const { mockNavigate } = vi.hoisted(() => ({
-  mockNavigate: vi.fn(),
-}));
-
-const { mockAuthStorageClear, mockAuthStorageGet } = vi.hoisted(() => ({
-  mockAuthStorageClear: vi.fn(),
-  mockAuthStorageGet: vi.fn<() => AuthStorageValue | null>(() => ({
-    token: 'valid-token',
-    expiresAt: '2099-06-25T10:30:00',
-  })),
-}));
-
-const mockCreateJokeMutation = {
-  mutate: vi.fn(),
-  isPending: false,
-};
-
-const mockSourceJokeQuery = {
-  refetch: vi.fn(),
-  isFetching: false,
-  data: undefined as { content: string } | undefined,
-  error: null as Error | null,
-};
-
-vi.mock('src/shared/lib/auth-storage', () => ({
-  authStorage: {
-    get: mockAuthStorageGet,
-    set: vi.fn(),
-    clear: mockAuthStorageClear,
-  },
-}));
-
-vi.mock('src/shared/api/hooks', () => ({
-  useCreateJoke: () => mockCreateJokeMutation,
-  useSourceJoke: () => mockSourceJokeQuery,
-}));
-
-function getTranslation(key: string, translations: Record<string, unknown>): string {
-  const result = key.split('.').reduce<unknown>((obj, part) => {
-    if (obj && typeof obj === 'object' && part in obj) {
-      return (obj as Record<string, unknown>)[part];
-    }
-    return undefined;
-  }, translations);
-  return typeof result === 'string' ? result : key;
-}
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => getTranslation(key, enTranslation),
-    i18n: { language: 'en' },
-  }),
-}));
-
-vi.mock('@tanstack/react-router', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@tanstack/react-router')>();
-  return { ...actual, useNavigate: () => mockNavigate };
-});
-
 import adminRoute from 'src/app/routes/admin';
+import { vi } from 'vitest';
+
+export { ApiError, NetworkError } from 'src/shared/api/api-error';
+
+export {
+  afterEach,
+  beforeEach,
+  cleanup,
+  describe,
+  expect,
+  it,
+  waitFor,
+} from '../shared/test-utils';
+
+import { render, screen, userEvent } from '../shared/test-utils';
+
+const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
+  mockReset: () => void;
+  toHaveBeenCalledWith: (args: unknown) => void;
+};
+const mockAuthStorageGet = (globalThis as Record<string, unknown>).__adminMockAuthStorageGet as {
+  mockReset: () => void;
+  mockReturnValue: (v: unknown) => void;
+};
+const mockAuthStorageClear = (globalThis as Record<string, unknown>)
+  .__adminMockAuthStorageClear as {
+  mockReset: () => void;
+};
+const mockCreateJokeMutation = (globalThis as Record<string, unknown>).__mockCreateJokeMutation as {
+  mutate: ReturnType<typeof vi.fn>;
+  isPending: boolean;
+};
+const mockSourceJokeQuery = (globalThis as Record<string, unknown>).__mockSourceJokeQuery as {
+  refetch: ReturnType<typeof vi.fn>;
+  isFetching: boolean;
+  data: { content: string } | undefined;
+  error: Error | null;
+};
 
 function renderComponent() {
   const Component = adminRoute.options.component as ComponentType;
@@ -83,27 +55,49 @@ function resetMocks() {
   mockAuthStorageClear.mockReset();
 }
 
+/** Helper: fill the joke creation form and click submit. Returns the user instance. */
+async function fillJokeFormAndSubmit(content: string, externalId?: string) {
+  const user = userEvent.setup();
+  await user.type(screen.getByLabelText('Content'), content);
+  if (externalId !== undefined) {
+    await user.type(screen.getByLabelText('External ID'), externalId);
+  }
+  await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+  return user;
+}
+
+/** Helper: set up mockCreateJokeMutation to call onSuccess with the given data. */
+function mockJokeMutationSuccess(data: unknown) {
+  mockCreateJokeMutation.mutate = vi
+    .fn()
+    .mockImplementation((_vars: unknown, opts?: { onSuccess?: (d: unknown) => void }) => {
+      opts?.onSuccess?.(data);
+    });
+}
+
+/** Helper: set up mockCreateJokeMutation to call onError with the given error. */
+function mockJokeMutationError(error: Error) {
+  mockCreateJokeMutation.mutate = vi
+    .fn()
+    .mockImplementation((_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
+      opts?.onError?.(error);
+    });
+}
+
 export {
-  ApiError,
   adminRoute,
-  afterEach,
-  beforeEach,
-  cleanup,
-  describe,
-  enTranslation,
-  expect,
-  it,
+  fillJokeFormAndSubmit,
   mockAuthStorageClear,
   mockAuthStorageGet,
   mockCreateJokeMutation,
+  mockJokeMutationError,
+  mockJokeMutationSuccess,
   mockNavigate,
   mockSourceJokeQuery,
-  NetworkError,
   render,
   renderComponent,
   resetMocks,
   screen,
   userEvent,
   vi,
-  waitFor,
 };

@@ -6,6 +6,33 @@ import type { AuthStorageValue } from '../../src/shared/lib/auth-storage';
 
 const KEY = 'sqs.auth';
 
+function expectRedirect(pathname: string) {
+  const guard = requireAuth();
+
+  let thrown: unknown;
+  try {
+    guard({ location: { pathname } });
+  } catch (error) {
+    thrown = error;
+  }
+
+  expect(isRedirect(thrown)).toBe(true);
+  return thrown;
+}
+
+function expectNoRedirect(pathname: string) {
+  const guard = requireAuth();
+  expect(() => guard({ location: { pathname } })).not.toThrow();
+}
+
+function expectRedirectMatch(pathname: string, redirectPath: string) {
+  const thrown = expectRedirect(pathname);
+  expect((thrown as Record<string, unknown>).options).toMatchObject({
+    to: '/login',
+    search: { redirect: redirectPath },
+  });
+}
+
 describe('requireAuth', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -25,26 +52,11 @@ describe('requireAuth', () => {
     };
     localStorage.setItem(KEY, JSON.stringify(valid));
 
-    const guard = requireAuth();
-
-    expect(() => guard({ location: { pathname: '/admin' } })).not.toThrow();
+    expectNoRedirect('/admin');
   });
 
   it('redirects to /login?redirect=/admin when no token exists', () => {
-    const guard = requireAuth();
-
-    let thrown: unknown;
-    try {
-      guard({ location: { pathname: '/admin' } });
-    } catch (error) {
-      thrown = error;
-    }
-
-    expect(isRedirect(thrown)).toBe(true);
-    expect((thrown as Record<string, unknown>).options).toMatchObject({
-      to: '/login',
-      search: { redirect: '/admin' },
-    });
+    expectRedirectMatch('/admin', '/admin');
   });
 
   it('redirects when token is expired (authStorage auto-cleans)', () => {
@@ -57,70 +69,31 @@ describe('requireAuth', () => {
     };
     localStorage.setItem(KEY, JSON.stringify(expired));
 
-    const guard = requireAuth();
-
-    let thrown: unknown;
-    try {
-      guard({ location: { pathname: '/admin' } });
-    } catch (error) {
-      thrown = error;
-    }
-
-    expect(isRedirect(thrown)).toBe(true);
-    expect((thrown as Record<string, unknown>).options).toMatchObject({
-      to: '/login',
-      search: { redirect: '/admin' },
-    });
+    expectRedirectMatch('/admin', '/admin');
   });
 
   it('redirects when localStorage contains malformed JSON', () => {
     localStorage.setItem(KEY, 'this-is-not-json');
 
-    const guard = requireAuth();
-
-    let thrown: unknown;
-    try {
-      guard({ location: { pathname: '/admin' } });
-    } catch (error) {
-      thrown = error;
-    }
-
-    expect(isRedirect(thrown)).toBe(true);
-    expect((thrown as Record<string, unknown>).options).toMatchObject({
-      to: '/login',
-      search: { redirect: '/admin' },
-    });
+    expectRedirectMatch('/admin', '/admin');
 
     expect(localStorage.getItem(KEY)).toBeNull();
   });
 
   it('includes the correct redirect path in the search params', () => {
-    const guard = requireAuth();
-
-    let thrown: unknown;
-    try {
-      guard({ location: { pathname: '/secure/dashboard' } });
-    } catch (error) {
-      thrown = error;
-    }
-
-    expect(isRedirect(thrown)).toBe(true);
-    expect((thrown as Record<string, unknown>).options).toMatchObject({
-      to: '/login',
-      search: { redirect: '/secure/dashboard' },
-    });
+    expectRedirectMatch('/secure/dashboard', '/secure/dashboard');
   });
 
   it('allows reusing the same guard across multiple calls', () => {
     const guard = requireAuth();
 
-    let thrown1: unknown;
+    let thrown: unknown;
     try {
       guard({ location: { pathname: '/admin' } });
     } catch (error) {
-      thrown1 = error;
+      thrown = error;
     }
-    expect(isRedirect(thrown1)).toBe(true);
+    expect(isRedirect(thrown)).toBe(true);
 
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-05-25T12:00:00Z'));

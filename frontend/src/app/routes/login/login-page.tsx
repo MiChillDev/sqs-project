@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLogin } from 'src/shared/api/hooks';
@@ -10,7 +10,6 @@ import { useZodForm } from 'src/shared/hooks/use-zod-form';
 import { authStorage } from 'src/shared/lib/auth-storage';
 import { loginSchema } from 'src/shared/lib/login-schema';
 import { loginErrorKey, resolveRedirect } from './login-helpers';
-import { loginRoute } from './route';
 import { useBanner } from './use-banner';
 
 export function LoginPage() {
@@ -18,7 +17,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const login = useLogin();
 
-  const { redirect } = loginRoute.useSearch();
+  const { redirect } = useSearch({ from: '/login' });
   const target = resolveRedirect(redirect);
 
   const [hasToken, setHasToken] = useState(() => !!authStorage.get());

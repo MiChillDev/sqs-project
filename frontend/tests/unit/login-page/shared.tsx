@@ -1,67 +1,47 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
-import { ApiError, NetworkError } from 'src/shared/api/api-error';
-import type { AuthStorageValue } from 'src/shared/lib/auth-storage';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import loginRoute from 'src/app/routes/login';
+import { vi } from 'vitest';
+
+export { ApiError, NetworkError } from 'src/shared/api/api-error';
+
 import enTranslation from '../../../public/locales/en/translation.json';
 
-const { mockNavigate } = vi.hoisted(() => ({
-  mockNavigate: vi.fn(),
-}));
+export {
+  afterEach,
+  beforeEach,
+  cleanup,
+  describe,
+  expect,
+  it,
+} from '../shared/test-utils';
 
-const { mockAuthStorageSet, mockAuthStorageGet } = vi.hoisted(() => ({
-  mockAuthStorageSet: vi.fn(),
-  mockAuthStorageGet: vi.fn<() => AuthStorageValue | null>(() => null),
-}));
+import { render, screen, userEvent, waitFor } from '../shared/test-utils';
 
-vi.mock('src/shared/lib/auth-storage', () => ({
-  authStorage: {
-    get: mockAuthStorageGet,
-    set: mockAuthStorageSet,
-    clear: vi.fn(),
-    subscribe: vi.fn(() => vi.fn()),
-  },
-}));
-
-const mockLoginMutation = {
-  mutate: vi.fn(),
-  mutateAsync: vi.fn(),
-  isPending: false,
-  error: null as Error | null,
-  data: undefined as { token: string; expiresAt: string } | undefined,
+const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
+  mockReset: () => void;
+  toHaveBeenCalledWith: (args: unknown) => void;
+};
+const mockAuthStorageGet = (globalThis as Record<string, unknown>).__loginMockAuthStorageGet as {
+  mockReset: () => void;
+  mockReturnValue: (v: unknown) => void;
+};
+const mockAuthStorageSet = (globalThis as Record<string, unknown>).__loginMockAuthStorageSet as {
+  mockReset: () => void;
+};
+const mockLoginMutation = (globalThis as Record<string, unknown>).__mockLoginMutation as {
+  mutate: ReturnType<typeof vi.fn>;
+  mutateAsync: ReturnType<typeof vi.fn>;
+  isPending: boolean;
+  error: Error | null;
+  data: { token: string; expiresAt: string } | undefined;
+};
+const gMockUseSearch = (globalThis as Record<string, unknown>).__mockUseSearch as {
+  mockReturnValue: (v: unknown) => void;
+  mockReset: () => void;
 };
 
-vi.mock('src/shared/api/hooks', () => ({
-  useLogin: () => mockLoginMutation,
-}));
-
-function getTranslation(key: string, translations: Record<string, unknown>): string {
-  const result = key.split('.').reduce<unknown>((obj, part) => {
-    if (obj && typeof obj === 'object' && part in obj) {
-      return (obj as Record<string, unknown>)[part];
-    }
-    return undefined;
-  }, translations);
-  return typeof result === 'string' ? result : key;
-}
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => getTranslation(key, enTranslation),
-    i18n: { language: 'en' },
-  }),
-}));
-
-vi.mock('@tanstack/react-router', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@tanstack/react-router')>();
-  return { ...actual, useNavigate: () => mockNavigate };
-});
-
-import loginRoute from 'src/app/routes/login';
-
 function mockUseSearch(redirect: string | undefined = undefined) {
-  return vi.spyOn(loginRoute, 'useSearch').mockReturnValue({ redirect });
+  gMockUseSearch.mockReturnValue({ redirect });
 }
 
 function renderComponent() {
@@ -69,22 +49,36 @@ function renderComponent() {
   return render(<Component />);
 }
 
+async function fillLoginForm(username = 'john', password = 'secret') {
+  const user = userEvent.setup();
+  await user.type(screen.getByLabelText(enTranslation.login.fields.username), username);
+  await user.type(screen.getByLabelText(enTranslation.login.fields.password), password);
+  await user.click(screen.getByRole('button', { name: enTranslation.login.submit }));
+}
+
+async function loginAndExpectRedirect(searchParam: string | undefined, expectedTo: string) {
+  mockUseSearch(searchParam);
+  mockLoginMutation.mutateAsync.mockResolvedValue({
+    token: 'tok',
+    expiresAt: '2026-06-25T10:30:00',
+  });
+  renderComponent();
+  await fillLoginForm();
+  await waitFor(() => {
+    expect(mockNavigate).toHaveBeenCalledWith({ to: expectedTo });
+  });
+}
+
 export {
-  ApiError,
-  afterEach,
-  beforeEach,
-  cleanup,
-  describe,
   enTranslation,
-  expect,
-  it,
+  fillLoginForm,
+  loginAndExpectRedirect,
   loginRoute,
   mockAuthStorageGet,
   mockAuthStorageSet,
   mockLoginMutation,
   mockNavigate,
   mockUseSearch,
-  NetworkError,
   render,
   renderComponent,
   screen,

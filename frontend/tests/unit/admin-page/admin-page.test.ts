@@ -1,3 +1,4 @@
+import './mocks';
 import {
   adminRoute,
   afterEach,

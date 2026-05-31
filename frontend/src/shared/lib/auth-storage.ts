@@ -42,7 +42,7 @@ export const authStorage = {
       if (e.key !== KEY && e.key !== null) return;
       handler(authStorage.get());
     };
-    window.addEventListener('storage', listener);
-    return () => window.removeEventListener('storage', listener);
+    globalThis.addEventListener('storage', listener);
+    return () => globalThis.removeEventListener('storage', listener);
   },
 };

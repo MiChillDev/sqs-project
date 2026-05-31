@@ -1,16 +1,13 @@
+import './mocks';
 import {
-  ApiError,
   afterEach,
   beforeEach,
   cleanup,
   describe,
   expect,
   it,
-  mockAuthStorageClear,
   mockCreateJokeMutation,
-  mockNavigate,
   mockSourceJokeQuery,
-  NetworkError,
   renderComponent,
   resetMocks,
   screen,
@@ -87,78 +84,6 @@ describe('AdminPage — integration flows', () => {
       renderComponent();
 
       expect(screen.getByText('Chuck Norris uses ribbed lightbulbs.')).toBeInTheDocument();
-    });
-  });
-
-  describe('401 handling flow — API call fails with 401', () => {
-    it('clears token and redirects when joke creation returns 401', async () => {
-      const user = userEvent.setup();
-
-      mockCreateJokeMutation.mutate.mockImplementation(
-        (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-          opts?.onError?.(new ApiError(401, 'Unauthorized', {}));
-        }
-      );
-
-      renderComponent();
-
-      await user.type(screen.getByLabelText('Content'), 'A joke');
-      await user.click(screen.getByRole('button', { name: 'Create Joke' }));
-
-      await waitFor(() => {
-        expect(mockAuthStorageClear).toHaveBeenCalledOnce();
-        expect(mockNavigate).toHaveBeenCalledWith({
-          to: '/login',
-          search: { redirect: '/admin' },
-        });
-      });
-    });
-  });
-
-  describe('Network failure flow — error with retry, no redirect', () => {
-    it('shows error and retry, does NOT redirect on network failure in joke creation', async () => {
-      const user = userEvent.setup();
-
-      mockCreateJokeMutation.mutate.mockImplementation(
-        (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-          opts?.onError?.(new NetworkError(new Error('Offline')));
-        }
-      );
-
-      renderComponent();
-
-      await user.type(screen.getByLabelText('Content'), 'A joke');
-      await user.click(screen.getByRole('button', { name: 'Create Joke' }));
-
-      await waitFor(() => {
-        expect(screen.getByRole('alert')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
-      });
-
-      expect(mockAuthStorageClear).not.toHaveBeenCalled();
-      expect(mockNavigate).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Double-submit prevention (joke creation)', () => {
-    it('disables submit button while joke creation is pending', () => {
-      mockCreateJokeMutation.isPending = true;
-
-      renderComponent();
-
-      const button = screen.getByRole('button', { name: 'Submitting...' });
-      expect(button).toBeDisabled();
-    });
-  });
-
-  describe('Double-submit prevention (source joke)', () => {
-    it('disables button while source joke fetch is pending', () => {
-      mockSourceJokeQuery.isFetching = true;
-
-      renderComponent();
-
-      const button = screen.getByRole('button', { name: 'Fetching...' });
-      expect(button).toBeDisabled();
     });
   });
 });

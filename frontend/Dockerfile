@@ -23,6 +23,9 @@ COPY --chown=node:node index.html vite.config.* tsconfig*.json openapi.yaml ./
 COPY --chown=node:node plugins ./plugins
 COPY --chown=node:node src ./src
 COPY --chown=node:node public ./public
+USER root
+RUN corepack enable pnpm
+USER node
 RUN corepack pnpm build
 
 # Final image

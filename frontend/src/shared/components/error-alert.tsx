@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from './ui/button';
 
-export function ErrorAlert({ messageKey, onRetry }: { messageKey: string; onRetry?: () => void }) {
+export function ErrorAlert({
+  messageKey,
+  onRetry,
+}: Readonly<{ messageKey: string; onRetry?: () => void }>) {
   const { t } = useTranslation();
 
   return (

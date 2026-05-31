@@ -1,4 +1,2 @@
-import { fetchApi } from '../../../src/shared/api/api';
-import { ApiError, NetworkError } from '../../../src/shared/api/api-error';
-
-export { ApiError, fetchApi, NetworkError };
+export { fetchApi } from '../../../src/shared/api/api';
+export { ApiError, NetworkError } from '../../../src/shared/api/api-error';

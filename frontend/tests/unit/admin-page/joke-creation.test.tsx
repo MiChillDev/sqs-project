@@ -1,3 +1,4 @@
+import './mocks';
 import {
   ApiError,
   afterEach,
@@ -5,9 +6,12 @@ import {
   cleanup,
   describe,
   expect,
+  fillJokeFormAndSubmit,
   it,
   mockAuthStorageClear,
   mockCreateJokeMutation,
+  mockJokeMutationError,
+  mockJokeMutationSuccess,
   mockNavigate,
   NetworkError,
   renderComponent,
@@ -30,12 +34,9 @@ describe('JokeCreationSection', () => {
   });
 
   it('submits valid form → calls mutate with form data', async () => {
-    const user = userEvent.setup();
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.type(screen.getByLabelText('External ID'), 'ext-123');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke', 'ext-123');
 
     await waitFor(() => {
       expect(mockCreateJokeMutation.mutate).toHaveBeenCalledWith(
@@ -49,11 +50,9 @@ describe('JokeCreationSection', () => {
   });
 
   it('submits with empty externalId when field is left blank', async () => {
-    const user = userEvent.setup();
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(mockCreateJokeMutation.mutate).toHaveBeenCalledWith(
@@ -64,18 +63,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('displays created joke content on success', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onSuccess?: (data: unknown) => void }) => {
-        opts?.onSuccess?.({ id: '1', externalId: 'ext-1', content: 'Created joke text!' });
-      }
-    );
+    mockJokeMutationSuccess({ id: '1', externalId: 'ext-1', content: 'Created joke text!' });
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(screen.getByText('Created joke text!')).toBeInTheDocument();
@@ -83,18 +75,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('clears form after successful submission', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onSuccess?: (data: unknown) => void }) => {
-        opts?.onSuccess?.({ id: '1', externalId: 'ext-1', content: 'Joke' });
-      }
-    );
+    mockJokeMutationSuccess({ id: '1', externalId: 'ext-1', content: 'Joke' });
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(screen.getByLabelText('Content')).toHaveValue('');
@@ -102,18 +87,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('displays server error message on ApiError 500', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-        opts?.onError?.(new ApiError(500, 'Server Error', {}));
-      }
-    );
+    mockJokeMutationError(new ApiError(500, 'Server Error', {}));
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Something went wrong');
@@ -121,18 +99,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('displays network error message on NetworkError', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-        opts?.onError?.(new NetworkError(new Error('Failed')));
-      }
-    );
+    mockJokeMutationError(new NetworkError(new Error('Failed')));
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Unable to connect');
@@ -140,18 +111,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('clears auth and redirects to /login on 401', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-        opts?.onError?.(new ApiError(401, 'Unauthorized', {}));
-      }
-    );
+    mockJokeMutationError(new ApiError(401, 'Unauthorized', {}));
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(mockAuthStorageClear).toHaveBeenCalledOnce();
@@ -178,18 +142,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('shows retry button on non-401 error', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-        opts?.onError?.(new ApiError(500, 'Server Error', {}));
-      }
-    );
+    mockJokeMutationError(new ApiError(500, 'Server Error', {}));
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -198,18 +155,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('retry button resubmits the form data', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-        opts?.onError?.(new NetworkError(new Error('Failed')));
-      }
-    );
+    mockJokeMutationError(new NetworkError(new Error('Failed')));
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    const user = await fillJokeFormAndSubmit('A funny joke');
 
     const retryButton = await screen.findByRole('button', { name: 'Retry' });
     expect(mockCreateJokeMutation.mutate).toHaveBeenCalledTimes(1);
@@ -227,18 +177,11 @@ describe('JokeCreationSection', () => {
   });
 
   it('no retry button on 401 error (redirect instead)', async () => {
-    const user = userEvent.setup();
-
-    mockCreateJokeMutation.mutate.mockImplementation(
-      (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-        opts?.onError?.(new ApiError(401, 'Unauthorized', {}));
-      }
-    );
+    mockJokeMutationError(new ApiError(401, 'Unauthorized', {}));
 
     renderComponent();
 
-    await user.type(screen.getByLabelText('Content'), 'A funny joke');
-    await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+    await fillJokeFormAndSubmit('A funny joke');
 
     await waitFor(() => {
       expect(mockAuthStorageClear).toHaveBeenCalledOnce();
@@ -250,18 +193,11 @@ describe('JokeCreationSection', () => {
 
   describe('edge case: network failure preserves token (no redirect)', () => {
     it('does NOT redirect on NetworkError', async () => {
-      const user = userEvent.setup();
-
-      mockCreateJokeMutation.mutate.mockImplementation(
-        (_vars: unknown, opts?: { onError?: (e: Error) => void }) => {
-          opts?.onError?.(new NetworkError(new Error('Failed')));
-        }
-      );
+      mockJokeMutationError(new NetworkError(new Error('Failed')));
 
       renderComponent();
 
-      await user.type(screen.getByLabelText('Content'), 'A funny joke');
-      await user.click(screen.getByRole('button', { name: 'Create Joke' }));
+      await fillJokeFormAndSubmit('A funny joke');
 
       await waitFor(() => {
         expect(screen.getByRole('alert')).toBeInTheDocument();

@@ -18,10 +18,12 @@ export function getApiBaseUrl(): string {
 
 const DEFAULT_TIMEOUT_MS = 10000;
 
-export async function fetchApi<T>(
-  path: string,
-  options?: RequestInit & { timeout?: number; auth?: boolean }
-): Promise<T> {
+interface AbortSetup {
+  signal: AbortSignal;
+  cleanup: () => void;
+}
+
+function createAbortSignal(options?: RequestInit & { timeout?: number }): AbortSetup {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), options?.timeout ?? DEFAULT_TIMEOUT_MS);
 
@@ -32,21 +34,61 @@ export async function fetchApi<T>(
     options?.signal?.addEventListener('abort', onCallerAbort, { once: true });
   }
 
-  try {
-    const headers = new Headers(options?.headers);
-    if (options?.auth) {
-      const stored = authStorage.get();
-      if (stored) {
-        headers.set('Authorization', `Bearer ${stored.token}`);
-      }
+  return {
+    signal: controller.signal,
+    cleanup: () => {
+      clearTimeout(timeoutId);
+      options?.signal?.removeEventListener('abort', onCallerAbort);
+    },
+  };
+}
+
+function buildHeaders(options?: RequestInit & { auth?: boolean }): Headers {
+  const headers = new Headers(options?.headers);
+  if (options?.auth) {
+    const stored = authStorage.get();
+    if (stored) {
+      headers.set('Authorization', `Bearer ${stored.token}`);
     }
+  }
+  return headers;
+}
+
+async function parseResponseBody(response: Response): Promise<unknown> {
+  let body: unknown;
+  try {
+    body = await response.json();
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') throw err;
+    // response body not JSON
+  }
+
+  if (!response.ok) {
+    throw new ApiError(response.status, response.statusText, body);
+  }
+
+  if (body === undefined) {
+    throw new ApiError(response.status, 'Invalid JSON response from server');
+  }
+
+  return body;
+}
+
+export async function fetchApi<T>(
+  path: string,
+  options?: RequestInit & { timeout?: number; auth?: boolean }
+): Promise<T> {
+  const { signal, cleanup } = createAbortSignal(options);
+
+  try {
+    const headers = buildHeaders(options);
 
     let response: Response;
     try {
       response = await fetch(`${getApiBaseUrl()}${path}`, {
         ...options,
         headers,
-        signal: controller.signal,
+        signal,
       });
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
@@ -55,25 +97,8 @@ export async function fetchApi<T>(
       throw new NetworkError(err instanceof Error ? err : undefined);
     }
 
-    if (!response.ok) {
-      let body: unknown;
-      try {
-        body = await response.json();
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') throw err;
-        // response body not JSON
-      }
-      throw new ApiError(response.status, response.statusText, body);
-    }
-
-    try {
-      return (await response.json()) as T;
-    } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') throw err;
-      throw new ApiError(response.status, 'Invalid JSON response from server');
-    }
+    return (await parseResponseBody(response)) as T;
   } finally {
-    clearTimeout(timeoutId);
-    options?.signal?.removeEventListener('abort', onCallerAbort);
+    cleanup();
   }
 }

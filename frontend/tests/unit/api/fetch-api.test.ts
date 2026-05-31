@@ -2,6 +2,22 @@
 
 import { ApiError, fetchApi, NetworkError } from './shared';
 
+function stubAbortableFetch() {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn().mockImplementation((_url: string, opts: { signal?: AbortSignal }) => {
+      return new Promise((_resolve, reject) => {
+        const onAbort = () => reject(new DOMException('The operation was aborted', 'AbortError'));
+        if (opts.signal?.aborted) {
+          onAbort();
+        } else {
+          opts.signal?.addEventListener('abort', onAbort, { once: true });
+        }
+      });
+    })
+  );
+}
+
 describe('fetchApi', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -140,19 +156,7 @@ describe('fetchApi', () => {
 
   it('throws DOMException AbortError on timeout', async () => {
     vi.useFakeTimers();
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockImplementation((_url: string, opts: { signal?: AbortSignal }) => {
-        return new Promise((_resolve, reject) => {
-          const onAbort = () => reject(new DOMException('The operation was aborted', 'AbortError'));
-          if (opts.signal?.aborted) {
-            onAbort();
-          } else {
-            opts.signal?.addEventListener('abort', onAbort, { once: true });
-          }
-        });
-      })
-    );
+    stubAbortableFetch();
 
     let caughtError: unknown;
     const fetchPromise = fetchApi('/api/v1/jokes', { timeout: 100 }).catch((err) => {
@@ -172,19 +176,7 @@ describe('fetchApi', () => {
     vi.useFakeTimers();
     const callerController = new AbortController();
 
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockImplementation((_url: string, opts: { signal?: AbortSignal }) => {
-        return new Promise((_resolve, reject) => {
-          const onAbort = () => reject(new DOMException('The operation was aborted', 'AbortError'));
-          if (opts.signal?.aborted) {
-            onAbort();
-          } else {
-            opts.signal?.addEventListener('abort', onAbort, { once: true });
-          }
-        });
-      })
-    );
+    stubAbortableFetch();
 
     let caughtError: unknown;
     const fetchPromise = fetchApi('/api/v1/jokes', {
@@ -206,19 +198,7 @@ describe('fetchApi', () => {
   it('caller signal aborts fetch and triggers timeout controller', async () => {
     const callerController = new AbortController();
 
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockImplementation((_url: string, opts: { signal?: AbortSignal }) => {
-        return new Promise((_resolve, reject) => {
-          const onAbort = () => reject(new DOMException('The operation was aborted', 'AbortError'));
-          if (opts.signal?.aborted) {
-            onAbort();
-          } else {
-            opts.signal?.addEventListener('abort', onAbort, { once: true });
-          }
-        });
-      })
-    );
+    stubAbortableFetch();
 
     callerController.abort();
 
