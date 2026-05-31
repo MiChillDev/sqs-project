@@ -10,7 +10,6 @@ test.describe('/demo/api page', () => {
     await expect(statusText).toContainText('UP');
   });
 
-  // TODO(#46): set up test config so there are jokes in the database to fetch
   test.skip('fetch joke button displays joke content', async ({ page }) => {
     await page.goto('/demo/api');
     const fetchBtn = page.getByTestId('fetch-joke-btn');
