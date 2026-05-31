@@ -36,7 +36,11 @@ function DemoApiPage() {
           <CardDescription>{t('connectivityTest.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button onClick={handleTest} disabled={healthQuery.isFetching}>
+          <Button
+            data-testid='health-check-btn'
+            onClick={handleTest}
+            disabled={healthQuery.isFetching}
+          >
             {healthQuery.isFetching
               ? t('connectivityTest.testing')
               : t('connectivityTest.testButton')}
@@ -45,7 +49,7 @@ function DemoApiPage() {
             <p className='mt-4 text-sm text-destructive'>{t('connectivityTest.error')}</p>
           )}
           {healthQuery.isSuccess && (
-            <p className='mt-4 text-sm text-green-600'>
+            <p data-testid='health-status' className='mt-4 text-sm text-green-600'>
               {t('connectivityTest.statusResponse')} {healthQuery.data.status}
               {': '}
               {healthQuery.data.message}
@@ -60,7 +64,11 @@ function DemoApiPage() {
           <CardDescription>{t('jokePreview.description')}</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
-          <Button onClick={() => jokeQuery.refetch()} disabled={jokeQuery.isFetching}>
+          <Button
+            data-testid='fetch-joke-btn'
+            onClick={() => jokeQuery.refetch()}
+            disabled={jokeQuery.isFetching}
+          >
             {jokeQuery.isFetching
               ? t('jokePreview.fetching')
               : jokeQuery.isSuccess
@@ -71,7 +79,10 @@ function DemoApiPage() {
             <p className='text-sm text-destructive'>{t('jokePreview.error')}</p>
           )}
           {jokeQuery.isSuccess && (
-            <blockquote className='border-l-4 border-primary pl-4 italic'>
+            <blockquote
+              data-testid='joke-content'
+              className='border-l-4 border-primary pl-4 italic'
+            >
               {jokeQuery.data.content}
             </blockquote>
           )}

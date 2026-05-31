@@ -64,7 +64,9 @@ function ComponentDemoPage() {
 
   return (
     <div className='mx-auto max-w-200 space-y-8 p-8'>
-      <h1 className='text-2xl font-bold'>{t('demo.title')}</h1>
+      <h1 data-testid='demo-heading' className='text-2xl font-bold'>
+        {t('demo.title')}
+      </h1>
 
       <Card>
         <CardHeader>
@@ -127,6 +129,7 @@ function ComponentDemoPage() {
         <CardContent>
           <div className='flex flex-wrap gap-2'>
             <Button
+              data-testid='btn-default'
               onClick={() =>
                 toast.success(t('demo.toasts.successTitle'), {
                   description: t('demo.toasts.successDescription'),
