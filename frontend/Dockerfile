@@ -14,7 +14,7 @@ USER node
 WORKDIR /tmp/app
 ENV HOME=/tmp/node-home \
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-ARG VITE_API_BASE_URL=/api
+ARG VITE_API_BASE_URL=
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 RUN mkdir -p "$HOME" /tmp/app
 COPY --from=deps --chown=node:node /tmp/app/node_modules ./node_modules
