@@ -7,7 +7,7 @@ RUN corepack pnpm install --frozen-lockfile
 FROM node:22-alpine AS build
 WORKDIR /tmp/app
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-ARG VITE_API_BASE_URL=
+ARG VITE_API_BASE_URL=/api
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 COPY --from=deps /tmp/app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
