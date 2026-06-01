@@ -22,22 +22,30 @@ describe('useLogin', () => {
   });
 
   it('posts credentials and returns TokenResponse on success', async () => {
-    const tokenResponse = { token: 'uuid-token', expiresAt: '2026-06-25T10:30:00' };
+    const tokenResponse = {
+      token: 'uuid-token',
+      expiresAt: '2026-06-25T10:30:00',
+    };
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve(tokenResponse),
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useLogin(), {
+      wrapper: createWrapper(),
+    });
 
-    const value = await result.current.mutateAsync({ username: 'admin', password: 'pass' });
+    const value = await result.current.mutateAsync({
+      username: 'admin',
+      password: 'pass',
+    });
 
     expect(value).toEqual(tokenResponse);
     expect(fetchMock).toHaveBeenCalledTimes(1);
 
     const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toMatch(/\/api\/v1\/auth\/login$/);
+    expect(url).toMatch(/\/v1\/auth\/login$/);
     expect(init.method).toBe('POST');
     expect((init.headers as Headers).get('Content-Type')).toBe('application/json');
     expect(init.body).toBe(JSON.stringify({ username: 'admin', password: 'pass' }));
@@ -53,10 +61,15 @@ describe('useLogin', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useLogin(), {
+      wrapper: createWrapper(),
+    });
 
     try {
-      await result.current.mutateAsync({ username: 'wrong', password: 'wrong' });
+      await result.current.mutateAsync({
+        username: 'wrong',
+        password: 'wrong',
+      });
       expect.unreachable('Should have thrown');
     } catch (error) {
       expect(error).toBeInstanceOf(ApiError);
@@ -67,7 +80,9 @@ describe('useLogin', () => {
   it('rejects with NetworkError on fetch failure', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
 
-    const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useLogin(), {
+      wrapper: createWrapper(),
+    });
 
     try {
       await result.current.mutateAsync({ username: 'admin', password: 'pass' });
