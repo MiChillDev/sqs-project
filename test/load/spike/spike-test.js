@@ -1,5 +1,5 @@
 import { sleep } from 'k6';
-import { getJokes, createJoke, getSourceJoke } from '../scripts/helpers.js';
+import { getJokes, createJoke, getSourceJoke, login } from '../helper.js';
 
 export const options = {
   scenarios: {
@@ -34,17 +34,22 @@ export const options = {
   },
 };
 
-export function getJokesScenario() {
-  getJokes();
+export function setup() {
+  const token = login();
+  return { token };
+}
+
+export function getJokesScenario(data) {
+  getJokes(data.token);
   sleep(1);
 }
 
-export function getSourceJokesScenario() {
-  getSourceJoke();
+export function getSourceJokesScenario(data) {
+  getSourceJoke(data.token);
   sleep(2); // slower to protect external API
 }
 
-export function createJokeScenario() {
-  createJoke();
+export function createJokeScenario(data) {
+  createJoke(data.token);
   sleep(1);
 }
