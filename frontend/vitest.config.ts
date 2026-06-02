@@ -11,7 +11,7 @@ export default defineConfig({
 			"src/**/__tests__/**/*.test.{ts,tsx}",
 		],
 		coverage: {
-			reporter: ["text", "html", "lcov"],
+			reporter: ["text", "html", ["lcov", { projectRoot: "../" }]],
 			provider: "v8",
 			thresholds: {
 				lines: 90,
