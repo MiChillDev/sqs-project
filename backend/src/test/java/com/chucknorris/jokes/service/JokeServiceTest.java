@@ -62,7 +62,7 @@ class JokeServiceTest {
 
         assertThat(res).isInstanceOf(Either.Left.class);
         if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus err)) {
-            assertThat(err.code()).isEqualTo(404);
+            assertThat(err.code()).isEqualTo(204);
         }
     }
 
