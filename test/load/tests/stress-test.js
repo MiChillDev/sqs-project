@@ -1,7 +1,7 @@
-import { sleep } from 'k6';
-import { getJokes, createJoke, getSourceJoke } from '../scripts/helpers.js';
+import { login, getJokes, createJoke, getSourceJoke } from '../helper.js';
+import { makeSetup, makeScenario, buildOptions } from '../loadtest-factory.js';
 
-export const options = {
+export const options = buildOptions({
   scenarios: {
     getJokes: {
       executor: 'ramping-vus',
@@ -30,23 +30,11 @@ export const options = {
       exec: 'createJokeScenario',
     },
   },
-  thresholds: {
-    http_req_duration: ['p(95)<600'],   // 95% der Requests < 600ms
-    http_req_failed: ['rate<0.05'],     // max. 5% Fehler
-  },
-};
+  p95Ms: 600,       // 95% der Requests < 600ms
+  failedRate: 0.05, // max. 5% Fehler
+});
 
-export function getJokesScenario() {
-  getJokes();
-  sleep(1);
-}
-
-export function getSourceJokesScenario() {
-  getSourceJoke();
-  sleep(2); // slower to protect external API
-}
-
-export function createJokeScenario() {
-  createJoke();
-  sleep(1);
-}
+export const setup = makeSetup(login);
+export const getJokesScenario = makeScenario(getJokes, 1);
+export const getSourceJokesScenario = makeScenario(getSourceJoke, 2);
+export const createJokeScenario = makeScenario(createJoke, 1);

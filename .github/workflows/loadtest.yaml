@@ -27,14 +27,14 @@ jobs:
           exit 1
 
       - name: Run baseline test
-        run: docker compose run --rm k6 run baseline/baseline-test.js
+        run: docker compose run --rm k6 run tests/baseline-test.js
 
       - name: Run stress test
-        run: docker compose run --rm k6 run stress/stress-test.js
+        run: docker compose run --rm k6 run tests/stress-test.js
 
       - name: Run spike test
         if: github.event_name == 'workflow_dispatch'
-        run: docker compose run --rm k6 run spike/spike-test.js
+        run: docker compose run --rm k6 run tests/spike-test.js
 
       - name: Stop services
         if: always()
