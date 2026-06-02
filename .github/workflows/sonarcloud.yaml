@@ -20,8 +20,8 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@fe779bf55ef683c9413269276a7588bb9cedf07a
         with:
-          java-version: "21"
-          distribution: "temurin"
+          java-version: '21'
+          distribution: 'temurin'
           cache: maven
 
       - name: Build backend + run tests (JaCoCo)
