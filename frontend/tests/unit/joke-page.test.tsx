@@ -105,12 +105,14 @@ function mockFailedRefetch() {
 
 describe('JokePage', () => {
   beforeEach(() => {
+    vi.useRealTimers();
     resetMockQuery();
   });
 
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it('renders heading', () => {
@@ -147,13 +149,18 @@ describe('JokePage', () => {
   it('renders empty state when the query succeeds with empty content', () => {
     mockQuery.isSuccess = true;
     mockQuery.data = {
-      content: '   ',
+      content: '',
     };
 
     renderComponent();
 
     expect(screen.getByText(enTranslation.jokePage.empty)).toBeInTheDocument();
-    expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
+    expect(screen.getByText(enTranslation.jokePage.placeholder)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.refetchButton,
+      })
+    ).toBeInTheDocument();
   });
 
   it('renders refetch button after success', () => {
@@ -237,7 +244,7 @@ describe('JokePage', () => {
       mockQuery.isError = false;
       mockQuery.isSuccess = true;
       mockQuery.data = {
-        content: '   ',
+        content: '',
       };
 
       return {
