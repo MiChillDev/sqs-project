@@ -1,11 +1,15 @@
 import { getNextCount, scheduleConfettiReset, shouldShowConfetti } from 'src/app/routes/joke-page';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // -----------------------------
 // TESTS
 // -----------------------------
 
 describe('joke-page helpers', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('increments count', () => {
     expect(getNextCount(0, 100)).toBe(1);
   });
@@ -22,19 +26,33 @@ describe('joke-page helpers', () => {
     expect(shouldShowConfetti(42, 100)).toBe(false);
   });
 
-  it('schedules confetti reset', () => {
+  it('schedules confetti reset with the default delay', () => {
     vi.useFakeTimers();
 
     const fn = vi.fn();
 
-    scheduleConfettiReset(fn, 1500);
+    scheduleConfettiReset(fn);
 
     expect(fn).not.toHaveBeenCalled();
 
-    vi.advanceTimersByTime(1500);
+    vi.advanceTimersByTime(1499);
+    expect(fn).not.toHaveBeenCalled();
 
+    vi.advanceTimersByTime(1);
     expect(fn).toHaveBeenCalledTimes(1);
+  });
 
-    vi.useRealTimers();
+  it('schedules confetti reset with a custom delay', () => {
+    vi.useFakeTimers();
+
+    const fn = vi.fn();
+
+    scheduleConfettiReset(fn, 2500);
+
+    vi.advanceTimersByTime(2499);
+    expect(fn).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(1);
+    expect(fn).toHaveBeenCalledTimes(1);
   });
 });

@@ -34,7 +34,6 @@ function JokePage() {
   const [hasFetched, setHasFetched] = useState(false);
 
   const jokeQuery = useRandomJoke();
-  const joke = jokeQuery.data?.content;
 
   const maxCount = 100;
   const [count, setCount] = useState(0);
@@ -125,8 +124,8 @@ function JokePage() {
           )}
 
           {/* SUCCESS */}
-          {jokeQuery.isSuccess && joke && (
-            <div className='text-3xl font-heading text-[#2C3E50]'>{joke}</div>
+          {jokeQuery.isSuccess && jokeText && (
+            <div className='text-3xl font-heading text-[#2C3E50]'>{jokeText}</div>
           )}
         </CardContent>
       </Card>

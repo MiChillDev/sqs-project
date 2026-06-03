@@ -2,7 +2,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
 import jokeRoute from 'src/app/routes/joke-page';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import enTranslation from '../../public/locales/en/translation.json';
 
 // -----------------------------
@@ -18,7 +18,7 @@ type MockQuery = {
   isError: boolean;
   isSuccess: boolean;
   isFetching: boolean;
-  refetch: ReturnType<typeof vi.fn>;
+  refetch: typeof refetchMock;
 };
 
 const mockQuery: MockQuery = {
@@ -51,8 +51,15 @@ vi.mock('src/shared/components/animations/confetti', () => ({
 
 function renderComponent() {
   const Component = jokeRoute.options.component as ComponentType;
-
   return render(<Component />);
+}
+
+function resetMockQuery() {
+  mockQuery.data = undefined;
+  mockQuery.isError = false;
+  mockQuery.isSuccess = false;
+  mockQuery.isFetching = false;
+  refetchMock.mockReset();
 }
 
 function getTranslation(key: string, translations: Record<string, unknown>): string {
@@ -67,31 +74,55 @@ function getTranslation(key: string, translations: Record<string, unknown>): str
   return typeof result === 'string' ? result : key;
 }
 
+function mockSuccessfulRefetch(content = 'Funny joke') {
+  refetchMock.mockImplementationOnce(async () => {
+    mockQuery.isError = false;
+    mockQuery.isSuccess = true;
+    mockQuery.data = { content };
+
+    return {
+      status: 'success' as const,
+      data: mockQuery.data,
+    };
+  });
+}
+
+function mockFailedRefetch() {
+  refetchMock.mockImplementationOnce(async () => {
+    mockQuery.isError = true;
+    mockQuery.isSuccess = false;
+    mockQuery.data = undefined;
+
+    return {
+      status: 'error' as const,
+    };
+  });
+}
+
 // -----------------------------
 // TESTS
 // -----------------------------
 
 describe('JokePage', () => {
+  beforeEach(() => {
+    resetMockQuery();
+  });
+
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
-
-    mockQuery.data = undefined;
-    mockQuery.isError = false;
-    mockQuery.isSuccess = false;
-    mockQuery.isFetching = false;
-  });
-
-  it('renders placeholder initially', () => {
-    renderComponent();
-
-    expect(screen.getByText(enTranslation.jokePage.placeholder)).toBeInTheDocument();
   });
 
   it('renders heading', () => {
     renderComponent();
 
     expect(screen.getByText(enTranslation.jokePage.heading)).toBeInTheDocument();
+  });
+
+  it('renders placeholder initially', () => {
+    renderComponent();
+
+    expect(screen.getByText(enTranslation.jokePage.placeholder)).toBeInTheDocument();
   });
 
   it('renders fetch button initially', () => {
@@ -104,35 +135,25 @@ describe('JokePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('fetches and displays joke successfully', async () => {
-    mockQuery.refetch.mockResolvedValue({
-      status: 'success',
-    });
-
-    mockQuery.isSuccess = true;
-    mockQuery.data = {
-      content: 'Funny joke',
-    };
-
-    renderComponent();
-
-    const button = screen.getByRole('button');
-
-    await userEvent.click(button);
-
-    await waitFor(() => {
-      expect(mockQuery.refetch).toHaveBeenCalled();
-    });
-
-    expect(screen.getByText('Funny joke')).toBeInTheDocument();
-  });
-
-  it('renders error message', () => {
+  it('renders error message when the query is in error state', () => {
     mockQuery.isError = true;
 
     renderComponent();
 
     expect(screen.getByText(enTranslation.jokePage.error)).toBeInTheDocument();
+    expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
+  });
+
+  it('renders empty state when the query succeeds with empty content', () => {
+    mockQuery.isSuccess = true;
+    mockQuery.data = {
+      content: '   ',
+    };
+
+    renderComponent();
+
+    expect(screen.getByText(enTranslation.jokePage.empty)).toBeInTheDocument();
+    expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
   });
 
   it('renders refetch button after success', () => {
@@ -150,60 +171,103 @@ describe('JokePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders fetching button text while loading', () => {
+  it('disables button while fetching', () => {
     mockQuery.isFetching = true;
 
     renderComponent();
 
     expect(
       screen.getByRole('button', {
-        name: enTranslation.jokePage.fetching,
+        name: enTranslation.jokePage.fetchButton,
       })
-    ).toBeInTheDocument();
+    ).toBeDisabled();
   });
 
-  it('disables button while fetching', () => {
-    mockQuery.isFetching = true;
+  it('fetches and displays joke successfully', async () => {
+    const user = userEvent.setup();
+    mockSuccessfulRefetch('Funny joke');
 
     renderComponent();
 
-    expect(screen.getByRole('button')).toBeDisabled();
-  });
-
-  it('increments counter after successful fetch', async () => {
-    mockQuery.refetch.mockResolvedValue({
-      status: 'success',
-    });
-
-    renderComponent();
-
-    expect(screen.getByText('0')).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button'));
+    await user.click(
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.fetchButton,
+      })
+    );
 
     await waitFor(() => {
-      expect(screen.getByText('1')).toBeInTheDocument();
+      expect(refetchMock).toHaveBeenCalledTimes(1);
     });
+
+    expect(screen.getByText('Funny joke')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.refetchButton,
+      })
+    ).toBeInTheDocument();
+
+    expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
   });
 
   it('does not increment counter on failed fetch', async () => {
-    mockQuery.refetch.mockResolvedValue({
-      status: 'error',
+    const user = userEvent.setup();
+    mockFailedRefetch();
+
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.fetchButton,
+      })
+    );
+
+    await waitFor(() => {
+      expect(refetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    expect(screen.getByText(enTranslation.jokePage.error)).toBeInTheDocument();
+    expect(screen.getByText('0')).toBeInTheDocument();
+  });
+
+  it('does not increment counter when a successful fetch returns an empty joke', async () => {
+    const user = userEvent.setup();
+    mockQuery.refetch.mockImplementationOnce(async () => {
+      mockQuery.isError = false;
+      mockQuery.isSuccess = true;
+      mockQuery.data = {
+        content: '   ',
+      };
+
+      return {
+        status: 'success' as const,
+        data: mockQuery.data,
+      };
     });
 
     renderComponent();
 
-    await userEvent.click(screen.getByRole('button'));
+    await user.click(
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.fetchButton,
+      })
+    );
 
     await waitFor(() => {
-      expect(screen.getByText('0')).toBeInTheDocument();
+      expect(refetchMock).toHaveBeenCalledTimes(1);
     });
+
+    expect(screen.getByText(enTranslation.jokePage.empty)).toBeInTheDocument();
+    expect(screen.getByText('0')).toBeInTheDocument();
   });
 
   it('applies animation classes while fetching', async () => {
+    const user = userEvent.setup();
+
     let resolvePromise: ((value: { status: string }) => void) | undefined;
 
-    mockQuery.refetch.mockImplementation(
+    mockQuery.refetch.mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolvePromise = resolve;
@@ -212,7 +276,11 @@ describe('JokePage', () => {
 
     const { container } = renderComponent();
 
-    await userEvent.click(screen.getByRole('button'));
+    await user.click(
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.fetchButton,
+      })
+    );
 
     expect(container.querySelector('.scale-95')).toBeInTheDocument();
 
