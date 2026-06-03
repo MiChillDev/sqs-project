@@ -26,9 +26,12 @@ public class JokeService extends BaseService {
 
     public Either<ErrorResultStatus, JokeDto> getRandomJoke() {
         return jokeRepository.getRandomJoke()
-                .validate(Optional::isPresent, new ErrorResultStatus(204, "No jokes found in the database"))
-                .map(Optional::get)
-                .map(joke -> new JokeDto(joke.getId(), joke.getExternalId(), joke.getContent()));
+                .map(optionalJoke -> optionalJoke
+                        .map(joke -> new JokeDto(
+                                joke.getId(),
+                                joke.getExternalId(),
+                                joke.getContent()))
+                        .orElse(JokeDto.empty()));
     }
 
     public Either<ErrorResultStatus, JokeDto> createJoke(CreateJokeDto input) {
