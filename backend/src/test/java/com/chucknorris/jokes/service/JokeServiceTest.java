@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -55,14 +56,16 @@ class JokeServiceTest {
     }
 
     @Test
-    void getRandomJoke_shouldReturnLeftWhenEmpty() {
+    void getRandomJoke_shouldReturnEmptyJokeWhenEmpty() {
         when(jokeRepository.getRandomJoke()).thenReturn(Either.right(Optional.empty()));
 
         Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
 
-        assertThat(res).isInstanceOf(Either.Left.class);
-        if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus err)) {
-            assertThat(err.code()).isEqualTo(204);
+        assertThat(res).isInstanceOf(Either.Right.class);
+        if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto joke)) {
+            assertNull(joke.id());
+            assertNull(joke.externalId());
+            assertNull(joke.content());
         }
     }
 
@@ -85,7 +88,8 @@ class JokeServiceTest {
     @Test
     void createJoke_shouldPropagateRepositoryError() {
         CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
-        when(jokeRepository.saveJoke(any(JokeEntity.class))).thenReturn(Either.left(new ErrorResultStatus(500, "db error")));
+        when(jokeRepository.saveJoke(any(JokeEntity.class)))
+                .thenReturn(Either.left(new ErrorResultStatus(500, "db error")));
 
         Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
 
