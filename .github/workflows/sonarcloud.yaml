@@ -48,6 +48,8 @@ jobs:
         working-directory: frontend
         run: |
           pwd
+          ls
+          ls ..
           find coverage -maxdepth 2 -type f | sort
 
       - name: SonarCloud Scan
