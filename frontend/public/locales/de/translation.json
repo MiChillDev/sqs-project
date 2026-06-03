@@ -133,7 +133,8 @@
 		"fetching": "Abrufen...",
 		"refetchButton": "Nächster Witz",
 		"error": "Witz konnte nicht abgerufen werden.",
-		"placeholder": "Klick auf den Button, um einen Witz abzufragen!"
+		"placeholder": "Klick auf den Button, um einen Witz abzufragen!",
+		"empty": "Sieht so aus, als gäbe es aktuell keine Witze...! Melde dich als Administrator an, um neue Witze hinzuzufügen."
 	},
 	"login": {
 		"title": "Anmelden",

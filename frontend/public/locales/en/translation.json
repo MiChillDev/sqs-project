@@ -133,7 +133,8 @@
 		"fetching": "Fetching...",
 		"refetchButton": "Get Another Joke",
 		"error": "Failed to fetch joke.",
-		"placeholder": "Click the button to fetch a joke!"
+		"placeholder": "Click the button to fetch a joke!",
+		"empty": "Seems like there aren't any jokes at the moment...! Login as admin to add new jokes."
 	},
 	"login": {
 		"title": "Sign in",
