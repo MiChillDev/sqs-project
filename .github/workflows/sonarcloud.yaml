@@ -40,25 +40,9 @@ jobs:
         working-directory: frontend
         run: pnpm install --frozen-lockfile
 
-      #- name: Run frontend tests with coverage
-      #  working-directory: frontend
-      #  run: pnpm test -- --coverage
-
-      - name: Run frontend tests with coverage (1)
+      - name: Run frontend tests with coverage
         working-directory: frontend
-        run: |
-          pnpm test -- --coverage
-          echo "===== AFTER TEST ====="
-          pwd
-          echo "find lcov.info:"
-          find . -name "lcov.info" || true
-          echo "find coverage:"
-          find . -name "coverage" || true
-
-      - name: Run frontend tests with coverage (2)
-        working-directory: frontend
-        run: |
-          pnpm vitest run --coverage --reporter=verbose
+        run: pnpm vitest --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995
