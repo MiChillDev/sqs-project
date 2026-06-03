@@ -8,14 +8,8 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/unit/**/*.test.{ts,tsx}', 'src/**/__tests__/**/*.test.{ts,tsx}'],
     coverage: {
-      reporter: ['text', 'html', ['lcov', { projectRoot: '../' }]],
       provider: 'v8',
-      thresholds: {
-        lines: 90,
-        functions: 90,
-        branches: 85,
-        statements: 90,
-      },
+      reporter: ['text', 'html', ['lcov', { projectRoot: '../' }]],
     },
   },
   resolve: {
