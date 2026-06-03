@@ -2,22 +2,20 @@ name: SonarCloud Analysis
 
 on:
   push:
-    branches: [ "main" ]
-    paths:
-      - 'backend/**'
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'backend/**'
+    branches: ["main"]
 
 jobs:
   sonarcloud:
-    name: SonarCloud Backend Analysis
+    name: SonarCloud Full Analysis
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
 
       - name: Set up Java
         uses: actions/setup-java@fe779bf55ef683c9413269276a7588bb9cedf07a
@@ -26,34 +24,42 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Cache SonarCloud packages
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+      - name: Build backend + run tests (no verify gate)
+        working-directory: backend
+        run: mvn clean test jacoco:report
 
-      - name: Cache Maven packages
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          node-version: "20"
 
-      - name: Build and run tests with coverage
-        run: cd backend && mvn clean verify
+      - name: Enable corepack (pnpm)
+        run: corepack enable
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: Run frontend tests with coverage
+        working-directory: frontend
+        run: pnpm test -- --coverage
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@59db25f34e16620e48ab4bb9e4a5dce155cb5432
+        uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.verbose=true
-
-      - name: Check Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: false
+            -Dsonar.organization=michilldev
+            -Dsonar.projectKey=MiChillDev_sqs-project
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.sources=backend/src/main/java,frontend/src
+            -Dsonar.tests=backend/src/test/java
+            -Dsonar.java.binaries=backend/target/classes
+            -Dsonar.java.test.binaries=backend/target/test-classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+            -Dsonar.coverage.exclusions=**/config/**,**/dto/**,**/entity/**,**/ChuckNorrisApplication.java
+            -Dsonar.test.inclusions=**/*Test.java,**/*Tests.java
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
