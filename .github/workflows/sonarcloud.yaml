@@ -42,7 +42,7 @@ jobs:
 
       - name: Run frontend tests with coverage
         working-directory: frontend
-        run: pnpm test --coverage
+        run: pnpm vitest run --config vitest.sonar.config.ts --coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@7006c4492b2e0ee0f816d36501671557c97f5995
