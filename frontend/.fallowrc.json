@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "boundaries": {
+    "zones": [
+      { "name": "app", "patterns": ["src/app/**"] },
+      { "name": "shared", "patterns": ["src/shared/**"] }
+    ],
+    "rules": [
+      { "from": "app", "allow": ["shared"] },
+      { "from": "shared", "allow": [] }
+    ]
+  },
+  "rules": {
+    "boundary-violation": "error",
+    "circular-dependency": "error",
+    "unused-files": "warn",
+    "unused-exports": "warn",
+    "unused-dependencies": "warn",
+    "unused-types": "warn",
+    "unused-class-members": "off",
+    "unused-enum-members": "off",
+    "duplicate-exports": "off"
+  },
+  "ignorePatterns": [
+    "src/shared/api/generated/**",
+    "vitest.sonar.config.ts"
+  ],
+  "ignoreExports": [
+    { "file": "src/shared/components/ui/**", "exports": ["*"] }
+  ],
+  "ignoreDependencies": [
+    "@fontsource-variable/geist",
+    "tw-animate-css",
+    "shadcn"
+  ],
+  "health": {
+    "maxCyclomatic": 25,
+    "maxCognitive": 20
+  }
+}
