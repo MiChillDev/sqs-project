@@ -2,11 +2,29 @@
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
   "boundaries": {
     "zones": [
-      { "name": "app", "patterns": ["src/app/**"] },
+      {
+        "name": "routes-login",
+        "patterns": ["src/app/routes/login/**"]
+      },
+      {
+        "name": "routes-admin",
+        "patterns": ["src/app/routes/admin/**"]
+      },
+      {
+        "name": "routes-shared",
+        "patterns": ["src/app/routes/*.tsx", "src/app/routes/*.ts"]
+      },
+      {
+        "name": "app-core",
+        "patterns": ["src/app/providers/**", "src/app/router.ts"]
+      },
       { "name": "shared", "patterns": ["src/shared/**"] }
     ],
     "rules": [
-      { "from": "app", "allow": ["shared"] },
+      { "from": "routes-login", "allow": ["shared", "routes-shared"] },
+      { "from": "routes-admin", "allow": ["shared", "routes-shared"] },
+      { "from": "routes-shared", "allow": ["shared"] },
+      { "from": "app-core", "allow": ["shared", "routes-login", "routes-admin", "routes-shared"] },
       { "from": "shared", "allow": [] }
     ]
   },
@@ -35,6 +53,7 @@
   ],
   "health": {
     "maxCyclomatic": 25,
-    "maxCognitive": 20
+    "maxCognitive": 20,
+    "minScore": 90
   }
 }
