@@ -55,5 +55,9 @@
     "maxCyclomatic": 25,
     "maxCognitive": 20,
     "minScore": 90
+  },
+  "duplicates": {
+    "threshold": 0,
+    "minOccurrences": 3
   }
 }
