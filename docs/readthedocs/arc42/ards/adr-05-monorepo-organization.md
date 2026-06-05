@@ -12,10 +12,14 @@ The project consists of a frontend application, backend API, documentation, and 
 
 ```
 sqs-project/
-├── frontend/    # React/Vite SPA application
-├── backend/     # Spring Boot REST API
-├── docs/        # Architecture documentation, ADRs, arc42
-├── test/        # Load and performance test suites
+├── frontend/           # React/Vite SPA application
+├── backend/            # Spring Boot REST API
+├── docs/               # Project-related documents
+   ├── diagrams/        # Architecture diagrams like C4
+   ├── presentation/    # Final project presentation 
+   ├── readthedocs/     # Architecture documentation, ADRs, arc42
+   └── retro/           # Team retrospective
+├── test/               # Load and performance test suites
 ├── docker-compose.yml
 └── README.md
 ```

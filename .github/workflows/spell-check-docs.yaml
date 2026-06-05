@@ -4,14 +4,14 @@ on:
   pull_request:
     branches: ["main"]
     paths:
-      - 'docs/**'
+      - 'docs/readthedocs/**'
 
 jobs:
   spell-check:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: docs
+        working-directory: docs/readthedocs
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
