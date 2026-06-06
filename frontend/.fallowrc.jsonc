@@ -2,14 +2,14 @@
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
   "boundaries": {
     "zones": [
-      // Route features – isolated from each other
+      // Route features: isolated from each other
       { "name": "routes-login", "patterns": ["src/app/routes/login/**"] },
       { "name": "routes-admin", "patterns": ["src/app/routes/admin/**"] },
       // Shared route files (__root.tsx, index.tsx, flat pages)
       { "name": "routes-shared", "patterns": ["src/app/routes/*.tsx", "src/app/routes/*.ts"] },
       // App orchestrator (router.ts, providers)
       { "name": "app-core", "patterns": ["src/app/providers/**", "src/app/router.ts"] },
-      // Bottom layer – no deps on any zone above
+      // Bottom layer: no deps on any zone above
       { "name": "shared", "patterns": ["src/shared/**"] }
     ],
     "rules": [
@@ -51,13 +51,13 @@
     "tw-animate-css",
     "shadcn"
   ],
-  // Raised from defaults (20/15) – TSX return blocks inflate counts
+  // Raised from defaults (20/15): TSX return blocks inflate counts
   "health": {
     "maxCyclomatic": 25,
     "maxCognitive": 20,
     "minScore": 90
   },
-  // Duplication handled by SonarQube – don't fail, only report widespread copy-paste
+  // Duplication handled by SonarQube: don't fail, only report widespread copy-paste
   "duplicates": {
     "threshold": 0,
     "minOccurrences": 3
