@@ -38,19 +38,13 @@
     "duplicate-exports": "off"
   },
   "ignorePatterns": [
-    "src/shared/api/generated/**",  // openapi-typescript output
-    "vitest.sonar.config.ts"        // loaded by SonarQube, not imported
+    "src/shared/api/generated/**", // openapi-typescript output
+    "vitest.sonar.config.ts" // loaded by SonarQube, not imported
   ],
   // shadcn/ui barrels re-export same short names intentionally
-  "ignoreExports": [
-    { "file": "src/shared/components/ui/**", "exports": ["*"] }
-  ],
+  "ignoreExports": [{ "file": "src/shared/components/ui/**", "exports": ["*"] }],
   // CSS/font deps imported via @import, CLI tool never imported
-  "ignoreDependencies": [
-    "@fontsource-variable/geist",
-    "tw-animate-css",
-    "shadcn"
-  ],
+  "ignoreDependencies": ["@fontsource-variable/geist", "tw-animate-css", "shadcn"],
   // Raised from defaults (20/15): TSX return blocks inflate counts
   "health": {
     "maxCyclomatic": 25,
