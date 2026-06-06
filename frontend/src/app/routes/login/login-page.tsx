@@ -12,6 +12,19 @@ import { loginSchema } from 'src/shared/lib/login-schema';
 import { loginErrorKey, resolveRedirect } from './login-helpers';
 import { useBanner } from './use-banner';
 
+function LoginSpinner() {
+  return (
+    <svg className='animate-spin size-4' viewBox='0 0 24 24' fill='none' aria-hidden='true'>
+      <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
+      <path
+        className='opacity-75'
+        fill='currentColor'
+        d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
+      />
+    </svg>
+  );
+}
+
 export function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -108,28 +121,7 @@ export function LoginPage() {
             </Field>
 
             <Button type='submit' disabled={login.isPending}>
-              {login.isPending ? (
-                <svg
-                  className='animate-spin size-4'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  aria-hidden='true'
-                >
-                  <circle
-                    className='opacity-25'
-                    cx='12'
-                    cy='12'
-                    r='10'
-                    stroke='currentColor'
-                    strokeWidth='4'
-                  />
-                  <path
-                    className='opacity-75'
-                    fill='currentColor'
-                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
-                  />
-                </svg>
-              ) : null}
+              {login.isPending && <LoginSpinner />}
               {t('login.submit')}
             </Button>
           </form>
