@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { debugLogger } from 'src/shared/lib/debug-logger';
 
 export type Theme = 'light' | 'dark';
-export const LIGHT: Theme = 'light';
-export const DARK: Theme = 'dark';
+const LIGHT: Theme = 'light';
+const DARK: Theme = 'dark';
 
 const STORAGE_ITEM_KEY = 'theme';
 

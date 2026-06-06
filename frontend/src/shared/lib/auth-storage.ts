@@ -1,7 +1,7 @@
 const KEY = 'sqs.auth';
 
 export type AuthStorageValue = { token: string; expiresAt: string };
-export type StorageHandler = (next: AuthStorageValue | null) => void;
+type StorageHandler = (next: AuthStorageValue | null) => void;
 
 export const authStorage = {
   get(): AuthStorageValue | null {

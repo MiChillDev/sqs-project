@@ -3,7 +3,7 @@ import { requireAuth } from 'src/shared/guards/require-auth';
 import { rootRoute } from '../__root';
 import { AdminPage } from './admin-page';
 
-export const adminRoute = createRoute({
+const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin',
   beforeLoad: requireAuth(),
