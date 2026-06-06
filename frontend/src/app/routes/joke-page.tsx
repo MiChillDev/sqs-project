@@ -1,43 +1,19 @@
 import { createRoute } from '@tanstack/react-router';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRandomJoke } from 'src/shared/api/hooks';
 import { Confetti } from 'src/shared/components/animations/confetti';
 import { Button } from 'src/shared/components/ui/button';
 import { Card, CardContent } from 'src/shared/components/ui/card';
+import { useJokeCounter } from 'src/shared/hooks/use-joke-counter';
+import {
+  getNextCount,
+  scheduleConfettiReset,
+  shouldShowConfetti,
+} from 'src/shared/lib/joke-counter';
 import { rootRoute } from './__root';
 
-export function getNextCount(prev: number, max: number) {
-  return (prev + 1) % max;
-}
-
-export function shouldShowConfetti(prev: number, max: number) {
-  return prev === max - 1;
-}
-
-export function scheduleConfettiReset(fn: () => void, delay = 1500) {
-  return setTimeout(fn, delay);
-}
-
-function useJokeCounter(maxCount: number) {
-  const [count, setCount] = useState(0);
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  const increment = useCallback(() => {
-    setCount((prev) => {
-      const next = getNextCount(prev, maxCount);
-
-      if (shouldShowConfetti(prev, maxCount)) {
-        setShowConfetti(true);
-        scheduleConfettiReset(() => setShowConfetti(false));
-      }
-
-      return next;
-    });
-  }, [maxCount]);
-
-  return { count, showConfetti, increment };
-}
+export { getNextCount, scheduleConfettiReset, shouldShowConfetti };
 
 type JokeCardContentProps = {
   hasFetched: boolean;
@@ -49,35 +25,22 @@ type JokeCardContentProps = {
 function JokeCardContent({ hasFetched, isError, isSuccess, joke }: JokeCardContentProps) {
   const { t } = useTranslation();
 
-  if (isError) {
-    return (
-      <CardContent className='h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden'>
-        <div className='text-xl text-destructive'>{t('jokePage.error')}</div>
-      </CardContent>
-    );
-  }
-
-  if (isSuccess && joke) {
-    return (
-      <CardContent className='h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden'>
-        <div className='text-3xl font-heading text-[#2C3E50]'>{joke}</div>
-      </CardContent>
-    );
-  }
-
-  if (!hasFetched) {
-    return (
-      <CardContent className='h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden'>
+  return (
+    <CardContent className='h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden'>
+      {!hasFetched && !isError && (
         <div className='text-xl text-[#2C3E50]'>{t('jokePage.placeholder')}</div>
-      </CardContent>
-    );
-  }
+      )}
 
-  return null;
+      {isError && <div className='text-xl text-destructive'>{t('jokePage.error')}</div>}
+
+      {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
+
+      {isSuccess && joke && <div className='text-3xl font-heading text-[#2C3E50]'>{joke}</div>}
+    </CardContent>
+  );
 }
 
-function getButtonLabel(t: (key: string) => string, isFetching: boolean, isSuccess: boolean) {
-  if (isFetching) return t('jokePage.fetching');
+function getButtonLabel(t: (key: string) => string, isSuccess: boolean) {
   if (isSuccess) return t('jokePage.refetchButton');
   return t('jokePage.fetchButton');
 }
@@ -98,14 +61,14 @@ function JokePage() {
     const result = await jokeQuery.refetch();
     setHasFetched(true);
 
-    if (result.status === 'success') {
+    if (result.status === 'success' && result.data?.content?.trim()) {
       increment();
     }
 
     setIsAnimating(false);
   };
 
-  const buttonLabel = getButtonLabel(t, jokeQuery.isFetching, !!jokeQuery.isSuccess);
+  const buttonLabel = getButtonLabel(t, !!jokeQuery.isSuccess);
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-[#FFF5E1] via-[#FFE4C4] to-[#FFDAB9] font-[Nunito] relative overflow-hidden'>
