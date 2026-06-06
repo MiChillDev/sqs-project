@@ -6,21 +6,21 @@ import { Confetti } from 'src/shared/components/animations/confetti';
 import { Button } from 'src/shared/components/ui/button';
 import { Card, CardContent } from 'src/shared/components/ui/card';
 import { useJokeCounter } from 'src/shared/hooks/use-joke-counter';
-import {
+
+export {
   getNextCount,
   scheduleConfettiReset,
   shouldShowConfetti,
 } from 'src/shared/lib/joke-counter';
+
 import { rootRoute } from './__root';
 
-export { getNextCount, scheduleConfettiReset, shouldShowConfetti };
-
-type JokeCardContentProps = {
+type JokeCardContentProps = Readonly<{
   hasFetched: boolean;
   isError: boolean;
   isSuccess: boolean;
   joke?: string;
-};
+}>;
 
 function JokeCardContent({ hasFetched, isError, isSuccess, joke }: JokeCardContentProps) {
   const { t } = useTranslation();
