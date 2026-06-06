@@ -20,10 +20,6 @@ const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
   mockReset: () => void;
   toHaveBeenCalledWith: (args: unknown) => void;
 };
-const mockAuthStorageGet = (globalThis as Record<string, unknown>).__adminMockAuthStorageGet as {
-  mockReset: () => void;
-  mockReturnValue: (v: unknown) => void;
-};
 const mockAuthStorageClear = (globalThis as Record<string, unknown>)
   .__adminMockAuthStorageClear as {
   mockReset: () => void;
@@ -88,16 +84,13 @@ export {
   adminRoute,
   fillJokeFormAndSubmit,
   mockAuthStorageClear,
-  mockAuthStorageGet,
   mockCreateJokeMutation,
   mockJokeMutationError,
   mockJokeMutationSuccess,
   mockNavigate,
   mockSourceJokeQuery,
-  render,
   renderComponent,
   resetMocks,
   screen,
   userEvent,
-  vi,
 };

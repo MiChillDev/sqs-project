@@ -6,13 +6,10 @@ export type Joke = components['schemas']['Joke'];
 export type SourceJoke = components['schemas']['SourceJoke'];
 export type JokeInput = components['schemas']['JokeInput'];
 export type HealthCheck = components['schemas']['HealthCheck'];
-export type ApiErrorBody = components['schemas']['Error'];
 export type LoginRequest = components['schemas']['LoginRequest'];
 export type TokenResponse = components['schemas']['TokenResponse'];
 
-export { ApiError, NetworkError } from './api-error';
-
-export function getApiBaseUrl(): string {
+function getApiBaseUrl(): string {
   return import.meta.env.VITE_API_BASE_URL ?? '';
 }
 

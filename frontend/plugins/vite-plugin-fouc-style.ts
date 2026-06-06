@@ -102,4 +102,4 @@ export function foucStylePlugin(): Plugin {
   };
 }
 
-export { extractColors, generateStyleTag, PLACEHOLDER };
+export { extractColors, generateStyleTag };
