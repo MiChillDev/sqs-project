@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-
 import deTranslations from '../../public/locales/de/translation.json';
 import enTranslations from '../../public/locales/en/translation.json';
 

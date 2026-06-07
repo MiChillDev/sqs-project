@@ -1,9 +1,6 @@
 import './mocks';
 import {
   ApiError,
-  afterEach,
-  beforeEach,
-  cleanup,
   describe,
   expect,
   fillJokeFormAndSubmit,
@@ -15,15 +12,14 @@ import {
   mockNavigate,
   NetworkError,
   renderComponent,
-  resetMocks,
   screen,
+  setupAdminTests,
   userEvent,
   waitFor,
 } from './shared';
 
 describe('JokeCreationSection', () => {
-  beforeEach(resetMocks);
-  afterEach(cleanup);
+  setupAdminTests();
 
   it('renders content textarea, external ID input, and submit button', () => {
     renderComponent();

@@ -1,11 +1,15 @@
-import { getNextCount, scheduleConfettiReset, shouldShowConfetti } from 'src/app/routes/joke-page';
+import {
+  getNextCount,
+  scheduleConfettiReset,
+  shouldShowConfetti,
+} from 'src/shared/lib/joke-counter';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // -----------------------------
 // TESTS
 // -----------------------------
 
-describe('joke-page helpers', () => {
+describe('joke-counter helpers', () => {
   afterEach(() => {
     vi.useRealTimers();
   });

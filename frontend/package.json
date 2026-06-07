@@ -18,6 +18,7 @@
 		"typecheck": "tsc -b",
 		"test": "vitest run",
 		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"generate-api-types": "openapi-typescript openapi.yaml -o src/shared/api/generated/api-types.ts",
 		"generate-api-types:watch": "openapi-typescript openapi.yaml -o src/shared/api/generated/api-types.ts --watch"
 	},

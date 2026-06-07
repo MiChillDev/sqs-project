@@ -4,6 +4,7 @@ import type { ComponentType } from 'react';
 import jokeRoute from 'src/app/routes/joke-page';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import enTranslation from '../../public/locales/en/translation.json';
+import { getTranslation } from './shared/translation-helper';
 
 // -----------------------------
 // MOCKS
@@ -60,18 +61,6 @@ function resetMockQuery() {
   mockQuery.isSuccess = false;
   mockQuery.isFetching = false;
   refetchMock.mockReset();
-}
-
-function getTranslation(key: string, translations: Record<string, unknown>): string {
-  const result = key.split('.').reduce<unknown>((obj, part) => {
-    if (obj && typeof obj === 'object' && part in obj) {
-      return (obj as Record<string, unknown>)[part];
-    }
-
-    return undefined;
-  }, translations);
-
-  return typeof result === 'string' ? result : key;
 }
 
 function mockSuccessfulRefetch(content = 'Funny joke') {

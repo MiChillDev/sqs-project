@@ -1,9 +1,8 @@
-/// <reference types="vitest/globals" />
-
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { ThemeToggle } from 'src/shared/components/theme-toggle';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -51,28 +50,9 @@ describe('ThemeToggle', () => {
     expect(mockToggleTheme).toHaveBeenCalledOnce();
   });
 
-  it('has accessible label in light mode', () => {
-    render(<ThemeToggle theme='light' onToggle={mockToggleTheme} />);
-
+  it.each(['light', 'dark'] as const)('has accessible label in %s mode', (theme) => {
+    render(<ThemeToggle theme={theme} onToggle={mockToggleTheme} />);
     const button = screen.getByRole('button', { name: 'Toggle theme' });
     expect(button).toHaveAttribute('aria-label', 'Toggle theme');
-  });
-
-  it('has accessible label in dark mode', () => {
-    render(<ThemeToggle theme='dark' onToggle={mockToggleTheme} />);
-
-    const button = screen.getByRole('button', { name: 'Toggle theme' });
-    expect(button).toHaveAttribute('aria-label', 'Toggle theme');
-  });
-
-  it('calls onToggle when in dark mode', async () => {
-    const user = userEvent.setup();
-
-    render(<ThemeToggle theme='dark' onToggle={mockToggleTheme} />);
-
-    const button = screen.getByRole('button', { name: 'Toggle theme' });
-    await user.click(button);
-
-    expect(mockToggleTheme).toHaveBeenCalledOnce();
   });
 });

@@ -1,9 +1,6 @@
 import './mocks';
 import {
   ApiError,
-  afterEach,
-  beforeEach,
-  cleanup,
   describe,
   expect,
   it,
@@ -12,15 +9,14 @@ import {
   mockSourceJokeQuery,
   NetworkError,
   renderComponent,
-  resetMocks,
   screen,
+  setupAdminTests,
   userEvent,
   waitFor,
 } from './shared';
 
 describe('SourceJokeSection', () => {
-  beforeEach(resetMocks);
-  afterEach(cleanup);
+  setupAdminTests();
 
   it('renders fetch button', () => {
     renderComponent();

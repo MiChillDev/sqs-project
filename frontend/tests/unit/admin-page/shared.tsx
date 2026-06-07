@@ -14,6 +14,7 @@ export {
   waitFor,
 } from '../shared/test-utils';
 
+import { cleanup } from '@testing-library/react';
 import { render, screen, userEvent } from '../shared/test-utils';
 
 const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
@@ -80,6 +81,14 @@ function mockJokeMutationError(error: Error) {
     });
 }
 
+function setupAdminTests() {
+  beforeEach(resetMocks);
+  afterEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+  });
+}
+
 export {
   adminRoute,
   fillJokeFormAndSubmit,
@@ -92,5 +101,6 @@ export {
   renderComponent,
   resetMocks,
   screen,
+  setupAdminTests,
   userEvent,
 };

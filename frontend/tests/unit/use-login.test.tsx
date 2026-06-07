@@ -1,9 +1,7 @@
-/// <reference types="vitest/globals" />
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
-
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, NetworkError } from '../../src/shared/api/api-error';
 import { useLogin } from '../../src/shared/api/hooks';
 
@@ -74,6 +72,8 @@ describe('useLogin', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(ApiError);
       expect((error as ApiError).status).toBe(404);
+      expect((error as ApiError).body).toEqual(errorBody);
+      expect((error as ApiError).message).toBe('HTTP 404: Not Found');
     }
   });
 

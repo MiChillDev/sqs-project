@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
-import enTranslation from '../public/locales/en/translation.json';
+import { getTranslation } from './unit/shared/translation-helper';
 
 const { mockNavigate, mockUseSearch } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),
@@ -15,19 +15,9 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
   return { ...actual, useNavigate: () => mockNavigate, useSearch: mockUseSearch };
 });
 
-function getTranslation(key: string, translations: Record<string, unknown>): string {
-  const result = key.split('.').reduce<unknown>((obj, part) => {
-    if (obj && typeof obj === 'object' && part in obj) {
-      return (obj as Record<string, unknown>)[part];
-    }
-    return undefined;
-  }, translations);
-  return typeof result === 'string' ? result : key;
-}
-
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => getTranslation(key, enTranslation),
+    t: (key: string) => getTranslation(key),
     i18n: { language: 'en' },
   }),
 }));

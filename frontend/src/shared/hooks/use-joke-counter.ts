@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getNextCount,
   scheduleConfettiReset,
@@ -8,6 +8,13 @@ import {
 export function useJokeCounter(maxCount: number) {
   const [count, setCount] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const increment = useCallback(() => {
     setCount((prev) => {
@@ -15,7 +22,8 @@ export function useJokeCounter(maxCount: number) {
 
       if (shouldShowConfetti(prev, maxCount)) {
         setShowConfetti(true);
-        scheduleConfettiReset(() => setShowConfetti(false));
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = scheduleConfettiReset(() => setShowConfetti(false));
       }
 
       return next;
