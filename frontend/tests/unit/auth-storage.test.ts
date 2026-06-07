@@ -1,5 +1,3 @@
-/// <reference types="vitest/globals" />
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { type AuthStorageValue, authStorage } from '../../src/shared/lib/auth-storage';
 

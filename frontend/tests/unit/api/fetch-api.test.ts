@@ -1,5 +1,4 @@
-/// <reference types="vitest/globals" />
-
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, fetchApi, NetworkError } from './shared';
 
 function stubAbortableFetch() {

@@ -1,5 +1,4 @@
-/// <reference types="vitest/globals" />
-
+import { describe, expect, it } from 'vitest';
 import type { LoginFormValues } from '../../src/shared/lib/login-schema';
 import { loginSchema } from '../../src/shared/lib/login-schema';
 
@@ -14,6 +13,18 @@ describe('loginSchema', () => {
     const result = loginSchema.safeParse({ username: 'alice', password: '' });
 
     expect(result.success).toBe(false);
+  });
+
+  it('passes validation with whitespace-only username (min(1) does not strip)', () => {
+    const result = loginSchema.safeParse({ username: '   ', password: 'secret' });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('passes validation with whitespace-only password (min(1) does not strip)', () => {
+    const result = loginSchema.safeParse({ username: 'alice', password: '\t\n  ' });
+
+    expect(result.success).toBe(true);
   });
 
   it('fails validation when username exceeds 255 characters', () => {

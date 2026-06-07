@@ -1,9 +1,8 @@
-/// <reference types="vitest/globals" />
-
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { LanguageToggle } from 'src/shared/components/language-toggle';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockChangeLanguage = vi.fn();
 const mockI18n = {
@@ -119,29 +118,23 @@ describe('LanguageToggle', () => {
     expect(button).toHaveFocus();
   });
 
-  it('Enter key opens the menu', async () => {
+  it.each(['{Enter}', ' '] as const)('%s key opens the menu', async (key) => {
     const user = userEvent.setup();
-
     render(<LanguageToggle />);
-
     const button = screen.getByRole('button');
     button.focus();
-    await user.keyboard('{Enter}');
-
+    await user.keyboard(key);
     expect(screen.getByText('English')).toBeInTheDocument();
     expect(screen.getByText('Deutsch')).toBeInTheDocument();
   });
 
-  it('Space key opens the menu', async () => {
+  it('Escape key closes the menu', async () => {
     const user = userEvent.setup();
-
     render(<LanguageToggle />);
-
-    const button = screen.getByRole('button');
-    button.focus();
-    await user.keyboard(' ');
-
+    await user.click(screen.getByRole('button'));
     expect(screen.getByText('English')).toBeInTheDocument();
-    expect(screen.getByText('Deutsch')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByText('English')).not.toBeInTheDocument();
   });
 });

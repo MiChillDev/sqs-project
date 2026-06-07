@@ -1,8 +1,7 @@
-/// <reference types="vitest/globals" />
-
 import { act, renderHook } from '@testing-library/react';
 
 import { useTheme } from 'src/shared/hooks/use-theme';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 class MockMediaQueryList {
   matches = false;

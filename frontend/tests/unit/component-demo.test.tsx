@@ -3,26 +3,23 @@ import userEvent from '@testing-library/user-event';
 import componentDemoRoute from 'src/app/routes/component-demo';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import enTranslation from '../../public/locales/en/translation.json';
+import { getTranslation } from './shared/translation-helper';
+
+const t = (key: string) => getTranslation(key);
 
 vi.mock('sonner', () => ({
   toast: Object.assign(vi.fn(), {
     success: vi.fn(),
     error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    message: vi.fn(),
   }),
 }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => {
-      const value = key
-        .split('.')
-        .reduce(
-          (o: Record<string, unknown> | undefined, k) =>
-            o?.[k] as Record<string, unknown> | undefined,
-          enTranslation as unknown as Record<string, unknown>
-        );
-      return (value as unknown as string) ?? key;
-    },
+    t,
     i18n: { language: 'en' },
   }),
 }));
@@ -134,5 +131,80 @@ describe('ComponentDemoPage', () => {
     const { toast } = await import('sonner');
     expect(toast.error).not.toHaveBeenCalled();
     expect(toast.success).not.toHaveBeenCalled();
+  });
+
+  it('shows success toast and resets form on valid submit', async () => {
+    const user = userEvent.setup();
+    render(<Component />);
+
+    await user.type(screen.getByLabelText(enTranslation.demo.form.fields.name), 'John Doe');
+    await user.type(
+      screen.getByLabelText(enTranslation.demo.form.fields.email),
+      'john@example.com'
+    );
+    await user.type(
+      screen.getByLabelText(enTranslation.demo.form.fields.message),
+      'Hello this is a long enough message'
+    );
+
+    await user.click(screen.getByRole('button', { name: enTranslation.demo.form.submit }));
+
+    const { toast } = await import('sonner');
+    await waitFor(
+      () => {
+        expect(toast.success).toHaveBeenCalledWith(enTranslation.demo.form.toastTitle, {
+          description: enTranslation.demo.form.toastDescription,
+        });
+      },
+      { timeout: 3000 }
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(enTranslation.demo.form.fields.name)).toHaveValue('');
+      expect(screen.getByLabelText(enTranslation.demo.form.fields.email)).toHaveValue('');
+      expect(screen.getByLabelText(enTranslation.demo.form.fields.message)).toHaveValue('');
+    });
+  });
+
+  it('submit button shows submitting text and is disabled while submitting', async () => {
+    const user = userEvent.setup();
+    render(<Component />);
+
+    await user.type(screen.getByLabelText(enTranslation.demo.form.fields.name), 'John Doe');
+    await user.type(
+      screen.getByLabelText(enTranslation.demo.form.fields.email),
+      'john@example.com'
+    );
+    await user.type(
+      screen.getByLabelText(enTranslation.demo.form.fields.message),
+      'Hello this is a long enough message'
+    );
+
+    await user.click(screen.getByRole('button', { name: enTranslation.demo.form.submit }));
+
+    expect(screen.getByRole('button', { name: enTranslation.demo.form.submitting })).toBeDisabled();
+  });
+
+  it.each([
+    'success',
+    'error',
+    'warning',
+    'info',
+    'message',
+  ] as const)('toast %s button triggers the correct sonner call', async (variant) => {
+    const user = userEvent.setup();
+    render(<Component />);
+
+    const triggerKey =
+      `trigger${variant[0].toUpperCase()}${variant.slice(1)}` as keyof typeof enTranslation.demo.toasts;
+    const titleKey = `${variant}Title` as keyof typeof enTranslation.demo.toasts;
+    const descKey = `${variant}Description` as keyof typeof enTranslation.demo.toasts;
+
+    await user.click(screen.getByRole('button', { name: enTranslation.demo.toasts[triggerKey] }));
+
+    const { toast } = await import('sonner');
+    expect(toast[variant]).toHaveBeenCalledWith(enTranslation.demo.toasts[titleKey], {
+      description: enTranslation.demo.toasts[descKey],
+    });
   });
 });

@@ -6,13 +6,6 @@ import { Confetti } from 'src/shared/components/animations/confetti';
 import { Button } from 'src/shared/components/ui/button';
 import { Card, CardContent } from 'src/shared/components/ui/card';
 import { useJokeCounter } from 'src/shared/hooks/use-joke-counter';
-
-export {
-  getNextCount,
-  scheduleConfettiReset,
-  shouldShowConfetti,
-} from 'src/shared/lib/joke-counter';
-
 import { rootRoute } from './__root';
 
 type JokeCardContentProps = Readonly<{
@@ -58,17 +51,19 @@ function JokePage() {
 
   const handleFetch = async () => {
     setIsAnimating(true);
-    const result = await jokeQuery.refetch();
-    setHasFetched(true);
+    try {
+      const result = await jokeQuery.refetch();
+      setHasFetched(true);
 
-    if (result.status === 'success' && result.data?.content?.trim()) {
-      increment();
+      if (result.status === 'success' && result.data?.content?.trim()) {
+        increment();
+      }
+    } finally {
+      setIsAnimating(false);
     }
-
-    setIsAnimating(false);
   };
 
-  const buttonLabel = getButtonLabel(t, !!jokeQuery.isSuccess);
+  const buttonLabel = getButtonLabel(t, jokeQuery.isSuccess);
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-[#FFF5E1] via-[#FFE4C4] to-[#FFDAB9] font-[Nunito] relative overflow-hidden'>

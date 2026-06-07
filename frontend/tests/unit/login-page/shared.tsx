@@ -15,6 +15,7 @@ export {
   it,
 } from '../shared/test-utils';
 
+import { cleanup } from '@testing-library/react';
 import { render, screen, userEvent, waitFor } from '../shared/test-utils';
 
 const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
@@ -35,14 +36,12 @@ const mockLoginMutation = (globalThis as Record<string, unknown>).__mockLoginMut
   error: Error | null;
   data: { token: string; expiresAt: string } | undefined;
 };
-const gMockUseSearch = (globalThis as Record<string, unknown>).__mockUseSearch as {
-  mockReturnValue: (v: unknown) => void;
-  mockReset: () => void;
+const mockUseSearch = (redirect: string | undefined = undefined) => {
+  const raw = (globalThis as Record<string, unknown>).__mockUseSearch as {
+    mockReturnValue: (v: unknown) => void;
+  };
+  raw.mockReturnValue({ redirect });
 };
-
-function mockUseSearch(redirect: string | undefined = undefined) {
-  gMockUseSearch.mockReturnValue({ redirect });
-}
 
 function renderComponent() {
   const Component = loginRoute.options.component as ComponentType;
@@ -80,7 +79,27 @@ export {
   mockUseSearch,
   renderComponent,
   screen,
+  setupLoginTests,
   userEvent,
   vi,
   waitFor,
 };
+
+function setupLoginTests() {
+  beforeEach(() => {
+    mockLoginMutation.mutate = vi.fn();
+    mockLoginMutation.mutateAsync = vi.fn();
+    mockLoginMutation.isPending = false;
+    mockLoginMutation.error = null;
+    mockLoginMutation.data = undefined;
+    mockNavigate.mockReset();
+    mockAuthStorageSet.mockReset();
+    mockAuthStorageGet.mockReset();
+    mockAuthStorageGet.mockReturnValue(null);
+    mockUseSearch();
+  });
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+}

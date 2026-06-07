@@ -25,4 +25,22 @@ describe('Confetti', () => {
     expect(screen.getByTestId('lottie')).toBeInTheDocument();
     expect(screen.getByTestId('lottie').parentElement).toBeInTheDocument();
   });
+
+  it('renders nothing again when toggled from true to false', () => {
+    const { rerender, container } = render(<Confetti trigger={true} />);
+    expect(screen.getByTestId('lottie')).toBeInTheDocument();
+
+    rerender(<Confetti trigger={false} />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('re-renders confetti when toggled back to true', () => {
+    const { rerender } = render(<Confetti trigger={true} />);
+    expect(screen.getByTestId('lottie')).toBeInTheDocument();
+
+    rerender(<Confetti trigger={false} />);
+
+    rerender(<Confetti trigger={true} />);
+    expect(screen.getByTestId('lottie')).toBeInTheDocument();
+  });
 });

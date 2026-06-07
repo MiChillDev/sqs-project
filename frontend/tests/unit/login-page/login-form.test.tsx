@@ -1,45 +1,24 @@
 import './mocks';
 import {
   ApiError,
-  afterEach,
-  beforeEach,
-  cleanup,
   describe,
   enTranslation,
   expect,
   fillLoginForm,
   it,
   mockAuthStorageGet,
-  mockAuthStorageSet,
   mockLoginMutation,
   mockNavigate,
-  mockUseSearch,
   NetworkError,
   renderComponent,
   screen,
+  setupLoginTests,
   userEvent,
-  vi,
   waitFor,
 } from './shared';
 
 describe('LoginPage', () => {
-  beforeEach(() => {
-    mockLoginMutation.mutate = vi.fn();
-    mockLoginMutation.mutateAsync = vi.fn();
-    mockLoginMutation.isPending = false;
-    mockLoginMutation.error = null;
-    mockLoginMutation.data = undefined;
-    mockNavigate.mockReset();
-    mockAuthStorageSet.mockReset();
-    mockAuthStorageGet.mockReset();
-    mockAuthStorageGet.mockReturnValue(null);
-    mockUseSearch();
-  });
-
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
+  setupLoginTests();
 
   it('renders username input, password input, and a submit button', () => {
     renderComponent();

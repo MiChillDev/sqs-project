@@ -1,20 +1,16 @@
 import './mocks';
 import {
   adminRoute,
-  afterEach,
-  beforeEach,
-  cleanup,
   describe,
   expect,
   it,
   renderComponent,
-  resetMocks,
   screen,
+  setupAdminTests,
 } from './shared';
 
 describe('AdminPage', () => {
-  beforeEach(resetMocks);
-  afterEach(cleanup);
+  setupAdminTests();
 
   it('route /admin is defined and has beforeLoad set', () => {
     expect(adminRoute.options.beforeLoad).toBeDefined();

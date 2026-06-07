@@ -1,39 +1,19 @@
 import './mocks';
 import {
-  afterEach,
-  beforeEach,
-  cleanup,
   describe,
   expect,
   it,
   loginAndExpectRedirect,
   mockAuthStorageGet,
-  mockAuthStorageSet,
-  mockLoginMutation,
   mockNavigate,
   mockUseSearch,
   renderComponent,
-  vi,
+  setupLoginTests,
   waitFor,
 } from './shared';
 
 describe('LoginPage — redirect search parameter', () => {
-  beforeEach(() => {
-    mockLoginMutation.mutate = vi.fn();
-    mockLoginMutation.mutateAsync = vi.fn();
-    mockLoginMutation.isPending = false;
-    mockLoginMutation.error = null;
-    mockLoginMutation.data = undefined;
-    mockNavigate.mockReset();
-    mockAuthStorageSet.mockReset();
-    mockAuthStorageGet.mockReset();
-    mockAuthStorageGet.mockReturnValue(null);
-  });
-
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
+  setupLoginTests();
 
   it('redirects to /admin by default (no redirect param)', async () => {
     await loginAndExpectRedirect(undefined, '/admin');

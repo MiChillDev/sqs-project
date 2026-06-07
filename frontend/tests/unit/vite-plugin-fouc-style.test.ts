@@ -1,7 +1,6 @@
-/// <reference types="vitest/globals" />
-
 import fs from 'node:fs';
 import type { Plugin } from 'vite';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   extractColors,
   foucStylePlugin,
