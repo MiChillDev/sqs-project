@@ -8,12 +8,22 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from './ui/dropdo
 export function UserMenu() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  // Subscribe to route changes so the token check re-runs after navigation
   useLocation();
 
   const token = authStorage.get();
 
-  if (!token) return null;
+  if (!token) {
+    return (
+      <Button
+        variant='ghost'
+        size='icon'
+        aria-label={t('header.login')}
+        onClick={() => navigate({ to: '/login', search: { redirect: undefined } })}
+      >
+        <User className='size-5' />
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu.Root>
@@ -23,6 +33,9 @@ export function UserMenu() {
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenuContent align='end'>
+        <DropdownMenuItem onSelect={() => navigate({ to: '/admin' })}>
+          {t('admin.title')}
+        </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => {
             authStorage.clear();

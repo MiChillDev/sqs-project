@@ -32,6 +32,6 @@ test.describe('/login page', () => {
   test('renders the site header on login page', async ({ page }) => {
     await page.goto('/login');
 
-    await expect(page.getByRole('heading', { name: 'SQS Preparation' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Chuck Norris Jokes' })).toBeVisible();
   });
 });

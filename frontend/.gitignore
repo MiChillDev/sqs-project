@@ -25,3 +25,4 @@ coverage
 
 # Fallow
 .fallow/
+src/shared/api/generated/

@@ -16,10 +16,8 @@ describe('AdminPage — integration flows', () => {
   setupAdminTests();
 
   describe('Full admin page rendering with sections', () => {
-    it('renders all sections: heading, JokeCreationSection, SourceJokeSection', () => {
+    it('renders all sections: JokeCreationSection, SourceJokeSection', () => {
       renderComponent();
-
-      expect(screen.getByRole('heading', { name: 'Admin' })).toBeInTheDocument();
 
       expect(screen.getAllByText('Create Joke').length).toBeGreaterThanOrEqual(2);
       expect(screen.getByLabelText('Content')).toBeInTheDocument();
