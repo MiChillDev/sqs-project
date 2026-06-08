@@ -10,8 +10,11 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     ...actual,
     useNavigate: () => ({}),
     useSearch: () => ({}),
-    useLocation: () => ({}),
+    useLocation: () => ({ pathname: '/' }),
     Outlet: () => null,
+    Link: ({ children, ...props }: Record<string, unknown>) => (
+      <a {...props}>{children as React.ReactNode}</a>
+    ),
   };
 });
 
@@ -42,7 +45,7 @@ function renderErrorRoute(error: unknown) {
 describe('RootComponent', () => {
   it('renders the header with app title', () => {
     renderRoute('component');
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('SQS Preparation');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Chuck Norris Jokes');
   });
 
   it('renders skip-to-content link', () => {

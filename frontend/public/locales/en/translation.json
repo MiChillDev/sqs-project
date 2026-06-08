@@ -3,13 +3,22 @@
 		"skipToContent": "Skip to content"
 	},
 	"app": {
-		"headerTitle": "SQS Preparation",
-		"documentTitle": "SQS Preparation",
+		"headerTitle": "Chuck Norris Jokes",
+		"documentTitle": "Chuck Norris Jokes",
 		"toggleTheme": "Toggle theme"
 	},
 	"home": {
-		"title": "SQS Frontend",
+		"title": "Chuck Norris Jokes",
 		"description": "some paragraph"
+	},
+	"welcome": {
+		"title": "Welcome!",
+		"goToJokes": "Go to Jokes"
+	},
+	"header": {
+		"login": "Login",
+		"menu": "Menu",
+		"goHome": "Home"
 	},
 	"error": {
 		"title": "Something went wrong",
@@ -77,7 +86,7 @@
 		}
 	},
 	"admin": {
-		"title": "Admin",
+		"title": "Preferences",
 		"createJoke": "Create Joke",
 		"contentLabel": "Content",
 		"externalIdLabel": "External ID",

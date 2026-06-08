@@ -20,6 +20,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
+        'header.login': 'Login',
         'admin.logout': 'Logout',
       };
       return translations[key] ?? key;
@@ -34,9 +35,9 @@ beforeEach(() => {
 });
 
 describe('UserMenu', () => {
-  it('renders nothing when no token is stored', () => {
-    const { container } = render(<UserMenu />);
-    expect(container).toBeEmptyDOMElement();
+  it('renders login button when no token is stored', () => {
+    render(<UserMenu />);
+    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
   });
 
   it('renders the user menu button when token is stored', () => {
