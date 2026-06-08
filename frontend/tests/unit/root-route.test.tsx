@@ -4,13 +4,23 @@ import { rootRoute } from 'src/app/routes/__root';
 import { describe, expect, it, vi } from 'vitest';
 import { getTranslation } from './shared/translation-helper';
 
+function createRouterMocks(pathname = '/') {
+  return {
+    useNavigate: () => ({}),
+    useSearch: () => ({}),
+    useLocation: () => ({ pathname }),
+  };
+}
+
+let currentPathname = '/';
+
 vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tanstack/react-router')>();
   return {
     ...actual,
     useNavigate: () => ({}),
     useSearch: () => ({}),
-    useLocation: () => ({ pathname: '/' }),
+    useLocation: () => ({ pathname: currentPathname }),
     Outlet: () => null,
     Link: ({ children, ...props }: Record<string, unknown>) => (
       <a {...props}>{children as React.ReactNode}</a>
@@ -43,12 +53,21 @@ function renderErrorRoute(error: unknown) {
 }
 
 describe('RootComponent', () => {
-  it('renders the header with app title', () => {
+  it('renders the header with app title as h1 on home page', () => {
+    currentPathname = '/';
     renderRoute('component');
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Chuck Norris Jokes');
   });
 
+  it('renders the header with app title as link on non-home page', () => {
+    currentPathname = '/jokes';
+    renderRoute('component');
+    const link = screen.getByText('Chuck Norris Jokes');
+    expect(link.closest('a')).toHaveAttribute('to', '/');
+  });
+
   it('renders skip-to-content link', () => {
+    currentPathname = '/';
     renderRoute('component');
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', '#main-content');
@@ -56,6 +75,7 @@ describe('RootComponent', () => {
   });
 
   it('renders main content area', () => {
+    currentPathname = '/';
     renderRoute('component');
     expect(screen.getByRole('main')).toBeInTheDocument();
   });

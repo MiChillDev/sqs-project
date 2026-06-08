@@ -22,6 +22,7 @@ vi.mock('react-i18next', () => ({
       const translations: Record<string, string> = {
         'header.login': 'Login',
         'admin.logout': 'Logout',
+        'admin.title': 'Admin',
       };
       return translations[key] ?? key;
     },
@@ -46,6 +47,18 @@ describe('UserMenu', () => {
     render(<UserMenu />);
 
     expect(screen.getByRole('button', { name: 'User menu' })).toBeInTheDocument();
+  });
+
+  it('clicking admin navigates to admin page', async () => {
+    const user = userEvent.setup();
+    authStorage.set({ token: 'test-token', expiresAt: '2099-01-01T00:00:00' });
+
+    render(<UserMenu />);
+
+    await user.click(screen.getByRole('button', { name: 'User menu' }));
+    await user.click(screen.getByText('Admin'));
+
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/admin' });
   });
 
   it('clicking logout clears the token and navigates to login', async () => {

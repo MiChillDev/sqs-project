@@ -24,6 +24,6 @@ test.describe('/jokes page', () => {
   test('renders the site header on joke page', async ({ page }) => {
     await page.goto('/jokes');
 
-    await expect(page.getByRole('heading', { name: 'SQS Preparation' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Chuck Norris Jokes' })).toBeVisible();
   });
 });

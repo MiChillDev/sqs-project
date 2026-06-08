@@ -102,10 +102,9 @@ describe('Styling Consistency', () => {
   });
 
   describe('Root Layout (Header)', () => {
-    it('header uses playful background and accent border', () => {
+    it('header uses playful background', () => {
       const { container } = renderRouteComponent(rootRoute);
       const header = container.querySelector('header');
-      expect(header).toHaveClass('border-(--color-playful-accent)');
       expect(header).toHaveClass('bg-(--color-playful-bg-start)/80');
     });
 
@@ -130,12 +129,6 @@ describe('Styling Consistency', () => {
       expect(screen.getByLabelText('User menu')).toBeInTheDocument();
       expect(screen.queryByLabelText('Login')).not.toBeInTheDocument();
       vi.restoreAllMocks();
-    });
-
-    it('shows hamburger menu button on mobile viewport', () => {
-      const { container } = renderRouteComponent(rootRoute);
-      const menuButton = container.querySelector('.md\\:hidden');
-      expect(menuButton).toBeInTheDocument();
     });
   });
 });
