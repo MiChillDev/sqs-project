@@ -74,6 +74,16 @@ class AuthServiceTest {
                 assertThat(res).isInstanceOf(Either.Right.class);
                 assertThat(((Either.Right<ErrorResultStatus, Boolean>) res).value()).isTrue();
             }
+
+            @Test
+            @DisplayName("returns false when token not associated with a user")
+            void returnsFalseWhenNoUserForToken() {
+                when(tokenRepository.getUserIdByToken(anyString())).thenReturn(Either.right(Optional.empty()));
+
+                Either<ErrorResultStatus, Boolean> res = authService.checkTokenIsValid("Bearer missing");
+                assertThat(res).isInstanceOf(Either.Right.class);
+                assertThat(((Either.Right<ErrorResultStatus, Boolean>) res).value()).isFalse();
+            }
         }
     }
 
@@ -117,6 +127,40 @@ class AuthServiceTest {
                 Either<ErrorResultStatus, TokenResponseDto> notFound = authService.login(new LoginRequestDto("bob", "wrong"));
                 assertThat(notFound).isInstanceOf(Either.Left.class);
                 assertThat(((Either.Left<ErrorResultStatus, TokenResponseDto>) notFound).value().code()).isEqualTo(404);
+            }
+
+            @Test
+            @DisplayName("returns 404 when password is incorrect even if user exists")
+            void returns404WhenPasswordIncorrect() {
+                UserEntity user = new UserEntity();
+                user.setId(UUID.randomUUID());
+                user.setUsername("alice");
+                String hashed = PasswordHasher.hashPassword("rightpw");
+                user.setPasswordHash(hashed);
+
+                when(userService.findByUsername(anyString())).thenReturn(Either.right(Optional.of(user)));
+
+                Either<ErrorResultStatus, TokenResponseDto> res = authService.login(new LoginRequestDto("alice", "wrongpw"));
+                assertThat(res).isInstanceOf(Either.Left.class);
+                assertThat(((Either.Left<ErrorResultStatus, TokenResponseDto>) res).value().code()).isEqualTo(404);
+            }
+
+            @Test
+            @DisplayName("propagates repository error when saving token fails")
+            void propagatesSaveTokenError() {
+                UserEntity user = new UserEntity();
+                user.setId(UUID.randomUUID());
+                user.setUsername("bob");
+                String hashed = PasswordHasher.hashPassword("secret");
+                user.setPasswordHash(hashed);
+
+                when(userService.findByUsername(anyString())).thenReturn(Either.right(Optional.of(user)));
+                when(tokenRepository.saveToken(any(UUID.class), anyString(), anyLong()))
+                        .thenReturn(Either.left(new ErrorResultStatus(500, "db")));
+
+                Either<ErrorResultStatus, TokenResponseDto> res = authService.login(new LoginRequestDto("bob", "secret"));
+                assertThat(res).isInstanceOf(Either.Left.class);
+                assertThat(((Either.Left<ErrorResultStatus, TokenResponseDto>) res).value().code()).isEqualTo(500);
             }
         }
     }

@@ -25,7 +25,6 @@ public class BaseController {
         Optional<ServletRequestAttributes> attributes = Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
         Optional<String> token = attributes.flatMap(att -> Optional.ofNullable(att.getRequest().getHeader("Authorization")));
         return handleEither(
-//                Either.fromOptional(token, new ErrorResultStatus(401, "Missing token"))
                 Either.fromOptional(token, new ErrorResultStatus(401, UUID.randomUUID().toString()))
                         .flatMap(t -> authService.checkTokenIsValid(t))
                         .validate(isValid -> isValid, new ErrorResultStatus(401, "Invalid token"))

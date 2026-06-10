@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -146,6 +145,26 @@ class JokeControllerTest {
                         .bodyJson()
                         .extractingPath("$.message").asString().matches("[0-9a-fA-F-]{36}");
             }
+
+            @Test
+            @DisplayName("should return repository error when service returns Left and token valid")
+            void shouldReturnRepositoryErrorWhenServiceFails() {
+                MockHttpServletRequest request = new MockHttpServletRequest();
+                request.addHeader("Authorization", "Bearer tk2");
+                RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+                when(authService.checkTokenIsValid("Bearer tk2")).thenReturn(Either.right(true));
+                when(jokeService.getRandomSourceJoke()).thenReturn(Either.left(new ErrorResultStatus(503, "down")));
+
+                @SuppressWarnings({"rawtypes", "unchecked"})
+                var resp = (ResponseEntity) controller.getRandomSourceJoke();
+                assertThat(resp.getStatusCode().value()).isEqualTo(503);
+                assertThat(resp.getBody()).isInstanceOf(ErrorResultStatus.class);
+                assert resp.getBody() != null;
+                assertThat(((ErrorResultStatus) resp.getBody()).message()).isEqualTo("down");
+
+                RequestContextHolder.resetRequestAttributes();
+            }
         }
     }
 
@@ -171,7 +190,18 @@ class JokeControllerTest {
         @Nested
         @DisplayName("failure scenarios")
         class Failure {
+            @Test
+            @DisplayName("should return 503 when service returns error for random joke")
+            void shouldReturn503WhenServiceReturnsError() {
+                when(jokeService.getRandomJoke()).thenReturn(Either.left(new ErrorResultStatus(503, "db")));
 
+                @SuppressWarnings({"rawtypes", "unchecked"})
+                var resp = (ResponseEntity) controller.getRandomJoke();
+                assertThat(resp.getStatusCode().value()).isEqualTo(503);
+                assertThat(resp.getBody()).isInstanceOf(ErrorResultStatus.class);
+                assert resp.getBody() != null;
+                assertThat(((ErrorResultStatus) resp.getBody()).message()).isEqualTo("db");
+            }
         }
     }
 

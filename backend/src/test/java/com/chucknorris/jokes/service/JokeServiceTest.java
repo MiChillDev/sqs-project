@@ -48,7 +48,7 @@ class JokeServiceTest {
     class CreateJoke {
         @Test
         @DisplayName("should save and return JokeDto when repository saves successfully")
-        void createJoke_shouldSaveAndReturnDto() {
+        void shouldSaveAndReturnDto() {
             CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
             JokeEntity saved = new JokeEntity(java.util.UUID.randomUUID(), "ext-2", "hello");
 
@@ -65,7 +65,7 @@ class JokeServiceTest {
 
         @Test
         @DisplayName("should propagate repository error when repository returns Left")
-        void createJoke_shouldPropagateRepositoryError() {
+        void shouldPropagateRepositoryError() {
             CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
             when(jokeRepository.saveJoke(any(JokeEntity.class)))
                     .thenReturn(Either.left(new ErrorResultStatus(500, "db error")));
