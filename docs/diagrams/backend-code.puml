@@ -1,0 +1,73 @@
+@startuml
+title C4 Level 4 - Backend Code-Sicht
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+
+package "jokes" {
+  class JokeController <<RestController>>
+  class JokeService <<Service>>
+  interface JokeRepository <<Repository>>
+
+  class JokeEntity <<Entity>>
+  class CreateJokeDto <<DTO>>
+  class JokeDto <<DTO>>
+  class SourceJokeDto <<DTO>>
+
+  JokeController --> JokeService : delegiert Requests
+  JokeController --> AuthService : validiert Token für Create Joke
+  JokeController ..> CreateJokeDto : erhält
+  JokeController ..> JokeDto : liefert zurück
+
+  JokeService --> JokeRepository : liest/speichert
+  JokeService ..> SourceJokeDto : mapped API-Antwort
+  JokeService ..> JokeDto : mapped DB-Entity
+
+  JokeRepository --> JokeEntity : verwaltet
+  JokeEntity ..> JokeDto : wird gemappt zu
+}
+
+package "users" {
+  class UserService <<Service>>
+  interface UserRepository <<Repository>>
+  class UserEntity <<Entity>>
+
+  UserService --> UserRepository : sucht User
+  UserRepository --> UserEntity : verwaltet
+}
+
+package "auth" {
+  class AuthController <<RestController>>
+  class AuthService <<Service>>
+  interface AuthRepository <<Repository>>
+
+  class LoginRequestDto <<DTO>>
+  class TokenResponseDto <<DTO>>
+  class AuthSessionEntity <<Entity>>
+
+  AuthController --> AuthService : Login / Tokenprüfung
+  AuthController ..> LoginRequestDto : erhält
+  AuthController ..> TokenResponseDto : liefert zurück
+
+  AuthService --> AuthRepository : Session lesen/schreiben
+  AuthService --> UserService : User suchen
+  AuthService ..> TokenResponseDto : erzeugt
+
+  AuthRepository --> AuthSessionEntity : verwaltet
+  AuthSessionEntity --> UserEntity : gehört zu
+}
+
+package "health" {
+  class HealthController <<RestController>>
+}
+
+database "PostgreSQL" as PostgreSQL
+cloud "api.chucknorris.io" as ChuckApi
+
+JokeRepository --> PostgreSQL : JokeEntity
+AuthRepository --> PostgreSQL : AuthSessionEntity
+UserRepository --> PostgreSQL : UserEntity
+HealthController --> PostgreSQL : Healthcheck
+JokeService --> ChuckApi : SourceJokeDto
+
+@enduml
