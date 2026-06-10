@@ -53,6 +53,10 @@ function JokePage() {
     setIsAnimating(true);
     setIsFetching(true);
     setIsError(false);
+
+    const animationStartedAt = Date.now();
+    const ANIMATION_MIN_MS = 250;
+
     try {
       const result = await fetchApi<Joke>('/api/v1/jokes');
       setJoke(result.content);
@@ -64,6 +68,11 @@ function JokePage() {
       setIsError(true);
     } finally {
       setIsFetching(false);
+      const elapsed = Date.now() - animationStartedAt;
+      const remaining = Math.max(0, ANIMATION_MIN_MS - elapsed);
+      if (remaining > 0) {
+        await new Promise((r) => setTimeout(r, remaining));
+      }
       setIsAnimating(false);
     }
   };
