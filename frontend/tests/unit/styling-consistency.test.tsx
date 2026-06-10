@@ -71,11 +71,7 @@ describe('Styling Consistency', () => {
     it('uses playful gradient background', () => {
       const { container } = renderRouteComponent(indexRoute);
       const rootDiv = container.firstElementChild;
-      expect(rootDiv).toHaveClass(
-        'bg-linear-to-br',
-        'from-playful-bg-start',
-        'to-playful-bg-end'
-      );
+      expect(rootDiv).toHaveClass('bg-linear-to-br', 'from-playful-bg-start', 'to-playful-bg-end');
     });
 
     it('renders welcome heading with playful heading color', () => {
@@ -96,11 +92,7 @@ describe('Styling Consistency', () => {
     it('replaces hardcoded colors with playful tokens', () => {
       const { container } = renderRouteComponent(jokePageRoute);
       const rootDiv = container.firstElementChild;
-      expect(rootDiv).toHaveClass(
-        'bg-linear-to-br',
-        'from-playful-bg-start',
-        'to-playful-bg-end'
-      );
+      expect(rootDiv).toHaveClass('bg-linear-to-br', 'from-playful-bg-start', 'to-playful-bg-end');
       expect(rootDiv).toHaveClass('font-body');
     });
 

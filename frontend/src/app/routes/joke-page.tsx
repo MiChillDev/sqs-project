@@ -23,9 +23,7 @@ function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
 
       {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
 
-      {isSuccess && joke && (
-        <div className='text-3xl font-heading text-playful-text'>{joke}</div>
-      )}
+      {isSuccess && joke && <div className='text-3xl font-heading text-playful-text'>{joke}</div>}
 
       {!isError && !isSuccess && (
         <div className='text-xl text-playful-text'>{t('jokePage.placeholder')}</div>
