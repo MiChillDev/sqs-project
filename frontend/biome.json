@@ -58,7 +58,6 @@
     }
   },
   "files": {
-    "includes": ["**"],
-    "ignore": ["**/generated/**"]
+    "includes": ["**", "!**/*.json", "!**/generated/**"]
   }
 }
