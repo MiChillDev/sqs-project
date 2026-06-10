@@ -17,7 +17,6 @@ const LazyReactQueryDevtools = lazy(() =>
 
 export function handleQueryClientError(error: unknown): void {
   if (import.meta.env.DEV) {
-    // biome-ignore lint/suspicious/noConsole: intentional dev-only error logging
     console.error('[API Error]', error);
   }
   toast.error(i18next.t('toast.errorTitle'), {

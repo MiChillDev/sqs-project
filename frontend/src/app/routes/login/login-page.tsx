@@ -73,7 +73,7 @@ export function LoginPage() {
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-(--color-playful-bg-start) via-(--color-playful-bg-mid) to-(--color-playful-bg-end)'>
+    <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end'>
       <Card className='w-full max-w-md shadow-[0_20px_40px_rgba(255,107,53,0.25)] dark:shadow-[0_0_30px_rgba(255,107,53,0.5),0_0_60px_rgba(255,107,53,0.2)]'>
         <CardHeader>
           <CardTitle>{t('login.title')}</CardTitle>
@@ -123,7 +123,7 @@ export function LoginPage() {
             <Button
               type='submit'
               disabled={login.isPending}
-              className='bg-linear-to-r from-(--color-playful-accent) to-(--color-playful-accent-light) text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
+              className='bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
             >
               {login.isPending && <LoginSpinner />}
               {t('login.submit')}

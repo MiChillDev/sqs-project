@@ -27,7 +27,7 @@ export const rootRoute = createRootRoute({
           >
             {t('a11y.skipToContent')}
           </a>
-          <header className='sticky top-0 z-10 flex items-center justify-between relative bg-(--color-playful-bg-start)/80 backdrop-blur-xl px-3 py-2 sm:px-6 sm:py-3'>
+          <header className='sticky top-0 z-10 flex items-center justify-between bg-playful-bg-start/80 backdrop-blur-xl px-3 py-2 sm:px-6 sm:py-3'>
             <svg
               className='absolute bottom-0 left-0 w-full h-1.5 pointer-events-none'
               aria-hidden='true'
@@ -52,25 +52,25 @@ export const rootRoute = createRootRoute({
               <rect width='100%' height='6' fill='url(#hand-drawn-wave)' />
             </svg>
             {isHome ? (
-              <h1 className='text-base sm:text-lg font-heading text-(--color-playful-heading) truncate max-w-40 sm:max-w-none'>
+              <h1 className='text-base sm:text-lg font-heading text-playful-heading truncate max-w-40 sm:max-w-none'>
                 {t('app.headerTitle')}
               </h1>
             ) : (
               <Link
                 to='/'
-                className='text-base sm:text-lg font-heading text-(--color-playful-heading) hover:opacity-80 transition-opacity truncate max-w-40 sm:max-w-none'
+                className='text-base sm:text-lg font-heading text-playful-heading hover:opacity-80 transition-opacity truncate max-w-40 sm:max-w-none'
               >
                 {t('app.headerTitle')}
               </Link>
             )}
 
-            <div className='flex items-center gap-0.5 sm:gap-1 text-(--color-playful-text) flex-shrink-0'>
+            <div className='flex items-center gap-0.5 sm:gap-1 text-playful-text shrink-0'>
               <LanguageToggle />
               <ThemeToggle theme={theme} onToggle={toggleTheme} />
               <UserMenu />
             </div>
           </header>
-          <main id='main-content' className='flex-1'>
+          <main id='main-content' className='flex-1 flex flex-col'>
             <Outlet />
           </main>
         </div>

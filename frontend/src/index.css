@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-background: 255 255 255;
+  --color-background: #fff5e1;
   --color-foreground: #0f172a;
   --color-card: #fff5e1;
   --color-card-foreground: #0f172a;
@@ -36,9 +36,32 @@
   --color-playful-card-bg: #ffffff;
 }
 
+html {
+  background-color: var(--color-playful-bg-start);
+}
 body {
   background-color: var(--color-playful-bg-start);
   color: var(--color-playful-text);
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float {
+  animation: float 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float {
+    animation: none;
+  }
 }
 
 .dark {

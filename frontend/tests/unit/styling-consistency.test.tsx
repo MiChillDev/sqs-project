@@ -71,17 +71,13 @@ describe('Styling Consistency', () => {
     it('uses playful gradient background', () => {
       const { container } = renderRouteComponent(indexRoute);
       const rootDiv = container.firstElementChild;
-      expect(rootDiv).toHaveClass(
-        'bg-linear-to-br',
-        'from-(--color-playful-bg-start)',
-        'to-(--color-playful-bg-end)'
-      );
+      expect(rootDiv).toHaveClass('bg-linear-to-br', 'from-playful-bg-start', 'to-playful-bg-end');
     });
 
     it('renders welcome heading with playful heading color', () => {
       const { container } = renderRouteComponent(indexRoute);
       const h1 = container.querySelector('h1');
-      expect(h1).toHaveClass('text-(--color-playful-heading)');
+      expect(h1).toHaveClass('text-playful-heading');
       expect(h1).toHaveClass('font-heading');
       expect(h1).toHaveTextContent('Welcome!');
     });
@@ -96,18 +92,14 @@ describe('Styling Consistency', () => {
     it('replaces hardcoded colors with playful tokens', () => {
       const { container } = renderRouteComponent(jokePageRoute);
       const rootDiv = container.firstElementChild;
-      expect(rootDiv).toHaveClass(
-        'bg-linear-to-br',
-        'from-(--color-playful-bg-start)',
-        'to-(--color-playful-bg-end)'
-      );
+      expect(rootDiv).toHaveClass('bg-linear-to-br', 'from-playful-bg-start', 'to-playful-bg-end');
       expect(rootDiv).toHaveClass('font-body');
     });
 
     it('uses playful heading color on title', () => {
       const { container } = renderRouteComponent(jokePageRoute);
       const h1 = container.querySelector('h1');
-      expect(h1).toHaveClass('text-(--color-playful-heading)');
+      expect(h1).toHaveClass('text-playful-heading');
     });
   });
 
@@ -115,7 +107,7 @@ describe('Styling Consistency', () => {
     it('header uses playful background', () => {
       const { container } = renderRouteComponent(rootRoute);
       const header = container.querySelector('header');
-      expect(header).toHaveClass('bg-(--color-playful-bg-start)/80');
+      expect(header).toHaveClass('bg-playful-bg-start/80');
     });
 
     it('renders the hand-drawn SVG border line', () => {
