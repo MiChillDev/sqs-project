@@ -115,8 +115,7 @@ class AuthServiceTest {
                 AuthSessionEntity session = new AuthSessionEntity();
                 session.setUserId(user.getId());
                 session.setToken("token-123");
-                var time = LocalDateTime.of(2100, 6, 1, 12, 0);
-                session.setExpiresAt(time);
+                session.setExpiresAt(LocalDateTime.MAX);
 
                 when(userService.findByUsername(anyString())).thenReturn(Either.right(Optional.of(user)));
                 when(tokenRepository.saveToken(any(UUID.class), anyString(), anyLong())).thenReturn(Either.right(session));

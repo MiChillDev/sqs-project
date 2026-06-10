@@ -17,6 +17,7 @@ class EitherTest {
     @DisplayName("fromOptional")
     class FromOptional {
         @Test
+        @DisplayName("returns Right when Optional is present")
         void returnsRightWhenPresent() {
             Either<String, Integer> e = Either.fromOptional(Optional.of(5), "no");
             assertThat(e).isInstanceOf(Either.Right.class);
@@ -24,6 +25,7 @@ class EitherTest {
         }
 
         @Test
+        @DisplayName("returns Left when Optional is empty")
         void returnsLeftWhenEmpty() {
             Either<String, Integer> e = Either.fromOptional(Optional.empty(), "left");
             assertThat(e).isInstanceOf(Either.Left.class);
@@ -35,6 +37,7 @@ class EitherTest {
     @DisplayName("map and flatMap")
     class MapFlatMap {
         @Test
+        @DisplayName("map transforms Right value")
         void mapTransformsRight() {
             Either<String, Integer> e = Either.right(3);
             Either<String, String> mapped = e.map(i -> "v" + i);
@@ -43,6 +46,7 @@ class EitherTest {
         }
 
         @Test
+        @DisplayName("flatMap transforms Right value")
         void flatMapChainsRight() {
             Either<String, Integer> e = Either.right(2);
             Either<String, Integer> chained = e.flatMap(i -> Either.right(i * 5));
