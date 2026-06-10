@@ -1,7 +1,7 @@
 import { createRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRandomJoke } from 'src/shared/api/hooks';
+import { fetchApi, type Joke } from 'src/shared/api/api';
 import { Confetti } from 'src/shared/components/animations/confetti';
 import { Button } from 'src/shared/components/ui/button';
 import { Card, CardContent } from 'src/shared/components/ui/card';
@@ -9,27 +9,26 @@ import { useJokeCounter } from 'src/shared/hooks/use-joke-counter';
 import { rootRoute } from './__root';
 
 type JokeCardContentProps = Readonly<{
-  hasFetched: boolean;
   isError: boolean;
   isSuccess: boolean;
   joke?: string;
 }>;
 
-function JokeCardContent({ hasFetched, isError, isSuccess, joke }: JokeCardContentProps) {
+function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
   const { t } = useTranslation();
 
   return (
     <CardContent className='flex-1 flex flex-col items-center justify-center gap-6 text-center'>
-      {!hasFetched && !isError && (
-        <div className='text-xl text-(--color-playful-text)'>{t('jokePage.placeholder')}</div>
-      )}
-
       {isError && <div className='text-xl text-destructive'>{t('jokePage.error')}</div>}
 
       {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
 
       {isSuccess && joke && (
         <div className='text-3xl font-heading text-(--color-playful-text)'>{joke}</div>
+      )}
+
+      {!isError && !isSuccess && (
+        <div className='text-xl text-(--color-playful-text)'>{t('jokePage.placeholder')}</div>
       )}
     </CardContent>
   );
@@ -43,29 +42,35 @@ function getButtonLabel(t: (key: string) => string, isSuccess: boolean) {
 function JokePage() {
   const { t } = useTranslation();
 
+  const [joke, setJoke] = useState<string>();
+  const [isError, setIsError] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
 
-  const jokeQuery = useRandomJoke();
-  const joke = jokeQuery.data?.content;
+  const isSuccess = joke !== undefined && !isError;
 
   const { count, showConfetti, increment } = useJokeCounter(100);
 
   const handleFetch = async () => {
     setIsAnimating(true);
+    setIsFetching(true);
+    setIsError(false);
     try {
-      const result = await jokeQuery.refetch();
-      setHasFetched(true);
-
-      if (result.status === 'success' && result.data?.content?.trim()) {
+      const result = await fetchApi<Joke>('/api/v1/jokes');
+      setJoke(result.content);
+      if (result.content?.trim()) {
         increment();
       }
+    } catch {
+      setJoke(undefined);
+      setIsError(true);
     } finally {
+      setIsFetching(false);
       setIsAnimating(false);
     }
   };
 
-  const buttonLabel = getButtonLabel(t, jokeQuery.isSuccess);
+  const buttonLabel = getButtonLabel(t, isSuccess);
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-(--color-playful-bg-start) via-(--color-playful-bg-mid) to-(--color-playful-bg-end) font-body relative overflow-hidden'>
@@ -102,17 +107,12 @@ function JokePage() {
           {count}
         </div>
 
-        <JokeCardContent
-          hasFetched={hasFetched}
-          isError={jokeQuery.isError}
-          isSuccess={jokeQuery.isSuccess}
-          joke={joke}
-        />
+        <JokeCardContent isError={isError} isSuccess={isSuccess} joke={joke} />
       </Card>
 
       <Button
         onClick={handleFetch}
-        disabled={jokeQuery.isFetching || isAnimating}
+        disabled={isFetching || isAnimating}
         className='px-10 py-4 text-xl font-heading bg-linear-to-r from-(--color-playful-accent) to-(--color-playful-accent-light) text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
       >
         {buttonLabel}

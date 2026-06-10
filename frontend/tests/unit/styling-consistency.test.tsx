@@ -43,6 +43,16 @@ vi.mock('src/shared/api/hooks', () => ({
   }),
 }));
 
+vi.mock('@tanstack/react-query', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tanstack/react-query')>();
+  return {
+    ...actual,
+    useQueryClient: () => ({
+      removeQueries: vi.fn(),
+    }),
+  };
+});
+
 vi.mock('src/shared/hooks/use-joke-counter', () => ({
   useJokeCounter: () => ({
     count: 0,

@@ -4,14 +4,6 @@ import { rootRoute } from 'src/app/routes/__root';
 import { describe, expect, it, vi } from 'vitest';
 import { getTranslation } from './shared/translation-helper';
 
-function createRouterMocks(pathname = '/') {
-  return {
-    useNavigate: () => ({}),
-    useSearch: () => ({}),
-    useLocation: () => ({ pathname }),
-  };
-}
-
 let currentPathname = '/';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {
