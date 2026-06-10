@@ -96,6 +96,24 @@ class JokeControllerTest {
 
                 RequestContextHolder.resetRequestAttributes();
             }
+
+            @Test
+            @DisplayName("should fail with 401 when no Authorization header is present (via MVC)")
+            void shouldFailWith401WhenNoHeaderViaMvc() {
+                assertThat(mvc.post()
+                        .contentType("application/json")
+                        .content("{\"content\":\"hi\",\"externalId\":\"ext-11\"}")
+                        .uri("/api/v1/jokes")).hasStatus(401)
+                        .bodyJson()
+                        .extractingPath("$.code").asNumber().isEqualTo(401);
+
+                assertThat(mvc.post()
+                        .contentType("application/json")
+                        .content("{\"content\":\"hi\",\"externalId\":\"ext-11\"}")
+                        .uri("/api/v1/jokes")).hasStatus(401)
+                        .bodyJson()
+                        .extractingPath("$.message").asString().matches("[0-9a-fA-F-]{36}");
+            }
         }
     }
 

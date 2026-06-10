@@ -60,6 +60,16 @@ class AuthServiceTest {
                 assertThat(r2).isInstanceOf(Either.Left.class);
                 assertThat(((Either.Left<ErrorResultStatus, Boolean>) r2).value().code()).isEqualTo(400);
             }
+
+            @Test
+            @DisplayName("propagates repository Left when token lookup fails")
+            void propagatesRepositoryLeft() {
+                when(tokenRepository.getUserIdByToken(anyString())).thenReturn(Either.left(new ErrorResultStatus(503, "db")));
+
+                Either<ErrorResultStatus, Boolean> r = authService.checkTokenIsValid("Bearer abc");
+                assertThat(r).isInstanceOf(Either.Left.class);
+                assertThat(((Either.Left<ErrorResultStatus, Boolean>) r).value().code()).isEqualTo(503);
+            }
         }
 
         @Nested
@@ -105,7 +115,8 @@ class AuthServiceTest {
                 AuthSessionEntity session = new AuthSessionEntity();
                 session.setUserId(user.getId());
                 session.setToken("token-123");
-                session.setExpiresAt(LocalDateTime.now().plusMinutes(30));
+                var time = LocalDateTime.of(2100, 6, 1, 12, 0);
+                session.setExpiresAt(time);
 
                 when(userService.findByUsername(anyString())).thenReturn(Either.right(Optional.of(user)));
                 when(tokenRepository.saveToken(any(UUID.class), anyString(), anyLong())).thenReturn(Either.right(session));

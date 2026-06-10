@@ -2,7 +2,6 @@ package com.chucknorris.jokes.service;
 
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
-import com.chucknorris.common.utils.PasswordHasher;
 import com.chucknorris.jokes.models.dto.CreateJokeDto;
 import com.chucknorris.jokes.models.dto.JokeDto;
 import com.chucknorris.jokes.models.entity.JokeEntity;
@@ -15,10 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
 
@@ -41,6 +36,35 @@ class JokeServiceTest {
     @BeforeEach
     void setUp() {
         jokeService = new JokeService(apiRepo, jokeRepository);
+    }
+
+    @Nested
+    @DisplayName("getRandomSourceJoke")
+    class GetRandomSourceJoke {
+        @Test
+        @DisplayName("should return source joke when API repo returns Right")
+        void shouldReturnSourceWhenPresent() {
+            com.chucknorris.jokes.models.dto.SourceJokeDto src = new com.chucknorris.jokes.models.dto.SourceJokeDto("s1", "txt");
+            when(apiRepo.getRandomSourceJoke()).thenReturn(Either.right(src));
+
+            Either<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto> res = jokeService.getRandomSourceJoke();
+            assertThat(res).isInstanceOf(Either.Right.class);
+            if (res instanceof Either.Right<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(com.chucknorris.jokes.models.dto.SourceJokeDto dto)) {
+                assertThat(dto.externalId()).isEqualTo("s1");
+            }
+        }
+
+        @Test
+        @DisplayName("should propagate Left from API repo")
+        void shouldPropagateLeft() {
+            when(apiRepo.getRandomSourceJoke()).thenReturn(Either.left(new ErrorResultStatus(502, "api")));
+
+            Either<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto> res = jokeService.getRandomSourceJoke();
+            assertThat(res).isInstanceOf(Either.Left.class);
+            if (res instanceof Either.Left<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(ErrorResultStatus value)) {
+                assertThat(value.code()).isEqualTo(502);
+            }
+        }
     }
 
     @Nested

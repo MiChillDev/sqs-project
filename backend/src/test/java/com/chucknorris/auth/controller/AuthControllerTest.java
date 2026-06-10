@@ -41,7 +41,8 @@ class AuthControllerTest {
             @Test
             @DisplayName("returns 200 with token when credentials are valid")
             void returns200WithToken() {
-                TokenResponseDto dto = new TokenResponseDto("tok-1", LocalDateTime.now().plusMinutes(30));
+                var time = LocalDateTime.of(2100, 6, 1, 12, 0);
+                TokenResponseDto dto = new TokenResponseDto("tok-1", time);
                 when(authService.login(new LoginRequestDto("bob", "pw"))).thenReturn(Either.right(dto));
 
                 ResponseEntity<TokenResponseDto> resp = controller.login(new LoginRequestDto("bob", "pw"));
