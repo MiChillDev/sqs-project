@@ -24,11 +24,11 @@ function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
       {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
 
       {isSuccess && joke && (
-        <div className='text-3xl font-heading text-(--color-playful-text)'>{joke}</div>
+        <div className='text-3xl font-heading text-playful-text'>{joke}</div>
       )}
 
       {!isError && !isSuccess && (
-        <div className='text-xl text-(--color-playful-text)'>{t('jokePage.placeholder')}</div>
+        <div className='text-xl text-playful-text'>{t('jokePage.placeholder')}</div>
       )}
     </CardContent>
   );
@@ -73,14 +73,14 @@ function JokePage() {
   const buttonLabel = getButtonLabel(t, isSuccess);
 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-(--color-playful-bg-start) via-(--color-playful-bg-mid) to-(--color-playful-bg-end) font-body relative overflow-hidden'>
-      <h1 className='text-[4rem] font-heading text-(--color-playful-heading) drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] -rotate-2 tracking-wide'>
+    <div className='flex-1 flex flex-col items-center justify-center gap-12 bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end font-body relative overflow-hidden'>
+      <h1 className='text-[4rem] font-heading text-playful-heading drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] -rotate-2 tracking-wide'>
         {t('jokePage.heading')}
       </h1>
 
       <Card
         className={`
-          relative w-150 min-h-75 p-8 border-[3px] border-(--color-playful-accent) flex flex-col
+          relative w-150 min-h-75 p-8 border-[3px] border-playful-accent flex flex-col
           shadow-[0_20px_40px_rgba(255,107,53,0.25)] dark:shadow-[0_0_30px_rgba(255,107,53,0.5),0_0_60px_rgba(255,107,53,0.2)]
           transition-all duration-300 ease-in-out
           ${isAnimating ? 'scale-95 opacity-60' : 'scale-100 opacity-100'}
@@ -93,11 +93,11 @@ function JokePage() {
             overflow-visible
             flex items-center justify-center
             rounded-full
-            bg-(--color-playful-accent)/90 backdrop-blur-md
+            bg-playful-accent/90 backdrop-blur-md
             text-white
             font-bold
             text-sm
-            border-[3px] border-(--color-playful-accent)
+            border-[3px] border-playful-accent
             shadow-[0_10px_25px_rgba(255,107,53,0.35)] dark:shadow-[0_0_20px_rgba(255,107,53,0.6),0_0_40px_rgba(255,107,53,0.3)]
             transition-all duration-300 ease-in-out
             ${isAnimating ? 'scale-90 opacity-95' : 'scale-100 opacity-100'}
@@ -113,7 +113,7 @@ function JokePage() {
       <Button
         onClick={handleFetch}
         disabled={isFetching || isAnimating}
-        className='px-10 py-4 text-xl font-heading bg-linear-to-r from-(--color-playful-accent) to-(--color-playful-accent-light) text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
+        className='px-10 py-4 text-xl font-heading bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
       >
         {buttonLabel}
       </Button>

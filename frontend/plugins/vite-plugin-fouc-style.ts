@@ -70,6 +70,9 @@ function generateStyleTag(colors: ReturnType<typeof extractColors>): string {
         --color-background: ${toCssColor(colors.darkBg)};
         --color-foreground: ${toCssColor(colors.darkFg)};
       }
+      html {
+        background: var(--color-background);
+      }
       body {
         background: var(--color-background);
         color: var(--color-foreground);
