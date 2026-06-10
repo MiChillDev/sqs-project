@@ -10,7 +10,7 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'html', ['lcov', { projectRoot: '../' }]],
       provider: 'v8',
-      include: ['src/**', 'plugins/**', 'public/locales/**'],
+      include: ['src/**', 'plugins/**'],
       exclude: ['src/assets/**', '**/generated/**'],
       thresholds: {
         lines: 90,
