@@ -9,10 +9,16 @@ import com.chucknorris.jokes.models.entity.JokeEntity;
 import com.chucknorris.jokes.repository.JokeRepository;
 import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
 
@@ -37,77 +43,90 @@ class JokeServiceTest {
         jokeService = new JokeService(apiRepo, jokeRepository);
     }
 
-    @Test
-    void getRandomJoke_shouldReturnJokeDtoWhenPresent() {
-        JokeEntity entity = new JokeEntity();
-        entity.setId(java.util.UUID.randomUUID());
-        entity.setExternalId("ext-1");
-        entity.setContent("a funny joke");
+    @Nested
+    @DisplayName("createJoke")
+    class CreateJoke {
+        @Test
+        @DisplayName("should save and return JokeDto when repository saves successfully")
+        void createJoke_shouldSaveAndReturnDto() {
+            CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
+            JokeEntity saved = new JokeEntity(java.util.UUID.randomUUID(), "ext-2", "hello");
 
-        when(jokeRepository.getRandomJoke()).thenReturn(Either.right(Optional.of(entity)));
+            when(jokeRepository.saveJoke(any(JokeEntity.class))).thenReturn(Either.right(saved));
 
-        Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
+            Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
 
-        assertThat(res).isInstanceOf(Either.Right.class);
-        if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto dto)) {
-            assertThat(dto.externalId()).isEqualTo("ext-1");
-            assertThat(dto.content()).isEqualTo("a funny joke");
+            assertThat(res).isInstanceOf(Either.Right.class);
+            if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto dto)) {
+                assertThat(dto.externalId()).isEqualTo("ext-2");
+                assertThat(dto.content()).isEqualTo("hello");
+            }
+        }
+
+        @Test
+        @DisplayName("should propagate repository error when repository returns Left")
+        void createJoke_shouldPropagateRepositoryError() {
+            CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
+            when(jokeRepository.saveJoke(any(JokeEntity.class)))
+                    .thenReturn(Either.left(new ErrorResultStatus(500, "db error")));
+
+            Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
+
+            assertThat(res).isInstanceOf(Either.Left.class);
+            if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
+                assertThat(value.code()).isEqualTo(500);
+            }
         }
     }
 
-    @Test
-    void getRandomJoke_shouldReturnEmptyJokeWhenEmpty() {
-        when(jokeRepository.getRandomJoke()).thenReturn(Either.right(Optional.empty()));
+    @Nested
+    @DisplayName("getRandomJoke")
+    class GetRandomJoke {
+        @Test
+        @DisplayName("should return JokeDto when joke is present")
+        void shouldReturnJokeDtoWhenPresent() {
+            JokeEntity entity = new JokeEntity();
+            entity.setId(java.util.UUID.randomUUID());
+            entity.setExternalId("ext-1");
+            entity.setContent("a funny joke");
 
-        Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
+            when(jokeRepository.getRandomJoke()).thenReturn(Either.right(Optional.of(entity)));
 
-        assertThat(res).isInstanceOf(Either.Right.class);
-        if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto joke)) {
-            assertNull(joke.id());
-            assertNull(joke.externalId());
-            assertNull(joke.content());
+            Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
+
+            assertThat(res).isInstanceOf(Either.Right.class);
+            if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto dto)) {
+                assertThat(dto.externalId()).isEqualTo("ext-1");
+                assertThat(dto.content()).isEqualTo("a funny joke");
+            }
         }
-    }
 
-    @Test
-    void createJoke_shouldSaveAndReturnDto() {
-        CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
-        JokeEntity saved = new JokeEntity(java.util.UUID.randomUUID(), "ext-2", "hello");
+        @Test
+        @DisplayName("should return empty JokeDto when no joke is present")
+        void shouldReturnEmptyJokeWhenEmpty() {
+            when(jokeRepository.getRandomJoke()).thenReturn(Either.right(Optional.empty()));
 
-        when(jokeRepository.saveJoke(any(JokeEntity.class))).thenReturn(Either.right(saved));
+            Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
 
-        Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
-
-        assertThat(res).isInstanceOf(Either.Right.class);
-        if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto dto)) {
-            assertThat(dto.externalId()).isEqualTo("ext-2");
-            assertThat(dto.content()).isEqualTo("hello");
+            assertThat(res).isInstanceOf(Either.Right.class);
+            if (res instanceof Either.Right<ErrorResultStatus, JokeDto>(JokeDto joke)) {
+                assertNull(joke.id());
+                assertNull(joke.externalId());
+                assertNull(joke.content());
+            }
         }
-    }
 
-    @Test
-    void createJoke_shouldPropagateRepositoryError() {
-        CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
-        when(jokeRepository.saveJoke(any(JokeEntity.class)))
-                .thenReturn(Either.left(new ErrorResultStatus(500, "db error")));
+        @Test
+        @DisplayName("should propagate repository error when repository returns Left")
+        void shouldPropagateRepositoryLeft() {
+            when(jokeRepository.getRandomJoke()).thenReturn(Either.left(new ErrorResultStatus(503, "db down")));
 
-        Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
+            Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
 
-        assertThat(res).isInstanceOf(Either.Left.class);
-        if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
-            assertThat(value.code()).isEqualTo(500);
-        }
-    }
-
-    @Test
-    void getRandomJoke_shouldPropagateRepositoryLeft() {
-        when(jokeRepository.getRandomJoke()).thenReturn(Either.left(new ErrorResultStatus(503, "db down")));
-
-        Either<ErrorResultStatus, JokeDto> res = jokeService.getRandomJoke();
-
-        assertThat(res).isInstanceOf(Either.Left.class);
-        if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
-            assertThat(value.code()).isEqualTo(503);
+            assertThat(res).isInstanceOf(Either.Left.class);
+            if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
+                assertThat(value.code()).isEqualTo(503);
+            }
         }
     }
 }
