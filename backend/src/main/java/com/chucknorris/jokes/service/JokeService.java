@@ -1,6 +1,5 @@
 package com.chucknorris.jokes.service;
 
-import com.chucknorris.common.domain.service.BaseService;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.jokes.models.dto.CreateJokeDto;
@@ -11,10 +10,8 @@ import com.chucknorris.jokes.repository.JokeRepository;
 import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
-public class JokeService extends BaseService {
+public class JokeService {
 
     private final ChuckNorrisApiJokeRepositoryImpl chuckNorrisJokeRepository;
     private final JokeRepository jokeRepository;
