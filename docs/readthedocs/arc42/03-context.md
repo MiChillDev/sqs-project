@@ -13,7 +13,7 @@ The system context diagram is available as [C4 Level 1 — System Context](merma
   allowfullscreen="true">
 </iframe>
 
-<script type="text/javascript" src="../../structurizr/js/structurizr-embed.js"></script>
+<script type="text/javascript" src="../structurizr/js/structurizr-embed.js"></script>
 
 ### External Actors
 
