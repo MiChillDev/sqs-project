@@ -150,7 +150,7 @@ workspace "Chuck Norris Jokes" "C4-Diagramme für das SQS-Projekt" {
         image backendApi "C4_BackendCode" {
             title "C4 - Code-Sicht Backend"
             description "PlantUML-Klassendiagramm als Image View, da Structurizr Code-Level-Diagramme nicht nativ modelliert."
-            plantuml docs/diagrams/backend-code.puml
+            plantuml backend-code.puml
         }
 
         theme default
