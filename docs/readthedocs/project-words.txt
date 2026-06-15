@@ -13,3 +13,4 @@ JSESSIONID
 JPQL
 viewports
 Whitebox
+structurizr
