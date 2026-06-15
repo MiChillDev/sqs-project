@@ -123,6 +123,12 @@ workspace "Chuck Norris Jokes" "C4-Diagramme für das SQS-Projekt" {
     }
 
     views {
+
+        properties {
+            "plantuml.url" "https://plantuml.com/plantuml"
+            "plantuml.format" "svg"
+        }
+
         systemContext chuckNorrisSystem "C1_SystemContext" {
             title "C1 - Systemkontext"
             include *
@@ -141,11 +147,11 @@ workspace "Chuck Norris Jokes" "C4-Diagramme für das SQS-Projekt" {
             autoLayout lr
         }
 
-        #image backendApi "C4_BackendCode" {
-            #title "C4 - Code-Sicht Backend"
-            #description "PlantUML-Klassendiagramm als Image View, da Structurizr Code-Level-Diagramme nicht nativ modelliert."
-            #plantuml https://www.plantuml.com/plantuml/svg/ZLP1Rjim4Bpp5OlSRVUGan4OSUm2JH6WQPm-W97M4ckQL4agGLpqDtr3JxdvOrtA4aI9T9kRk9nTpYndQLzRnushzv8vuIJ2wXBky1abNC84RdYsGvN3IkSusOYiT8pPdL0LDtmF5Uto0ZVkbV8CPewhGc80o2ItTkcS4K-rmzjCguqu87nWh4s5Y-zwX_O2VZ8ueU4p1LPQEQEbH0DNLmzeNHzOB0R83PfdaI71sgzcNoY7PiifxZ4FM6ahd3QlJRLkGSX1gO-A6k0Xfu_We9L1xj1ZrauJOFtuPKGZ5T_escHH5csF54ucYu6KEUGeiH1e73pWZvhastJMidPbd_NCfSYRh4U2AjWUtqnBlKcEQqodYv6sEQ0fZx-bIuDxc1IuzKSTQdDyotQTh8vDfobeVPDZtSnMI3wYt56AhpzisHpslAemX-NzxMIft8jE9aNmzStaT8KTgu15HwozREeQcXSk7NQLsurXuHTXSYZGr_UIsQ_0mBL5Cp3mDmhypvOUSzwMOQNObRGT7k4LZShDmTOqgasuHOzQ45GEMn3gucIkK9Ots_lcChJbkGPup3lcyauNGhL3a9gnnkb4fDBA9eVmnCLQeLMoaoDLyLGr361sEgaYiszhLSI9tYzZik4m9U0Hz-HKXMmwTeEhRjM1H8jgPhFIe7X2bKWDNJDlLerF8kmPScWEM1Uk8pLoLDpeuMp5-v4F2ooFVqmqO2LIZO4LFpMHVvkHAkJSyITkgSIzjgumkFbwTm7SGhzacTHrJcQln3Ghwsodj372JeLkW2iVMbQ2iSGpqbSXxltJmHBD6K2ZJh34W0uo-YwnI7e4FY7eMia_uoUvq-Dj4pwrZ5tJhppz1_WB
-        #}
+        image backendApi "C4_BackendCode" {
+            title "C4 - Code-Sicht Backend"
+            description "PlantUML-Klassendiagramm als Image View, da Structurizr Code-Level-Diagramme nicht nativ modelliert."
+            plantuml docs/diagrams/backend-code.puml
+        }
 
         theme default
 
