@@ -124,11 +124,6 @@ workspace "Chuck Norris Jokes" "C4-Diagramme für das SQS-Projekt" {
 
     views {
 
-        properties {
-            "plantuml.url" "https://plantuml.com/plantuml"
-            "plantuml.format" "svg"
-        }
-
         systemContext chuckNorrisSystem "C1_SystemContext" {
             title "C1 - Systemkontext"
             include *
@@ -149,8 +144,8 @@ workspace "Chuck Norris Jokes" "C4-Diagramme für das SQS-Projekt" {
 
         image backendApi "C4_BackendCode" {
             title "C4 - Code-Sicht Backend"
-            description "PlantUML-Klassendiagramm als Image View, da Structurizr Code-Level-Diagramme nicht nativ modelliert."
-            plantuml backend-code.puml
+            description "PlantUML-Klassendiagramm."
+            image backend-code.svg
         }
 
         theme default
