@@ -7,13 +7,23 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.13"
+  apt_packages:
+    - graphviz
+    - unzip
+    - openjdk-17-jre-headless
+  jobs:
+    pre_build:
+      - curl -L -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip
+      - unzip -q /tmp/structurizr-cli.zip -d /tmp/structurizr-cli
+      - chmod +x /tmp/structurizr-cli/structurizr.sh
+      - /tmp/structurizr-cli/structurizr.sh export -workspace docs/diagrams/c4_diagram.dsl -format static -output docs/readthedocs/structurizr
 
 mkdocs:
-  configuration: docs/.mkdocs.yaml
+  configuration: docs/readthedocs/.mkdocs.yaml
 
 # Optionally, but recommended,
 # declare the Python requirements required to build your documentation
 # See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
   install:
-    - requirements: docs/requirements.txt
+    - requirements: docs/readthedocs/requirements.txt
