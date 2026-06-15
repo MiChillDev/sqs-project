@@ -1,142 +1,119 @@
 import { createRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRandomJoke } from 'src/shared/api/hooks';
+import { fetchApi, type Joke } from 'src/shared/api/api';
 import { Confetti } from 'src/shared/components/animations/confetti';
 import { Button } from 'src/shared/components/ui/button';
 import { Card, CardContent } from 'src/shared/components/ui/card';
+import { useJokeCounter } from 'src/shared/hooks/use-joke-counter';
 import { rootRoute } from './__root';
 
-export function getNextCount(prev: number, max: number) {
-  return (prev + 1) % max;
+type JokeCardContentProps = Readonly<{
+  isError: boolean;
+  isSuccess: boolean;
+  joke?: string;
+}>;
+
+function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
+  const { t } = useTranslation();
+
+  return (
+    <CardContent className='flex-1 flex flex-col items-center justify-center gap-6 text-center'>
+      {isError && <div className='text-xl text-destructive'>{t('jokePage.error')}</div>}
+
+      {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
+
+      {isSuccess && joke && <div className='text-3xl font-heading text-playful-text'>{joke}</div>}
+
+      {!isError && !isSuccess && (
+        <div className='text-xl text-playful-text'>{t('jokePage.placeholder')}</div>
+      )}
+    </CardContent>
+  );
 }
 
-export function shouldShowConfetti(prev: number, max: number) {
-  return prev === max - 1;
-}
-
-export function scheduleConfettiReset(fn: () => void, delay = 1500) {
-  return setTimeout(fn, delay);
-}
-
-type JokeLike = {
-  content?: string | null;
-};
-
-function isEmptyJoke(joke?: JokeLike | null) {
-  return !joke?.content?.trim();
+function getButtonLabel(t: (key: string) => string, isSuccess: boolean) {
+  if (isSuccess) return t('jokePage.refetchButton');
+  return t('jokePage.fetchButton');
 }
 
 function JokePage() {
   const { t } = useTranslation();
 
+  const [joke, setJoke] = useState<string>();
+  const [isError, setIsError] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
 
-  const jokeQuery = useRandomJoke();
+  const isSuccess = joke !== undefined && !isError;
 
-  const maxCount = 100;
-  const [count, setCount] = useState(0);
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  const isEmpty = jokeQuery.isSuccess && isEmptyJoke(jokeQuery.data);
-  const jokeText = jokeQuery.data?.content;
+  const { count, showConfetti, increment } = useJokeCounter(100);
 
   const handleFetch = async () => {
     setIsAnimating(true);
-
+    setIsFetching(true);
+    setIsError(false);
     try {
-      const result = await jokeQuery.refetch();
-      setHasFetched(true);
-
-      if (result.status === 'success' && !isEmptyJoke(result.data)) {
-        setCount((prev) => {
-          const next = getNextCount(prev, maxCount);
-
-          if (shouldShowConfetti(prev, maxCount)) {
-            setShowConfetti(true);
-
-            scheduleConfettiReset(() => {
-              setShowConfetti(false);
-            });
-          }
-
-          return next;
-        });
+      const result = await fetchApi<Joke>('/api/v1/jokes');
+      setJoke(result.content);
+      if (result.content?.trim()) {
+        increment();
       }
+    } catch {
+      setJoke(undefined);
+      setIsError(true);
     } finally {
+      setIsFetching(false);
       setIsAnimating(false);
     }
   };
 
+  const buttonLabel = getButtonLabel(t, isSuccess);
+
   return (
-    <div className='min-h-screen flex flex-col items-center justify-center gap-12 bg-linear-to-br from-[#FFF5E1] via-[#FFE4C4] to-[#FFDAB9] font-[Nunito] relative overflow-hidden'>
-      <h1 className='text-[4rem] font-heading text-[#2C3E50] drop-shadow-[3px_3px_0px_#FF6B35] -rotate-2 tracking-wide'>
+    <div className='flex-1 flex flex-col items-center justify-center gap-12 bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end font-body relative overflow-hidden'>
+      <h1 className='text-[4rem] font-heading text-playful-heading drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] -rotate-2 tracking-wide'>
         {t('jokePage.heading')}
       </h1>
 
-      {/* CARD */}
       <Card
         className={`
-          relative w-150 h-75 p-8 border-[3px] border-[#FF6B35]
-          shadow-[0_20px_40px_rgba(255,107,53,0.25)]
+          relative w-150 min-h-75 p-8 border-[3px] border-playful-accent flex flex-col
+          shadow-[0_20px_40px_rgba(255,107,53,0.25)] dark:shadow-[0_0_30px_rgba(255,107,53,0.5),0_0_60px_rgba(255,107,53,0.2)]
           transition-all duration-300 ease-in-out
           ${isAnimating ? 'scale-95 opacity-60' : 'scale-100 opacity-100'}
         `}
       >
-        {/* COUNTER */}
         <div
           className={`
-		        absolute -top-5 -right-5
-		        w-12 h-12
+            absolute -top-5 -right-5
+            w-12 h-12
             overflow-visible
-		        flex items-center justify-center
-		        rounded-full
-		        bg-[#FF6B35]/90 backdrop-blur-md
-		        text-white
-		        font-bold
-		        text-sm
-		        border-[3px] border-[#FF6B35]
-		        shadow-[0_10px_25px_rgba(255,107,53,0.35)]
-		        transition-all duration-300 ease-in-out
-		        ${isAnimating ? 'scale-90 opacity-95' : 'scale-100 opacity-100'}
-	      `}
+            flex items-center justify-center
+            rounded-full
+            bg-playful-accent/90 backdrop-blur-md
+            text-white
+            font-bold
+            text-sm
+            border-[3px] border-playful-accent
+            shadow-[0_10px_25px_rgba(255,107,53,0.35)] dark:shadow-[0_0_20px_rgba(255,107,53,0.6),0_0_40px_rgba(255,107,53,0.3)]
+            transition-all duration-300 ease-in-out
+            ${isAnimating ? 'scale-90 opacity-95' : 'scale-100 opacity-100'}
+          `}
         >
           <Confetti trigger={showConfetti} />
           {count}
         </div>
 
-        {/* CONTENT */}
-        <CardContent className='h-full flex flex-col items-center justify-center gap-6 text-center overflow-hidden'>
-          {/* PLACEHOLDER */}
-          {!hasFetched && !jokeQuery.isError && (
-            <div className='text-2xl font-heading text-[#2C3E50]'>{t('jokePage.placeholder')}</div>
-          )}
-
-          {/* ERROR */}
-          {jokeQuery.isError && (
-            <div className='text-2xl font-heading text-destructive'>{t('jokePage.error')}</div>
-          )}
-
-          {/* EMPTY */}
-          {isEmpty && (
-            <div className='text-2xl font-heading text-destructive'>{t('jokePage.empty')}</div>
-          )}
-
-          {/* SUCCESS */}
-          {jokeQuery.isSuccess && jokeText && (
-            <div className='text-3xl font-heading text-[#2C3E50]'>{jokeText}</div>
-          )}
-        </CardContent>
+        <JokeCardContent isError={isError} isSuccess={isSuccess} joke={joke} />
       </Card>
 
-      {/* BUTTON */}
       <Button
         onClick={handleFetch}
-        disabled={jokeQuery.isFetching || isAnimating}
-        className='px-10 py-4 text-xl font-heading bg-linear-to-r from-[#FF6B35] to-[#F7931E] text-white rounded-full shadow-lg hover:scale-105 transition'
+        disabled={isFetching || isAnimating}
+        className='px-10 py-4 text-xl font-heading bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
       >
-        {jokeQuery.isSuccess ? t('jokePage.refetchButton') : t('jokePage.fetchButton')}
+        {buttonLabel}
       </Button>
     </div>
   );

@@ -3,13 +3,22 @@
 		"skipToContent": "Zum Inhalt springen"
 	},
 	"app": {
-		"headerTitle": "SQS Vorbereitung",
-		"documentTitle": "SQS Vorbereitung",
+		"headerTitle": "Chuck Norris Witze",
+		"documentTitle": "Chuck Norris Witze",
 		"toggleTheme": "Design umschalten"
 	},
 	"home": {
-		"title": "SQS Frontend",
+		"title": "Chuck Norris Witze",
 		"description": "Ein Absatz"
+	},
+	"welcome": {
+		"title": "Willkommen!",
+		"goToJokes": "Zu den Witzen"
+	},
+	"header": {
+		"login": "Anmelden",
+		"menu": "Menü",
+		"goHome": "Start"
 	},
 	"error": {
 		"title": "Etwas ist schiefgelaufen",
@@ -35,78 +44,6 @@
 			"nameMin": "Name muss mindestens 2 Zeichen haben",
 			"emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
 			"messageMin": "Nachricht muss mindestens 10 Zeichen haben"
-		}
-	},
-	"demo": {
-		"title": "Komponentenbibliothek Test",
-		"cards": {
-			"buttons": {
-				"title": "Button-Varianten",
-				"description": "Alle verfügbaren Button-Varianten und -Größen"
-			},
-			"simple": {
-				"title": "Einfache Karte",
-				"description": "Eine einfache Karte mit Kopfzeile und Inhalt",
-				"content": "Dies ist ein einfaches Kartenbeispiel mit Kopfzeile, Beschreibung und Inhaltsbereich.",
-				"action": "Kartenaktion"
-			},
-			"action": {
-				"title": "Karte mit Aktion",
-				"description": "Eine Karte mit einer Aktion in der Kopfzeile",
-				"content": "Diese Karte demonstriert die CardAction-Komponente im Kopfbereich.",
-				"headerAction": "Kopfzeilenaktion"
-			}
-		},
-		"form": {
-			"legend": "Kontaktformular",
-			"fields": {
-				"name": "Name",
-				"namePlaceholder": "Ihr Name",
-				"email": "E-Mail",
-				"emailPlaceholder": "Ihre E-Mail",
-				"message": "Nachricht",
-				"messagePlaceholder": "Ihre Nachricht (min. 10 Zeichen)"
-			},
-			"submit": "Absenden",
-			"submitting": "Wird gesendet...",
-			"reset": "Zurücksetzen",
-			"toastTitle": "Formular gesendet",
-			"toastDescription": "Test erfolgreich!"
-		},
-		"toasts": {
-			"triggerSuccess": "Erfolgs-Toast auslösen",
-			"triggerError": "Fehler-Toast auslösen",
-			"successTitle": "Erfolg",
-			"successDescription": "Dies ist ein Erfolgs-Toast.",
-			"errorTitle": "Fehler",
-			"errorDescription": "Dies ist ein Fehler-Toast.",
-			"triggerWarning": "Warnungs-Toast auslösen",
-			"warningTitle": "Warnung",
-			"warningDescription": "Dies ist ein Warnungs-Toast.",
-			"triggerInfo": "Info-Toast auslösen",
-			"infoTitle": "Info",
-			"infoDescription": "Dies ist ein Info-Toast.",
-			"triggerMessage": "Nachrichten-Toast auslösen",
-			"messageTitle": "Nachricht",
-			"messageDescription": "Dies ist ein einfacher Nachrichten-Toast."
-		}
-	},
-	"reference": {
-		"title": "Referenzimplementierung",
-		"form": {
-			"fields": {
-				"name": "Name",
-				"namePlaceholder": "Geben Sie Ihren Namen ein",
-				"email": "E-Mail",
-				"emailPlaceholder": "Geben Sie Ihre E-Mail ein"
-			},
-			"submit": "Absenden",
-			"submitting": "Wird gesendet...",
-			"simulateError": "Fehler simulieren",
-			"simErrorTitle": "Simulierter Fehler",
-			"simErrorDesc": "Dies ist ein simulierter API-Fehler",
-			"toastTitle": "Formular gesendet",
-			"toastDescription": "Danke, {{name}}!"
 		}
 	},
 	"connectivityTest": {
@@ -149,7 +86,7 @@
 		}
 	},
 	"admin": {
-		"title": "Admin",
+		"title": "Einstellungen",
 		"createJoke": "Witz erstellen",
 		"contentLabel": "Inhalt",
 		"externalIdLabel": "Externe ID",

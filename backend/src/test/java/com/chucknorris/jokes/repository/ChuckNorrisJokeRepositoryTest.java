@@ -6,6 +6,8 @@ import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
 import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -34,160 +36,181 @@ class ChuckNorrisJokeRepositoryTest {
         repository = new ChuckNorrisApiJokeRepositoryImpl(mockRestTemplate);
     }
 
-    @Test
-    void getRandomSourceJoke_shouldReturnSourceJokeDtoOnSuccess() {
-        String jokeId = "joke-123";
-        String jokeText = "Chuck Norris can divide by zero";
-        ChuckNorrisResponse mockResponse = new ChuckNorrisResponse(jokeId, jokeText);
-        ResponseEntity<ChuckNorrisResponse> mockEntity =
-                ResponseEntity.ok(mockResponse);
+    @Nested
+    @DisplayName("getRandomSourceJoke")
+    class GetRandomSourceJoke {
 
-        when(mockRestTemplate.getForEntity(
-                eq("https://api.chucknorris.io/jokes/random"),
-                eq(ChuckNorrisResponse.class)))
-                .thenReturn(mockEntity);
+        @Nested
+        @DisplayName("success scenarios")
+        class Success {
 
-        Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
+            @Test
+            @DisplayName("returns SourceJokeDto on success")
+            void returnsSourceJokeDtoOnSuccess() {
+                String jokeId = "joke-123";
+                String jokeText = "Chuck Norris can divide by zero";
+                ChuckNorrisResponse mockResponse = new ChuckNorrisResponse(jokeId, jokeText);
+                ResponseEntity<ChuckNorrisResponse> mockEntity =
+                        ResponseEntity.ok(mockResponse);
 
-        assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(Either.Right.class);
+                when(mockRestTemplate.getForEntity(
+                        eq("https://api.chucknorris.io/jokes/random"),
+                        eq(ChuckNorrisResponse.class)))
+                        .thenReturn(mockEntity);
 
-        if (result instanceof Either.Right<ErrorResultStatus, SourceJokeDto>(SourceJokeDto value)) {
-            assertThat(value).isNotNull();
-            assertThat(value.externalId()).isEqualTo(jokeId);
-            assertThat(value.content()).isEqualTo(jokeText);
-        } else {
-            throw new AssertionError("Expected Either.Right but got: " + result);
+                Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
+
+                assertThat(result).isNotNull();
+                assertThat(result).isInstanceOf(Either.Right.class);
+
+                if (result instanceof Either.Right<ErrorResultStatus, SourceJokeDto>(SourceJokeDto value)) {
+                    assertThat(value).isNotNull();
+                    assertThat(value.externalId()).isEqualTo(jokeId);
+                    assertThat(value.content()).isEqualTo(jokeText);
+                } else {
+                    throw new AssertionError("Expected Either.Right but got: " + result);
+                }
+
+                verify(mockRestTemplate).getForEntity(
+                        "https://api.chucknorris.io/jokes/random",
+                        ChuckNorrisResponse.class);
+            }
+
+            @Test
+            @DisplayName("maps response correctly")
+            void mapsResponseCorrectly() {
+                String expectedId = "abc-def-123";
+                String expectedText = "Chuck Norris doesn't read books. He stares them down until he gets the information he wants.";
+                ChuckNorrisResponse mockResponse = new ChuckNorrisResponse(expectedId, expectedText);
+                ResponseEntity<ChuckNorrisResponse> mockEntity =
+                        ResponseEntity.ok(mockResponse);
+
+                when(mockRestTemplate.getForEntity(
+                        any(String.class),
+                        any(Class.class)))
+                        .thenReturn(mockEntity);
+
+                Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
+
+                assertThat(result).isInstanceOf(Either.Right.class);
+                if (result instanceof Either.Right<ErrorResultStatus, SourceJokeDto>(SourceJokeDto dto)) {
+                    assertThat(dto.externalId()).isEqualTo(expectedId);
+                    assertThat(dto.content()).isEqualTo(expectedText);
+                }
+            }
+
+            @Test
+            @DisplayName("calls correct API URL")
+            void callsCorrectApiUrl() {
+                ChuckNorrisResponse mockResponse = new ChuckNorrisResponse("id", "joke");
+                ResponseEntity<ChuckNorrisResponse> mockEntity =
+                        ResponseEntity.ok(mockResponse);
+
+                when(mockRestTemplate.getForEntity(
+                        any(String.class),
+                        any(Class.class)))
+                        .thenReturn(mockEntity);
+
+                repository.getRandomSourceJoke();
+
+                verify(mockRestTemplate).getForEntity(
+                        "https://api.chucknorris.io/jokes/random",
+                        ChuckNorrisResponse.class);
+            }
         }
 
-        verify(mockRestTemplate).getForEntity(
-                "https://api.chucknorris.io/jokes/random",
-                ChuckNorrisResponse.class);
-    }
+        @Nested
+        @DisplayName("failure scenarios")
+        class Failure {
 
-    @Test
-    void getRandomSourceJoke_shouldReturnLeftWithErrorOnApiFailure() {
-        RestClientException apiException = new RestClientException("Connection timeout");
-        when(mockRestTemplate.getForEntity(
-                eq("https://api.chucknorris.io/jokes/random"),
-                eq(ChuckNorrisResponse.class)))
-                .thenThrow(apiException);
+            @Test
+            @DisplayName("returns Left with error on API failure")
+            void returnsLeftOnApiFailure() {
+                RestClientException apiException = new RestClientException("Connection timeout");
+                when(mockRestTemplate.getForEntity(
+                        eq("https://api.chucknorris.io/jokes/random"),
+                        eq(ChuckNorrisResponse.class)))
+                        .thenThrow(apiException);
 
-        Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
+                Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
 
-        assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(Either.Left.class);
+                assertThat(result).isNotNull();
+                assertThat(result).isInstanceOf(Either.Left.class);
 
-        if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
-            assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(500);
-            assertThat(value.message())
-                    .contains("Error communicating with external API")
-                    .contains("Connection timeout");
-        } else {
-            throw new AssertionError("Expected Either.Left but got: " + result);
+                if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
+                    assertThat(value).isNotNull();
+                    assertThat(value.code()).isEqualTo(500);
+                    assertThat(value.message())
+                            .contains("Error communicating with external API")
+                            .contains("Connection timeout");
+                } else {
+                    throw new AssertionError("Expected Either.Left but got: " + result);
+                }
+
+                verify(mockRestTemplate).getForEntity(
+                        "https://api.chucknorris.io/jokes/random",
+                        ChuckNorrisResponse.class);
+            }
+
+            @Test
+            @DisplayName("returns Left on non-success status")
+            void returnsLeftOnNonSuccessStatus() {
+                ResponseEntity<ChuckNorrisResponse> mockEntity =
+                        ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+
+                when(mockRestTemplate.getForEntity(
+                        eq("https://api.chucknorris.io/jokes/random"),
+                        eq(ChuckNorrisResponse.class)))
+                        .thenReturn(mockEntity);
+                Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
+
+                assertThat(result).isNotNull();
+                assertThat(result).isInstanceOf(Either.Left.class);
+
+                if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
+                    assertThat(value).isNotNull();
+                    assertThat(value.code()).isEqualTo(502);
+                    assertThat(value.message())
+                            .contains("API request failed")
+                            .contains("503");
+                } else {
+                    throw new AssertionError("Expected Either.Left but got: " + result);
+                }
+
+                verify(mockRestTemplate).getForEntity(
+                        "https://api.chucknorris.io/jokes/random",
+                        ChuckNorrisResponse.class);
+            }
+
+            @Test
+            @DisplayName("returns Left when body is null")
+            void returnsLeftOnNullBody() {
+                ResponseEntity<ChuckNorrisResponse> mockEntity =
+                        ResponseEntity.ok().build();
+
+                when(mockRestTemplate.getForEntity(
+                        eq("https://api.chucknorris.io/jokes/random"),
+                        eq(ChuckNorrisResponse.class)))
+                        .thenReturn(mockEntity);
+
+                Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
+
+                assertThat(result).isNotNull();
+                assertThat(result).isInstanceOf(Either.Left.class);
+
+                if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
+                    assertThat(value).isNotNull();
+                    assertThat(value.code()).isEqualTo(502);
+                    assertThat(value.message())
+                            .contains("API request failed or returned empty body");
+                } else {
+                    throw new AssertionError("Expected Either.Left but got: " + result);
+                }
+
+                verify(mockRestTemplate).getForEntity(
+                        "https://api.chucknorris.io/jokes/random",
+                        ChuckNorrisResponse.class);
+            }
         }
-
-        verify(mockRestTemplate).getForEntity(
-                "https://api.chucknorris.io/jokes/random",
-                ChuckNorrisResponse.class);
-    }
-
-    @Test
-    void getRandomSourceJoke_shouldReturnLeftWithErrorOnNonSuccessStatus() {
-        ResponseEntity<ChuckNorrisResponse> mockEntity =
-                ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
-
-        when(mockRestTemplate.getForEntity(
-                eq("https://api.chucknorris.io/jokes/random"),
-                eq(ChuckNorrisResponse.class)))
-                .thenReturn(mockEntity);
-        Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
-
-        assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(Either.Left.class);
-
-        if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
-            assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(502);
-            assertThat(value.message())
-                    .contains("API request failed")
-                    .contains("503");
-        } else {
-            throw new AssertionError("Expected Either.Left but got: " + result);
-        }
-
-        verify(mockRestTemplate).getForEntity(
-                "https://api.chucknorris.io/jokes/random",
-                ChuckNorrisResponse.class);
-    }
-
-    @Test
-    void getRandomSourceJoke_shouldReturnLeftWithErrorOnNullBody() {
-        ResponseEntity<ChuckNorrisResponse> mockEntity =
-                ResponseEntity.ok().build();
-
-        when(mockRestTemplate.getForEntity(
-                eq("https://api.chucknorris.io/jokes/random"),
-                eq(ChuckNorrisResponse.class)))
-                .thenReturn(mockEntity);
-
-        Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
-
-        assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(Either.Left.class);
-
-        if (result instanceof Either.Left<ErrorResultStatus, SourceJokeDto>(ErrorResultStatus value)) {
-            assertThat(value).isNotNull();
-            assertThat(value.code()).isEqualTo(502);
-            assertThat(value.message())
-                    .contains("API request failed or returned empty body");
-        } else {
-            throw new AssertionError("Expected Either.Left but got: " + result);
-        }
-
-        verify(mockRestTemplate).getForEntity(
-                "https://api.chucknorris.io/jokes/random",
-                ChuckNorrisResponse.class);
-    }
-
-    @Test
-    void getRandomSourceJoke_shouldMapResponseCorrectly() {
-        String expectedId = "abc-def-123";
-        String expectedText = "Chuck Norris doesn't read books. He stares them down until he gets the information he wants.";
-        ChuckNorrisResponse mockResponse = new ChuckNorrisResponse(expectedId, expectedText);
-        ResponseEntity<ChuckNorrisResponse> mockEntity =
-                ResponseEntity.ok(mockResponse);
-
-        when(mockRestTemplate.getForEntity(
-                any(String.class),
-                any(Class.class)))
-                .thenReturn(mockEntity);
-
-        Either<ErrorResultStatus, SourceJokeDto> result = repository.getRandomSourceJoke();
-
-        assertThat(result).isInstanceOf(Either.Right.class);
-        if (result instanceof Either.Right<ErrorResultStatus, SourceJokeDto>(SourceJokeDto dto)) {
-            assertThat(dto.externalId()).isEqualTo(expectedId);
-            assertThat(dto.content()).isEqualTo(expectedText);
-        }
-    }
-
-    @Test
-    void getRandomSourceJoke_shouldCallCorrectApiUrl() {
-        ChuckNorrisResponse mockResponse = new ChuckNorrisResponse("id", "joke");
-        ResponseEntity<ChuckNorrisResponse> mockEntity =
-                ResponseEntity.ok(mockResponse);
-
-        when(mockRestTemplate.getForEntity(
-                any(String.class),
-                any(Class.class)))
-                .thenReturn(mockEntity);
-
-        repository.getRandomSourceJoke();
-
-        verify(mockRestTemplate).getForEntity(
-                "https://api.chucknorris.io/jokes/random",
-                ChuckNorrisResponse.class);
     }
 }

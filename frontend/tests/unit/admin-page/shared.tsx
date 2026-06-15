@@ -14,15 +14,12 @@ export {
   waitFor,
 } from '../shared/test-utils';
 
+import { cleanup } from '@testing-library/react';
 import { render, screen, userEvent } from '../shared/test-utils';
 
 const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
   mockReset: () => void;
   toHaveBeenCalledWith: (args: unknown) => void;
-};
-const mockAuthStorageGet = (globalThis as Record<string, unknown>).__adminMockAuthStorageGet as {
-  mockReset: () => void;
-  mockReturnValue: (v: unknown) => void;
 };
 const mockAuthStorageClear = (globalThis as Record<string, unknown>)
   .__adminMockAuthStorageClear as {
@@ -84,20 +81,26 @@ function mockJokeMutationError(error: Error) {
     });
 }
 
+function setupAdminTests() {
+  beforeEach(resetMocks);
+  afterEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+  });
+}
+
 export {
   adminRoute,
   fillJokeFormAndSubmit,
   mockAuthStorageClear,
-  mockAuthStorageGet,
   mockCreateJokeMutation,
   mockJokeMutationError,
   mockJokeMutationSuccess,
   mockNavigate,
   mockSourceJokeQuery,
-  render,
   renderComponent,
   resetMocks,
   screen,
+  setupAdminTests,
   userEvent,
-  vi,
 };

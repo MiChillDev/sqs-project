@@ -11,10 +11,14 @@
 		"build": "tsc -b && vite build",
 		"preview": "vite preview",
 		"lint": "biome check .",
+		"graph": "fallow",
+		"graph:audit": "fallow audit --base origin/main",
+		"ok": "biome check . && tsc -b && fallow",
 		"format": "biome format --write .",
 		"typecheck": "tsc -b",
 		"test": "vitest run",
 		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"generate-api-types": "openapi-typescript openapi.yaml -o src/shared/api/generated/api-types.ts",
 		"generate-api-types:watch": "openapi-typescript openapi.yaml -o src/shared/api/generated/api-types.ts --watch"
 	},
@@ -55,12 +59,13 @@
 		"@types/react-dom": "19.2.3",
 		"@vitejs/plugin-react": "6.0.1",
 		"@vitest/coverage-v8": "^4.1.7",
+		"fallow": "^2.85.0",
 		"jsdom": "29.0.1",
 		"openapi-typescript": "7.13.0",
 		"shadcn": "^4.6.0",
 		"tailwindcss": "4.2.2",
 		"typescript": "6.0.2",
 		"vite": "8.0.8",
-		"vitest": "4.1.2"
+		"vitest": "4.1.7"
 	}
 }

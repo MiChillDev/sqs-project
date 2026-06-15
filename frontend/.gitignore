@@ -22,3 +22,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Fallow
+.fallow/
+src/shared/api/generated/

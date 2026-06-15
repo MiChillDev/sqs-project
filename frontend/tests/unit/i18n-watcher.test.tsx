@@ -1,8 +1,7 @@
-/// <reference types="vitest/globals" />
-
 import { render } from '@testing-library/react';
 
 import { I18nWatcher } from 'src/shared/components/i18n-watcher';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockChangeLanguage = vi.fn();
 const mockI18n = {

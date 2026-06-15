@@ -1,7 +1,7 @@
 const KEY = 'sqs.auth';
 
 export type AuthStorageValue = { token: string; expiresAt: string };
-export type StorageHandler = (next: AuthStorageValue | null) => void;
+type StorageHandler = (next: AuthStorageValue | null) => void;
 
 export const authStorage = {
   get(): AuthStorageValue | null {
@@ -11,7 +11,6 @@ export const authStorage = {
       const parsed = JSON.parse(raw);
       if (typeof parsed.token !== 'string' || typeof parsed.expiresAt !== 'string') {
         if (import.meta.env.DEV) {
-          // biome-ignore lint/suspicious/noConsole: intentional dev-only logging
           console.warn(
             '[authStorage] Clearing malformed token — expected { token: string, expiresAt: string }, got:',
             typeof parsed.token,

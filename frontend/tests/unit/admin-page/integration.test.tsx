@@ -1,29 +1,23 @@
 import './mocks';
 import {
-  afterEach,
-  beforeEach,
-  cleanup,
   describe,
   expect,
   it,
   mockCreateJokeMutation,
   mockSourceJokeQuery,
   renderComponent,
-  resetMocks,
   screen,
+  setupAdminTests,
   userEvent,
   waitFor,
 } from './shared';
 
 describe('AdminPage — integration flows', () => {
-  beforeEach(resetMocks);
-  afterEach(cleanup);
+  setupAdminTests();
 
   describe('Full admin page rendering with sections', () => {
-    it('renders all sections: heading, JokeCreationSection, SourceJokeSection', () => {
+    it('renders all sections: JokeCreationSection, SourceJokeSection', () => {
       renderComponent();
-
-      expect(screen.getByRole('heading', { name: 'Admin' })).toBeInTheDocument();
 
       expect(screen.getAllByText('Create Joke').length).toBeGreaterThanOrEqual(2);
       expect(screen.getByLabelText('Content')).toBeInTheDocument();
@@ -65,25 +59,26 @@ describe('AdminPage — integration flows', () => {
   });
 
   describe('Complete source joke fetch → display flow', () => {
-    it('fetches and displays a source joke', async () => {
+    it('clicking fetch triggers refetch and displays the result', async () => {
       const user = userEvent.setup();
+      const joke = 'Chuck Norris uses ribbed lightbulbs.';
 
+      // Pre-set the query state to simulate a previously successful fetch
+      mockSourceJokeQuery.data = { content: joke };
+      mockSourceJokeQuery.isFetching = false;
       mockSourceJokeQuery.refetch.mockResolvedValue({
-        data: { content: 'Chuck Norris uses ribbed lightbulbs.' },
+        data: { content: joke },
         error: null,
       });
 
       renderComponent();
 
+      // Content already displayed from the pre-set state
+      expect(screen.getByText(joke)).toBeInTheDocument();
+
+      // Clicking refetch triggers the hook
       await user.click(screen.getByRole('button', { name: 'Fetch Source Joke' }));
-
-      mockSourceJokeQuery.data = { content: 'Chuck Norris uses ribbed lightbulbs.' };
-      mockSourceJokeQuery.isFetching = false;
-
-      cleanup();
-      renderComponent();
-
-      expect(screen.getByText('Chuck Norris uses ribbed lightbulbs.')).toBeInTheDocument();
+      expect(mockSourceJokeQuery.refetch).toHaveBeenCalledOnce();
     });
   });
 });

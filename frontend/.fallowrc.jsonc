@@ -1,0 +1,59 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "boundaries": {
+    "zones": [
+      // Route features: isolated from each other
+      { "name": "routes-login", "patterns": ["src/app/routes/login/**"] },
+      { "name": "routes-admin", "patterns": ["src/app/routes/admin/**"] },
+      // Shared route files (__root.tsx, index.tsx, flat pages)
+      { "name": "routes-shared", "patterns": ["src/app/routes/*.tsx", "src/app/routes/*.ts"] },
+      // App orchestrator (router.ts, providers)
+      { "name": "app-core", "patterns": ["src/app/providers/**", "src/app/router.ts"] },
+      // Bottom layer: no deps on any zone above
+      { "name": "shared", "patterns": ["src/shared/**"] }
+    ],
+    "rules": [
+      // Features may import from shared and shared-route files, but NOT from each other
+      { "from": "routes-login", "allow": ["shared", "routes-shared"] },
+      { "from": "routes-admin", "allow": ["shared", "routes-shared"] },
+      { "from": "routes-shared", "allow": ["shared"] },
+      // Orchestrator imports from all route zones + shared
+      { "from": "app-core", "allow": ["shared", "routes-login", "routes-admin", "routes-shared"] },
+      // Shared layer is isolated
+      { "from": "shared", "allow": [] }
+    ]
+  },
+  "rules": {
+    // Architecture violations and cycles block CI
+    "boundary-violation": "error",
+    "circular-dependency": "error",
+    // Dead code is informational, non-blocking
+    "unused-files": "warn",
+    "unused-exports": "warn",
+    "unused-dependencies": "warn",
+    "unused-types": "warn",
+    // Not useful for React projects
+    "unused-class-members": "off",
+    "unused-enum-members": "off",
+    "duplicate-exports": "off"
+  },
+  "ignorePatterns": [
+    "src/shared/api/generated/**", // openapi-typescript output
+    "vitest.sonar.config.ts" // loaded by SonarQube, not imported
+  ],
+  // shadcn/ui barrels re-export same short names intentionally
+  "ignoreExports": [{ "file": "src/shared/components/ui/**", "exports": ["*"] }],
+  // CSS/font deps imported via @import, CLI tool never imported
+  "ignoreDependencies": ["@fontsource-variable/geist", "tw-animate-css", "shadcn"],
+  // Raised from defaults (20/15): TSX return blocks inflate counts
+  "health": {
+    "maxCyclomatic": 25,
+    "maxCognitive": 20,
+    "minScore": 90
+  },
+  // Duplication handled by SonarQube: don't fail, only report widespread copy-paste
+  "duplicates": {
+    "threshold": 0,
+    "minOccurrences": 3
+  }
+}

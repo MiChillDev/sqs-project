@@ -16,9 +16,8 @@ export function SourceJokeSection() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [savedExternalId, setSavedExternalId] = useState<string | null>(null);
 
-  const handleFetch = () => {
+  const doRefetch = () => {
     setErrorMessage(null);
-    setSavedExternalId(null);
     sourceJoke.refetch().then((result) => {
       if (result.error) {
         const error = result.error;
@@ -26,6 +25,11 @@ export function SourceJokeSection() {
         setErrorMessage(extractErrorKey(error));
       }
     });
+  };
+
+  const handleFetch = () => {
+    setSavedExternalId(null);
+    doRefetch();
   };
 
   const handleSave = () => {
@@ -45,14 +49,7 @@ export function SourceJokeSection() {
   };
 
   const handleRetry = () => {
-    setErrorMessage(null);
-    sourceJoke.refetch().then((result) => {
-      if (result.error) {
-        const error = result.error;
-        if (handle401(error, navigate)) return;
-        setErrorMessage(extractErrorKey(error));
-      }
-    });
+    doRefetch();
   };
 
   return (
@@ -61,7 +58,11 @@ export function SourceJokeSection() {
         <CardTitle>{t('admin.fetchSourceJoke')}</CardTitle>
       </CardHeader>
       <CardContent className='flex flex-col gap-4'>
-        <Button onClick={handleFetch} disabled={sourceJoke.isFetching}>
+        <Button
+          onClick={handleFetch}
+          disabled={sourceJoke.isFetching}
+          className='bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
+        >
           {sourceJoke.isFetching ? t('admin.fetching') : t('admin.fetchSourceJoke')}
         </Button>
 
@@ -76,11 +77,10 @@ export function SourceJokeSection() {
               </div>
             ) : (
               <Button
-                variant='outline'
                 size='sm'
                 onClick={handleSave}
                 disabled={saveJoke.isPending}
-                className='self-start'
+                className='self-start bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
               >
                 {saveJoke.isPending ? t('admin.saving') : t('admin.save')}
               </Button>

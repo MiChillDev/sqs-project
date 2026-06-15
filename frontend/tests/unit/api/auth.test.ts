@@ -1,5 +1,4 @@
-/// <reference types="vitest/globals" />
-
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchApi } from './shared';
 
 describe('fetchApi', () => {

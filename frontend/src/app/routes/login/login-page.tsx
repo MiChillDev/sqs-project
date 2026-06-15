@@ -12,6 +12,19 @@ import { loginSchema } from 'src/shared/lib/login-schema';
 import { loginErrorKey, resolveRedirect } from './login-helpers';
 import { useBanner } from './use-banner';
 
+function LoginSpinner() {
+  return (
+    <svg className='animate-spin size-4' viewBox='0 0 24 24' fill='none' aria-hidden='true'>
+      <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
+      <path
+        className='opacity-75'
+        fill='currentColor'
+        d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
+      />
+    </svg>
+  );
+}
+
 export function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -60,8 +73,8 @@ export function LoginPage() {
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-background'>
-      <Card className='w-full max-w-md'>
+    <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end'>
+      <Card className='w-full max-w-md shadow-[0_20px_40px_rgba(255,107,53,0.25)] dark:shadow-[0_0_30px_rgba(255,107,53,0.5),0_0_60px_rgba(255,107,53,0.2)]'>
         <CardHeader>
           <CardTitle>{t('login.title')}</CardTitle>
         </CardHeader>
@@ -107,29 +120,12 @@ export function LoginPage() {
               )}
             </Field>
 
-            <Button type='submit' disabled={login.isPending}>
-              {login.isPending ? (
-                <svg
-                  className='animate-spin size-4'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  aria-hidden='true'
-                >
-                  <circle
-                    className='opacity-25'
-                    cx='12'
-                    cy='12'
-                    r='10'
-                    stroke='currentColor'
-                    strokeWidth='4'
-                  />
-                  <path
-                    className='opacity-75'
-                    fill='currentColor'
-                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
-                  />
-                </svg>
-              ) : null}
+            <Button
+              type='submit'
+              disabled={login.isPending}
+              className='bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
+            >
+              {login.isPending && <LoginSpinner />}
               {t('login.submit')}
             </Button>
           </form>
