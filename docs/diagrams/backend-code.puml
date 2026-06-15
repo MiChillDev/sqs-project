@@ -61,8 +61,8 @@ package "health" {
   class HealthController <<RestController>>
 }
 
-database "PostgreSQL" as PostgreSQL
-cloud "api.chucknorris.io" as ChuckApi
+class PostgreSQL <<Database>>
+class ChuckApi <<External API>>
 
 JokeRepository --> PostgreSQL : JokeEntity
 AuthRepository --> PostgreSQL : AuthSessionEntity
