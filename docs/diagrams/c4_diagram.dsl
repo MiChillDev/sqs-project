@@ -1,7 +1,5 @@
 # https://playground.structurizr.com/
 
-# https://playground.structurizr.com/
-
 workspace "Chuck Norris Jokes" "C4-Diagramme für das SQS-Projekt" {
 
     model {
