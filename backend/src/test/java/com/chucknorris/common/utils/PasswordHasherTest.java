@@ -18,14 +18,14 @@ class PasswordHasherTest {
         @DisplayName("hashing then verifying returns true")
         void hashThenVerify() {
             String pw = "s3cr3t";
-            String hash = PasswordHasher.hashPassword(pw);
-            assertThat(PasswordHasher.verifyPassword(pw, hash)).isTrue();
+            String hash = PasswordHasher.hashPassword(pw).get();
+            assertThat(PasswordHasher.verifyPassword(pw, hash).get()).isTrue();
         }
 
         @Test
         @DisplayName("verify returns false for malformed stored hash")
         void verifyMalformedHash() {
-            assertThat(PasswordHasher.verifyPassword("pw", "not-a-valid-hash")).isFalse();
+            assertThat(PasswordHasher.verifyPassword("pw", "not-a-valid-hash").get()).isFalse();
         }
     }
 }

@@ -42,6 +42,14 @@ public sealed interface Either<L, R> permits Either.Left, Either.Right {
         }
     }
 
+    /// unsafe operation. avoid if possible in business logic. fine for tests
+    default R get() {
+        if (this instanceof Right<L, R>(R value)) {
+            return value;
+        }
+        throw new IllegalStateException("Cannot get value from Left");
+    }
+
     default Either<L, R> validate(Predicate<? super R> predicate, L errorValue) {
         if (this instanceof Right<L, R>(R value)) {
             if (predicate.test(value)) {

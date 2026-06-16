@@ -109,7 +109,7 @@ class AuthServiceTest {
                 UserEntity user = new UserEntity();
                 user.setId(UUID.randomUUID());
                 user.setUsername("bob");
-                String hashed = PasswordHasher.hashPassword("secret");
+                String hashed = PasswordHasher.hashPassword("secret").get();
                 user.setPasswordHash(hashed);
 
                 AuthSessionEntity session = new AuthSessionEntity();
@@ -145,7 +145,7 @@ class AuthServiceTest {
                 UserEntity user = new UserEntity();
                 user.setId(UUID.randomUUID());
                 user.setUsername("alice");
-                String hashed = PasswordHasher.hashPassword("rightpw");
+                String hashed = PasswordHasher.hashPassword("rightpw").get();
                 user.setPasswordHash(hashed);
 
                 when(userService.findByUsername(anyString())).thenReturn(Either.right(Optional.of(user)));
@@ -161,7 +161,7 @@ class AuthServiceTest {
                 UserEntity user = new UserEntity();
                 user.setId(UUID.randomUUID());
                 user.setUsername("bob");
-                String hashed = PasswordHasher.hashPassword("secret");
+                String hashed = PasswordHasher.hashPassword("secret").get();
                 user.setPasswordHash(hashed);
 
                 when(userService.findByUsername(anyString())).thenReturn(Either.right(Optional.of(user)));
