@@ -29,7 +29,7 @@ public class BaseController {
         Optional<String> token = attributes.flatMap(att -> Optional.ofNullable(att.getRequest().getHeader("Authorization")));
         return handleEither(
                 Either.fromOptional(token, new ErrorResultStatus(401, UUID.randomUUID().toString()))
-                        .flatMap(t -> authService.checkTokenIsValid(t))
+                        .flatMap(authService::checkTokenIsValid)
                         .validate(isValid -> isValid, new ErrorResultStatus(401, "Invalid token"))
                         .flatMap(r -> action.get()));
     }
