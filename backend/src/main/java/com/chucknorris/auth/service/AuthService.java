@@ -17,7 +17,7 @@ public class AuthService {
 
     private final AuthRepository tokenRepository;
     private final UserService userService;
-    private static final long EXPIRATION_TIME_SECONDS = 30 * 60; // 30 minutes
+    private static final long EXPIRATION_TIME_SECONDS = (long) 30 * 60; // 30 minutes
 
     public AuthService(AuthRepository tokenRepository, UserService userService) {
         this.tokenRepository = tokenRepository;

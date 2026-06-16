@@ -1,5 +1,6 @@
 package com.chucknorris.jokes.controller;
 
+import com.chucknorris.auth.service.AuthService;
 import com.chucknorris.common.controller.BaseController;
 import com.chucknorris.jokes.models.dto.CreateJokeDto;
 import com.chucknorris.jokes.models.dto.JokeDto;
@@ -14,7 +15,8 @@ public class JokeController extends BaseController {
 
     private final JokeService jokeService;
 
-    public JokeController(JokeService jokeService) {
+    public JokeController(JokeService jokeService, AuthService authService) {
+        super(authService);
         this.jokeService = jokeService;
     }
 

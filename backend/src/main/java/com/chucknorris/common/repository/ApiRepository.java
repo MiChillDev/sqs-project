@@ -9,11 +9,11 @@ public abstract class ApiRepository {
 
     protected final RestTemplate restTemplate;
 
-    public ApiRepository() {
+    protected ApiRepository() {
         this.restTemplate = new RestTemplate();
     }
 
-    public ApiRepository(RestTemplate restTemplate) {
+    protected ApiRepository(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

@@ -38,11 +38,8 @@ class JokeControllerTest {
     private JokeController controller;
 
     @BeforeEach
-    void setUp() throws Exception {
-        controller = new JokeController(jokeService);
-        java.lang.reflect.Field f = controller.getClass().getSuperclass().getDeclaredField("authService"); //TODO: this can surely be done better
-        f.setAccessible(true);
-        f.set(controller, authService);
+    void setUp() {
+        controller = new JokeController(jokeService, authService);
 
         mvc = MockMvcTester.of(controller);
     }

@@ -9,19 +9,25 @@ import java.util.Base64;
 
 //TODO: use Either
 
-/// AI GENERATED CLASS
-public class PasswordHasher {
+/// MOSTLY AI GENERATED CLASS
+public final class PasswordHasher {
+
+    private static final SecureRandom secureRandom = new SecureRandom();
 
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
 
+    // used to overwrite default public constructor
+    private PasswordHasher() {
+        throw new AssertionError("Utility class");
+    }
+
     // Format: "iterations:salt:hash"
     public static String hashPassword(String password) {
         try {
             byte[] salt = new byte[16];
-            SecureRandom random = new SecureRandom();
-            random.nextBytes(salt);
+            secureRandom.nextBytes(salt);
 
             byte[] hash = pbkdf2(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
 
@@ -41,7 +47,6 @@ public class PasswordHasher {
             byte[] salt = Base64.getDecoder().decode(parts[1]);
             byte[] hash = Base64.getDecoder().decode(parts[2]);
 
-            //TODO: use Argon2?
             byte[] testHash = pbkdf2(password.toCharArray(), salt, iterations, hash.length * 8);
 
             return slowEquals(hash, testHash);
