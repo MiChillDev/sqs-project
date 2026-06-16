@@ -17,7 +17,7 @@ public class AuthService {
 
     private final AuthRepository tokenRepository;
     private final UserService userService;
-    private static final long EXPIRATION_TIME_SECONDS = 30 * 60; // 30 minutes
+    private static final long EXPIRATION_TIME_SECONDS = (long) 30 * 60; // 30 minutes
 
     public AuthService(AuthRepository tokenRepository, UserService userService) {
         this.tokenRepository = tokenRepository;
@@ -28,8 +28,11 @@ public class AuthService {
         return userService.findByUsername(request.username())
                 .validate(Optional::isPresent, new ErrorResultStatus(404, "User Not Found"))
                 .map(Optional::get)
-                // error when credentials are incorrect must be the same as when user is not found to prevent information leakage.
-                .validate(user -> PasswordHasher.verifyPassword(request.password(), user.getPasswordHash()), new ErrorResultStatus(404, "User Not Found"))
+                .flatMap(user ->
+                        PasswordHasher.verifyPassword(request.password(), user.getPasswordHash())
+                                // error when credentials are incorrect must be the same as when user is not found to prevent information leakage.
+                                .validate(isValid -> isValid, new ErrorResultStatus(404, "User Not Found"))
+                                .map(isValid -> user))
                 .flatMap(user -> {
                     String token = UUID.randomUUID().toString();
                     return tokenRepository.saveToken(user.getId(), token, EXPIRATION_TIME_SECONDS);

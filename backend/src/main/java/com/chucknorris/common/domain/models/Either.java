@@ -1,9 +1,9 @@
 package com.chucknorris.common.domain.models;
 
-import org.jspecify.annotations.NonNull;
-
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * for Transparency: this interface has been mostly AI GENERATED. Since Java does not have built-in support for Eithers we add a basic implementation ourselves.
@@ -34,18 +34,25 @@ public sealed interface Either<L, R> permits Either.Left, Either.Right {
         }
     }
 
-//    static  <L, R> Either<L, R> tryCatch(Function<? super R, R> function, L onException) {
-//        try {
-//            R result = function.apply();
-//            return right(result);
-//        } catch (Exception e) {
-//            return left(onException);
-//        }
-//    }
+    static <L, R> Either<L, R> tryCatch(Supplier<R> supplier, L onException) {
+        try {
+            return right(supplier.get());
+        } catch (Exception e) {
+            return left(onException);
+        }
+    }
 
-    default Either<L, R> validate(Function<? super R, Boolean> predicate, L errorValue) {
+    /// unsafe operation. avoid if possible in business logic. fine for tests
+    default R get() {
         if (this instanceof Right<L, R>(R value)) {
-            if (predicate.apply(value)) {
+            return value;
+        }
+        throw new IllegalStateException("Cannot get value from Left");
+    }
+
+    default Either<L, R> validate(Predicate<? super R> predicate, L errorValue) {
+        if (this instanceof Right<L, R>(R value)) {
+            if (predicate.test(value)) {
                 return this;
             } else {
                 return left(errorValue);
@@ -58,7 +65,11 @@ public sealed interface Either<L, R> permits Either.Left, Either.Right {
     // Monadic Map (Right-biased)
     default <T> Either<L, T> map(Function<? super R, ? extends T> mapper) {
         if (this instanceof Right<L, R>(R value)) {
-            return right(mapper.apply(value));
+            try {
+                return right(mapper.apply(value));
+            } catch (Exception e) {
+                return left(null); // intentional null value. This is only a fallback that should not occur. for mapping operations that can fail, use tryCatch operation in Either and flatMap
+            }
         }
         return left(((Left<L, R>) this).value());
     }

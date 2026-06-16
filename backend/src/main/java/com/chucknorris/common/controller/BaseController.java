@@ -14,8 +14,11 @@ import java.util.function.Supplier;
 
 public class BaseController {
 
-    @Autowired
-    private AuthService authService;
+    protected final AuthService authService;
+
+    protected BaseController(AuthService authService) {
+        this.authService = authService;
+    }
 
     protected <T> ResponseEntity<T> executeUnauthenticated(Supplier<Either<ErrorResultStatus, T>> action) {
         return handleEither(action.get());

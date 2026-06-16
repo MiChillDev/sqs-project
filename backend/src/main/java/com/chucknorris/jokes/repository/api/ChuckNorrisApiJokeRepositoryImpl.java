@@ -11,18 +11,18 @@ import org.springframework.web.client.RestTemplate;
 @Repository
 public class ChuckNorrisApiJokeRepositoryImpl extends ApiRepository implements ApiJokeRepository {
 
-    private final String API_BASE_URL = "https://api.chucknorris.io";
+    private final static String apiBaseUrl = "https://api.chucknorris.io";
 
     public ChuckNorrisApiJokeRepositoryImpl() {
         super();
-    } //TODO: do we need this?
+    }
 
     public ChuckNorrisApiJokeRepositoryImpl(RestTemplate restTemplate) {
         super(restTemplate);
     }
 
     public Either<ErrorResultStatus, SourceJokeDto> getRandomSourceJoke() {
-        return get(API_BASE_URL + "/jokes/random", ChuckNorrisResponse.class)
+        return get(apiBaseUrl + "/jokes/random", ChuckNorrisResponse.class)
                 .map(body -> new SourceJokeDto(body.id(), body.value()));
     }
 }
