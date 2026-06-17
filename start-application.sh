@@ -9,6 +9,7 @@ MODE="dev"
 RESET=false
 SHOW_CREDENTIALS=false
 ASSUME_YES=false
+VERBOSE=false
 
 SECRETS_DIR=".secrets"
 ENV_FILE=".env"
@@ -41,6 +42,9 @@ Options:
   --show-credentials    Print the local seed admin credentials and exit.
                         Use with care. Do not run this in CI logs.
 
+  --verbose             Show Docker pull, build, and startup output.
+                        By default, Docker output is hidden unless an error occurs.
+
   -h, --help            Show this help message.
 
 Examples:
@@ -50,6 +54,7 @@ Examples:
   ./start-application.sh --reset --dev
   ./start-application.sh --reset --prod --yes
   ./start-application.sh --show-credentials
+  ./start-application.sh --dev --verbose
 
 Notes:
   The script creates local configuration automatically:
@@ -84,6 +89,10 @@ while [[ $# -gt 0 ]]; do
       SHOW_CREDENTIALS=true
       shift
       ;;
+    --verbose)
+      VERBOSE=true
+      shift
+      ;;
     -h|--help)
       usage
       exit 0
@@ -101,9 +110,34 @@ require_command() {
   local command_name="$1"
 
   if ! command -v "$command_name" >/dev/null 2>&1; then
-    echo "Error: Required command '$command_name' is not installed or not available in PATH."
-    exit 1
+    echo "Error: Required command '$command_name' is not installed or not available in PATH." >&2
+    exit 2
   fi
+}
+
+run_quietly() {
+  local description="$1"
+  shift
+
+  if [[ "$VERBOSE" == "true" ]]; then
+    "$@"
+    return
+  fi
+
+  local log_file
+  log_file="$(mktemp)"
+
+  if ! "$@" >"$log_file" 2>&1; then
+    echo "Error while: $description" >&2
+    echo "" >&2
+    echo "Last log lines:" >&2
+    tail -n 80 "$log_file" >&2 || true
+    echo "" >&2
+    echo "Full log file: $log_file" >&2
+    exit 20
+  fi
+
+  rm -f "$log_file"
 }
 
 is_interactive() {
@@ -234,57 +268,63 @@ generate_valid_password() {
 
   echo "Error: Could not generate a valid password." >&2
   echo "This indicates an internal script error." >&2
-  exit 1
+  exit 31
 }
 
 validate_existing_secret_or_exit() {
   local file="$1"
   local type="$2"
   local value
+  local validation_error
 
   if [[ ! -f "$file" ]]; then
-    echo "Error: Missing secret file: $file"
-    echo "Run './start-application.sh --reset' to recreate local configuration."
-    exit 1
+    echo "Error: Missing secret file: $file" >&2
+    echo "Run './start-application.sh --reset' to recreate local configuration." >&2
+    exit 4
   fi
 
   value="$(read_secret "$file")"
 
   case "$type" in
     username)
-      if ! validate_username "$value"; then
-        echo "Invalid secret file: $file"
-        echo "Fix this file manually or run './start-application.sh --reset'."
-        exit 1
-      fi
+      validation_error="$(validate_username "$value" 2>&1)" || {
+        echo "$validation_error" >&2
+        echo "Invalid secret file: $file" >&2
+        echo "Fix this file manually or run './start-application.sh --reset'." >&2
+        exit 5
+      }
       ;;
     password)
-      if ! validate_password "$value"; then
-        echo "Invalid secret file: $file"
-        echo "Fix this file manually or run './start-application.sh --reset'."
-        exit 1
-      fi
+      validation_error="$(validate_password "$value" 2>&1)" || {
+        echo "$validation_error" >&2
+        echo "Invalid secret file: $file" >&2
+        echo "Fix this file manually or run './start-application.sh --reset'." >&2
+        exit 5
+      }
       ;;
     *)
-      echo "Internal error: unknown secret validation type '$type'."
-      exit 1
+      echo "Internal error: unknown secret validation type '$type'." >&2
+      exit 32
       ;;
   esac
 }
 
 prompt_admin_username() {
   local username
+  local validation_error
 
   while true; do
     read -r -p "Seed admin username [admin]: " username
     username="${username:-admin}"
 
-    if validate_username "$username"; then
-      printf "%s" "$username"
-      return 0
-    fi
+    validation_error="$(validate_username "$username" 2>&1)" || {
+      echo "$validation_error" >&2
+      echo "" >&2
+      continue
+    }
 
-    echo ""
+    printf "%s" "$username"
+    return 0
   done
 }
 
@@ -293,7 +333,7 @@ prompt_admin_password() {
   local confirmation
   local validation_error
 
-  cat <<'EOF'
+  cat >&2 <<'EOF'
 
 Seed admin password:
   Press Enter to generate a secure password automatically,
@@ -310,8 +350,8 @@ Rules:
 EOF
 
   while true; do
-    read -r -s -p "Seed admin password [generate automatically]: " password
-    echo ""
+    read -r -s -p "Seed admin password [or generate automatically]: " password
+    echo "" >&2
 
     if [[ -z "$password" ]]; then
       password="$(generate_valid_password)"
@@ -319,21 +359,21 @@ EOF
       return 0
     fi
 
-    read -r -s -p "Confirm seed admin password: " confirmation
-    echo ""
-
-    if [[ "$password" != "$confirmation" ]]; then
-      echo "Passwords do not match. Please try again."
-      echo ""
-      continue
-    fi
-
     validation_error="$(validate_password "$password" 2>&1)" || {
-      echo "$validation_error"
-      echo "Please try again."
-      echo ""
+      echo "$validation_error" >&2
+      echo "Please try again." >&2
+      echo "" >&2
       continue
     }
+
+    read -r -s -p "Confirm seed admin password: " confirmation
+    echo "" >&2
+
+    if [[ "$password" != "$confirmation" ]]; then
+      echo "Passwords do not match. Please try again." >&2
+      echo "" >&2
+      continue
+    fi
 
     printf "%s" "$password"
     return 0
@@ -346,8 +386,8 @@ ensure_env_file() {
   fi
 
   if [[ ! -f "$ENV_TEMPLATE" ]]; then
-    echo "Error: $ENV_TEMPLATE is missing."
-    exit 1
+    echo "Error: $ENV_TEMPLATE is missing." >&2
+    exit 33
   fi
 
   cp "$ENV_TEMPLATE" "$ENV_FILE"
@@ -365,9 +405,16 @@ ensure_secrets() {
 
   if [[ ! -f "$ADMIN_USERNAME_SECRET" || ! -f "$ADMIN_PASSWORD_SECRET" ]]; then
     if is_interactive; then
+      local admin_username
+      local admin_password
+
       echo "Creating local seed admin credentials..."
-      write_secret "$ADMIN_USERNAME_SECRET" "$(prompt_admin_username)"
-      write_secret "$ADMIN_PASSWORD_SECRET" "$(prompt_admin_password)"
+      admin_username="$(prompt_admin_username)"
+      admin_password="$(prompt_admin_password)"
+
+      write_secret "$ADMIN_USERNAME_SECRET" "$admin_username"
+      write_secret "$ADMIN_PASSWORD_SECRET" "$admin_password"
+
       echo "Seed admin credentials stored locally in $SECRETS_DIR/."
     else
       write_secret "$ADMIN_USERNAME_SECRET" "admin"
@@ -503,20 +550,45 @@ ensure_secrets
 stop_existing_containers
 
 echo "Pulling base images..."
-docker compose pull postgres >/dev/null
+if [[ "$VERBOSE" == "true" ]]; then
+  docker compose pull postgres
+else
+  run_quietly "pulling PostgreSQL image" \
+    docker compose --progress quiet pull --quiet postgres
+fi
 
 echo "Building Docker images ($MODE mode)..."
 if [[ "$MODE" == "prod" ]]; then
-  docker compose --profile prod build frontend app
+  if [[ "$VERBOSE" == "true" ]]; then
+    docker compose --profile prod build frontend app
+  else
+    run_quietly "building production images" \
+      docker compose --progress quiet --profile prod build --quiet frontend app
+  fi
 else
-  docker compose build frontend-dev app
+  if [[ "$VERBOSE" == "true" ]]; then
+    docker compose build frontend-dev app
+  else
+    run_quietly "building development images" \
+      docker compose --progress quiet build --quiet frontend-dev app
+  fi
 fi
 
 echo "Starting Docker Compose ($MODE mode)..."
 if [[ "$MODE" == "prod" ]]; then
-  docker compose --profile prod up -d --wait postgres app frontend
+  if [[ "$VERBOSE" == "true" ]]; then
+    docker compose --profile prod up -d --wait postgres app frontend
+  else
+    run_quietly "starting production services" \
+      docker compose --progress quiet --profile prod up -d --wait --quiet-pull --quiet-build postgres app frontend
+  fi
 else
-  docker compose up -d --wait postgres app frontend-dev
+  if [[ "$VERBOSE" == "true" ]]; then
+    docker compose up -d --wait postgres app frontend-dev
+  else
+    run_quietly "starting development services" \
+      docker compose --progress quiet up -d --wait --quiet-pull --quiet-build postgres app frontend-dev
+  fi
 fi
 
 print_summary
