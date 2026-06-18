@@ -77,16 +77,18 @@ function Field({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof fieldVariants>) {
+}: React.ComponentProps<'fieldset'> & VariantProps<typeof fieldVariants>) {
   return (
-    // biome-ignore lint/a11y/useSemanticElements: intentionally uses div with role to avoid fieldset browser defaults
-    <div
-      role='group'
+    <fieldset
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
       data-slot='field'
       data-orientation={orientation}
-      className={cn(fieldVariants({ orientation }), className)}
+      className={cn(
+        fieldVariants({ orientation }),
+        'border-none p-0 m-0 [min-inline-size:unset]',
+        className
+      )}
       {...props}
     />
   );

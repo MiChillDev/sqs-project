@@ -8,7 +8,7 @@ type Props = {
   onToggle: () => void;
 };
 
-export function ThemeToggle(props: Props) {
+export function ThemeToggle(props: Readonly<Props>) {
   const { theme, onToggle } = props;
   const { t } = useTranslation();
 
