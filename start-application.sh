@@ -6,6 +6,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_ROOT"
 
 MODE="dev"
+STACK="full"
 RESET=false
 SHOW_CREDENTIALS=false
 ASSUME_YES=false
@@ -32,6 +33,9 @@ Modes:
                         Uses nginx serving the optimized frontend build.
 
 Options:
+  --backend-only        Start only PostgreSQL and backend.
+                        Useful for CI load tests.
+
   --reset               Stop containers, remove Docker volumes, delete local
                         .env and .secrets/, then recreate configuration.
 
@@ -55,6 +59,7 @@ Examples:
   ./start-application.sh --reset --prod --yes
   ./start-application.sh --show-credentials
   ./start-application.sh --dev --verbose
+  ./start-application.sh --backend-only --yes
 
 Notes:
   The script creates local configuration automatically:
@@ -75,6 +80,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --prod)
       MODE="prod"
+      shift
+      ;;
+    --backend-only)
+      STACK="backend"
       shift
       ;;
     --reset)
@@ -509,7 +518,9 @@ print_summary() {
   echo ""
   echo "✓ Services started successfully! ($MODE mode)"
   echo ""
-  echo "Frontend:     http://localhost:${frontend_port}"
+  if [[ "$STACK" != "backend" ]]; then
+    echo "Frontend:     http://localhost:${frontend_port}"
+  fi
   echo "Backend API:  http://localhost:${backend_port}"
   echo "PostgreSQL:   localhost:${postgres_port}"
   echo ""
@@ -521,10 +532,12 @@ print_summary() {
   echo "To view logs:"
   echo "  docker compose logs -f"
 
-  if [[ "$MODE" == "prod" ]]; then
-    echo "  docker compose logs -f frontend      # production frontend (nginx)"
-  else
-    echo "  docker compose logs -f frontend-dev  # development frontend (Vite HMR)"
+  if [[ "$STACK" != "backend" ]]; then
+    if [[ "$MODE" == "prod" ]]; then
+      echo "  docker compose logs -f frontend      # production frontend (nginx)"
+    else
+      echo "  docker compose logs -f frontend-dev  # development frontend (Vite HMR)"
+    fi
   fi
 
   echo "  docker compose logs -f app           # backend only"
@@ -557,37 +570,57 @@ else
     docker compose --progress quiet pull --quiet postgres
 fi
 
-echo "Building Docker images ($MODE mode)..."
-if [[ "$MODE" == "prod" ]]; then
+echo "Building Docker images ($MODE mode, $STACK stack)..."
+
+if [[ "$STACK" == "backend" ]]; then
   if [[ "$VERBOSE" == "true" ]]; then
-    docker compose --profile prod build frontend app
+    docker compose build app
   else
-    run_quietly "building production images" \
-      docker compose --progress quiet --profile prod build --quiet frontend app
+    run_quietly "building backend image" \
+      docker compose --progress quiet build --quiet app
   fi
 else
-  if [[ "$VERBOSE" == "true" ]]; then
-    docker compose build frontend-dev app
+  if [[ "$MODE" == "prod" ]]; then
+    if [[ "$VERBOSE" == "true" ]]; then
+      docker compose --profile prod build frontend app
+    else
+      run_quietly "building production images" \
+        docker compose --progress quiet --profile prod build --quiet frontend app
+    fi
   else
-    run_quietly "building development images" \
-      docker compose --progress quiet build --quiet frontend-dev app
+    if [[ "$VERBOSE" == "true" ]]; then
+      docker compose build frontend-dev app
+    else
+      run_quietly "building development images" \
+        docker compose --progress quiet build --quiet frontend-dev app
+    fi
   fi
 fi
 
-echo "Starting Docker Compose ($MODE mode)..."
-if [[ "$MODE" == "prod" ]]; then
+echo "Starting Docker Compose ($MODE mode, $STACK stack)..."
+
+if [[ "$STACK" == "backend" ]]; then
   if [[ "$VERBOSE" == "true" ]]; then
-    docker compose --profile prod up -d --wait postgres app frontend
+    docker compose up -d --wait postgres app
   else
-    run_quietly "starting production services" \
-      docker compose --progress quiet --profile prod up -d --wait --quiet-pull --quiet-build postgres app frontend
+    run_quietly "starting backend services" \
+      docker compose --progress quiet up -d --wait --quiet-pull --quiet-build postgres app
   fi
 else
-  if [[ "$VERBOSE" == "true" ]]; then
-    docker compose up -d --wait postgres app frontend-dev
+  if [[ "$MODE" == "prod" ]]; then
+    if [[ "$VERBOSE" == "true" ]]; then
+      docker compose --profile prod up -d --wait postgres app frontend
+    else
+      run_quietly "starting production services" \
+        docker compose --progress quiet --profile prod up -d --wait --quiet-pull --quiet-build postgres app frontend
+    fi
   else
-    run_quietly "starting development services" \
-      docker compose --progress quiet up -d --wait --quiet-pull --quiet-build postgres app frontend-dev
+    if [[ "$VERBOSE" == "true" ]]; then
+      docker compose up -d --wait postgres app frontend-dev
+    else
+      run_quietly "starting development services" \
+        docker compose --progress quiet up -d --wait --quiet-pull --quiet-build postgres app frontend-dev
+    fi
   fi
 fi
 
