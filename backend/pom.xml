@@ -144,7 +144,6 @@
                 <configuration>
                     <excludes>
                         <exclude>**/ChuckNorrisApplication.class</exclude>
-                        <exclude>**/config/**</exclude>
                         <exclude>**/entity/**</exclude>
                         <exclude>**/dto/**</exclude>
                     </excludes>
