@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: sqs-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-sqs_db}
@@ -11,7 +10,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     secrets:
-      - postgres_password
+      - source: postgres_password
+        target: postgres_password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
@@ -25,7 +25,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: sqs-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-sqs_db}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
@@ -74,7 +73,6 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
-    container_name: sqs-frontend
     profiles: ["prod"]
     ports:
       - "${FRONTEND_PORT:-5173}:8080"
@@ -97,7 +95,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: dev
-    container_name: sqs-frontend-dev
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
     volumes:
