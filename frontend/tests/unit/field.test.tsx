@@ -155,11 +155,11 @@ describe('FieldGroup', () => {
 });
 
 describe('Field', () => {
-  it('renders with role group and data-slot attribute', () => {
+  it('renders as fieldset with data-slot attribute', () => {
     const { container } = render(<Field>Field content</Field>);
     const el = container.querySelector('[data-slot="field"]');
     expect(el).toBeInTheDocument();
-    expect(el).toHaveAttribute('role', 'group');
+    expect(el?.tagName).toBe('FIELDSET');
     expect(el).toHaveTextContent('Field content');
   });
 

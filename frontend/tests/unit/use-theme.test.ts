@@ -167,7 +167,50 @@ describe('useTheme', () => {
       expect(classListToggleSpy).toHaveBeenCalledWith('dark', true);
     });
 
-    it('ignores system preference change when stored preference exists', () => {
+    it('ignores system preference change when stored preference is dark', () => {
+      classListContainsSpy.mockReturnValue(false);
+      localStorageGetItemSpy.mockReturnValue('dark');
+
+      const { result } = renderHook(() => useTheme());
+
+      const themeBefore = result.current.theme;
+
+      act(() => {
+        mockMql.fireChange(false);
+      });
+
+      expect(result.current.theme).toBe(themeBefore);
+    });
+
+    it('updates theme when stored preference is invalid value', () => {
+      classListContainsSpy.mockReturnValue(false);
+      localStorageGetItemSpy.mockReturnValue('invalid');
+
+      const { result } = renderHook(() => useTheme());
+
+      act(() => {
+        mockMql.fireChange(true);
+      });
+
+      expect(result.current.theme).toBe('dark');
+      expect(classListToggleSpy).toHaveBeenCalledWith('dark', true);
+    });
+
+    it('updates theme when stored preference is invalid and system goes light', () => {
+      classListContainsSpy.mockReturnValue(false);
+      localStorageGetItemSpy.mockReturnValue('invalid');
+
+      const { result } = renderHook(() => useTheme());
+
+      act(() => {
+        mockMql.fireChange(false);
+      });
+
+      expect(result.current.theme).toBe('light');
+      expect(classListToggleSpy).toHaveBeenCalledWith('dark', false);
+    });
+
+    it('ignores system preference change when stored preference is light', () => {
       classListContainsSpy.mockReturnValue(false);
       localStorageGetItemSpy.mockReturnValue('light');
 
