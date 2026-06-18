@@ -1,17 +1,19 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: sqs-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-sqs_db}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    secrets:
+      - source: postgres_password
+        target: postgres_password
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 5s
       timeout: 10s
       retries: 10
@@ -23,13 +25,19 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: sqs-app
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-sqs_db}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_CONFIG_IMPORT: optional:configtree:/run/secrets/
     ports:
-      - "8080:8080"
+      - "${BACKEND_PORT:-8080}:8080"
+    secrets:
+      - source: postgres_password
+        target: spring.datasource.password
+      - source: app_seed_admin_username
+        target: app.seed.admin.username
+      - source: app_seed_admin_password
+        target: app.seed.admin.password
     depends_on:
       postgres:
         condition: service_healthy
@@ -45,10 +53,17 @@ services:
   k6:
     image: grafana/k6
     profiles: ["loadtest"]
+    environment:
+      K6_BASE_URL: http://app:8080/api/v1
     volumes:
       - ./test/load:/scripts
     working_dir: /scripts
     entrypoint: ["k6"]
+    secrets:
+      - source: app_seed_admin_username
+        target: app.seed.admin.username
+      - source: app_seed_admin_password
+        target: app.seed.admin.password
     networks:
       - sqs-network
 
@@ -57,14 +72,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        # Empty = same-origin via nginx reverse proxy for /api/
-        - VITE_API_BASE_URL=
-    container_name: sqs-frontend
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
     profiles: ["prod"]
     ports:
-      - "5173:8080"
+      - "${FRONTEND_PORT:-5173}:8080"
     environment:
-      - VITE_API_BASE_URL=
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
     depends_on:
       app:
         condition: service_healthy
@@ -82,16 +95,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: dev
-    container_name: sqs-frontend-dev
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:5173"
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules
     command: ["corepack", "pnpm", "dev", "--host", "0.0.0.0"]
     environment:
-      - API_TARGET=http://app:8080
-      - VITE_API_BASE_URL=
+      API_TARGET: http://app:8080
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
     depends_on:
       app:
         condition: service_healthy
@@ -103,6 +115,14 @@ services:
       timeout: 3s
       retries: 10
       start_period: 10s
+
+secrets:
+  postgres_password:
+    file: ./.secrets/postgres_password
+  app_seed_admin_username:
+    file: ./.secrets/app_seed_admin_username
+  app_seed_admin_password:
+    file: ./.secrets/app_seed_admin_password
 
 volumes:
   postgres_data:

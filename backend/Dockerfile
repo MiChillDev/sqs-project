@@ -15,7 +15,7 @@ FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
-# Install curl
+# Install curl for Docker healthcheck
 RUN apt-get update \
     && apt-get install -y curl \
     && rm -rf /var/lib/apt/lists/*
@@ -23,13 +23,6 @@ RUN apt-get update \
 # Copy the built JAR from builder stage
 COPY --from=builder /build/target/sqs-project-*.jar app.jar
 
-# Expose the port
+# Expose the port and run application
 EXPOSE 8080
-
-# Environment variables
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sqs_db
-ENV SPRING_DATASOURCE_USERNAME=postgres
-ENV SPRING_DATASOURCE_PASSWORD=postgres
-
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

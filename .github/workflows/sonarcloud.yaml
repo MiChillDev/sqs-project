@@ -59,7 +59,7 @@ jobs:
             -Dsonar.java.test.binaries=backend/target/test-classes
             -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml
             -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
-            -Dsonar.coverage.exclusions=**/config/**,**/dto/**,**/entity/**,**/ChuckNorrisApplication.java
+            -Dsonar.coverage.exclusions=**/dto/**,**/entity/**,**/ChuckNorrisApplication.java
             -Dsonar.test.inclusions=**/*Test.java,**/*Tests.java
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300
