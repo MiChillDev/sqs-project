@@ -26,10 +26,18 @@ vi.mock('i18next', () => ({
 }));
 
 describe('getUserSafeError', () => {
-  it('returns sanitized message for ApiError 400', () => {
-    expect(getUserSafeError(new ApiError(400, 'Bad Request'))).toBe(
+  it('returns sanitized message for ApiError with empty statusText', () => {
+    expect(getUserSafeError(new ApiError(400, ''))).toBe(
       'Invalid request. Please check your input.'
     );
+  });
+
+  it('constructs message without statusText when empty', () => {
+    expect(new ApiError(500, '').message).toBe('HTTP 500');
+  });
+
+  it('constructs message with statusText when provided', () => {
+    expect(new ApiError(500, 'Server Error').message).toBe('HTTP 500: Server Error');
   });
 
   it('returns sanitized message for ApiError 401', () => {

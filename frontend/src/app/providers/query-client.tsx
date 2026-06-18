@@ -56,7 +56,7 @@ function getQueryClient() {
   return queryClient;
 }
 
-export function QueryClientProviderWrapper({ children }: Readonly<{ children: ReactNode }>) {
+export function QueryClientProviderWrapper({ children }: { readonly children: ReactNode }) {
   return (
     <QueryClientProvider client={getQueryClient()}>
       {children}

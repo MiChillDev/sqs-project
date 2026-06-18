@@ -13,6 +13,6 @@
 | Multi-layer testing with k6 load tests                             | Accepted | ADR-007 |
 
 
-Full decision records with context, rationale, alternatives, and consequences are available in the [ADRs directory](ards/).
+Full decision records with context, rationale, alternatives, and consequences are available in the [ADRs directory](ards/index.md).
 
 
