@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next';
 import type { Theme } from 'src/shared/hooks/use-theme';
 import { Button } from './ui/button';
 
-export function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
+type Props = {
+  theme: Theme;
+  onToggle: () => void;
+};
+
+export function ThemeToggle(props: Props) {
+  const { theme, onToggle } = props;
   const { t } = useTranslation();
 
   return (
