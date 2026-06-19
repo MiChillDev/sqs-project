@@ -3,7 +3,7 @@
 
 A web application for fetching, displaying, and managing Chuck Norris jokes. Developed as a university project by three students for a software quality assurance course.
 
-For further documentation and rerequisites: [Read the Docs](https://sqs-sose26-chuck-norris.readthedocs.io/en/latest/) 
+For further documentation: [Read the Docs](https://sqs-sose26-chuck-norris.readthedocs.io/en/latest/) 
 
 ---
 
@@ -64,6 +64,7 @@ sqs-project/
 ├── stop-application.sh     # Script for stopping the application
 └── README.md
 ```
+---
 
 <br>
 <br>
