@@ -3,17 +3,24 @@
 
 A web application for fetching, displaying, and managing Chuck Norris jokes. Developed as a university project by three students for a software quality assurance course.
 
-For further documentation: [Read the Docs](https://sqs-sose26-chuck-norris.readthedocs.io/en/latest/) 
+For further documentation and rerequisites: [Read the Docs](https://sqs-sose26-chuck-norris.readthedocs.io/en/latest/) 
 
 ---
 
 ### Starting the application
 1. Clone Repository `git clone https://github.com/MiChillDev/sqs-project.git`
 2. Navigate to `cd ./sqs-project`
-3. Execute `./start-application.sh`
+3. Execute the interactive script `./start-application.sh`
+4. Follow the setup instructions to create an initial user that can later be used to log in to the web application accessible via the URL displayed by the script
+
+Use the script parameters `-h` or `--help` to get an overview of the various options like `--reset`, `--verbose` and `--show-credentials`.
 
 ### Stopping the application
-To stop the running application you can use the provided script `./stop-application` or manually with `docker compose down`
+To stop the running application you can use the provided script `./stop-application` or stop it manually with `docker compose down`. The script also supports `-h` and `--help` for displaying a help message.
+
+### Possible Errors
+- *bash: ./start-application.sh: Permission denied* -> make sure to have execution rights: `chmod +x start-application.sh`
+- *bash: ./start-application.sh: cannot execute: required file not found* -> change the file's "End of Line Sequence" from CRLF to LF
 
 <br>
 <br>
