@@ -66,9 +66,12 @@ services:
     working_dir: /scripts
     entrypoint: ["k6"]
     secrets:
-      - source: app_seed_admin_username
+      - source: k6_app_seed_admin_username
         target: app.seed.admin.username
-      - source: app_seed_admin_password
+        uid: "12345"
+        gid: "12345"
+        mode: 0400
+      - source: k6_app_seed_admin_password
         target: app.seed.admin.password
     depends_on:
       app:
@@ -133,6 +136,10 @@ secrets:
     file: ./.secrets/app_seed_admin_username
   app_seed_admin_password:
     file: ./.secrets/app_seed_admin_password
+  k6_app_seed_admin_username:
+    environment: K6_APP_SEED_ADMIN_USERNAME
+  k6_app_seed_admin_password:
+    environment: K6_APP_SEED_ADMIN_PASSWORD
 
 
 volumes:
