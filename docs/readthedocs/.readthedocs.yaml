@@ -7,18 +7,31 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.13"
+    nodejs: "22"
   apt_packages:
     - graphviz
     - unzip
     - openjdk-17-jre-headless
   jobs:
     pre_build:
+      # Create UML diagram for C4 code view
       - curl -L -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
-      - java -jar /tmp/plantuml.jar -tsvg docs/diagrams/backend-code.puml
+      - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code.puml
+
+      # Create Mermaid diagrams
+      - npm install -g @mermaid-js/mermaid-cli
+      - mkdir -p docs/readthedocs/generated/mermaid
+      - |
+        for file in docs/readthedocs/arc42/diagrams/mermaid/*.mmd; do
+          name=$(basename "$file" .mmd)
+          mmdc -i "$file" -o "docs/readthedocs/generated/mermaid/${name}.svg"
+        done
+
+      # Create C4 diagrams
       - curl -L -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip
       - unzip -q /tmp/structurizr-cli.zip -d /tmp/structurizr-cli
       - chmod +x /tmp/structurizr-cli/structurizr.sh
-      - /tmp/structurizr-cli/structurizr.sh export -workspace docs/diagrams/c4_diagram.dsl -format static -output docs/readthedocs/structurizr
+      - /tmp/structurizr-cli/structurizr.sh export -workspace docs/readthedocs/arc42/diagrams/c4_diagram.dsl -format static -output docs/readthedocs/structurizr
 
 mkdocs:
   configuration: docs/readthedocs/.mkdocs.yaml
