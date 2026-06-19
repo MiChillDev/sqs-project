@@ -53,18 +53,21 @@ services:
   k6:
     image: grafana/k6
     profiles: ["loadtest"]
-    user: "1000:1000"
     environment:
       K6_BASE_URL: http://app:8080/api/v1
+      K6_ADMIN_USERNAME: ${K6_ADMIN_USERNAME:?K6_ADMIN_USERNAME is required for load tests}
+      K6_ADMIN_PASSWORD: ${K6_ADMIN_PASSWORD:?K6_ADMIN_PASSWORD is required for load tests}
     volumes:
-      - ./test/load:/scripts
+      - ./test/load:/scripts:ro
     working_dir: /scripts
     entrypoint: ["k6"]
-    secrets:
-      - source: app_seed_admin_username
-        target: app.seed.admin.username
-      - source: app_seed_admin_password
-        target: app.seed.admin.password
+    depends_on:
+      app:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     networks:
       - sqs-network
 

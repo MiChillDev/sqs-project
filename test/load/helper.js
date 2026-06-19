@@ -1,21 +1,18 @@
 import http from 'k6/http';
 import { check } from 'k6';
 
-const USERNAME_SECRET_PATH = '/run/secrets/app.seed.admin.username';
-const PASSWORD_SECRET_PATH = '/run/secrets/app.seed.admin.password';
-
-function readSecret(path) {
-  try {
-    return open(path).trim();
-  } catch (error) {
-    throw new Error(`Failed to read required secret file: ${path}`);
-  }
-}
-
 export const BASE_URL = __ENV.K6_BASE_URL || 'http://app:8080/api/v1';
 
-const SEED_ADMIN_USERNAME = __ENV.K6_ADMIN_USERNAME || readSecret(USERNAME_SECRET_PATH);
-const SEED_ADMIN_PASSWORD = __ENV.K6_ADMIN_PASSWORD || readSecret(PASSWORD_SECRET_PATH);
+const SEED_ADMIN_USERNAME = __ENV.K6_ADMIN_USERNAME;
+const SEED_ADMIN_PASSWORD = __ENV.K6_ADMIN_PASSWORD;
+
+if (!SEED_ADMIN_USERNAME) {
+  throw new Error('Missing required environment variable: K6_ADMIN_USERNAME');
+}
+
+if (!SEED_ADMIN_PASSWORD) {
+  throw new Error('Missing required environment variable: K6_ADMIN_PASSWORD');
+}
 
 export function login(username = SEED_ADMIN_USERNAME, password = SEED_ADMIN_PASSWORD) {
   const payload = { username, password };
