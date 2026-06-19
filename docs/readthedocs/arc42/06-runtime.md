@@ -10,7 +10,7 @@ The user or administrator authenticates by submitting credentials. The system va
 
 ## Fetch Random Joke (Public)
 
-The fetch joke sequence is documented in [sequence-fetch-joke.mmd](mermaid/sequence-fetch-joke.mmd).
+The fetch joke sequence is documented in ![Sequenzdiagramm: Joke abrufen](../generated/mermaid/sequence-fetch-joke.svg).
 
 Users fetch a random joke from the local database. No authentication is required. The backend queries the database and returns the joke content.
 
