@@ -24,7 +24,7 @@ build:
       - |
         for file in docs/readthedocs/arc42/diagrams/mermaid/*.mmd; do
           name=$(basename "$file" .mmd)
-          mmdc -i "$file" -o "docs/readthedocs/generated/mermaid/${name}.svg"
+          mmdc -p docs/readthedocs/puppeteer-config.json -i "$file" -o "docs/readthedocs/generated/mermaid/${name}.svg"
         done
 
       # Create C4 diagrams

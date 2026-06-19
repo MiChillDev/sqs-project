@@ -5,6 +5,39 @@ This chapter describes key runtime scenarios for the system.
 ## Sign-In Flow
 
 The sign-in sequence is documented in [sequence-signin.mmd](mermaid/sequence-signin.mmd).
+```mermaid
+sequenceDiagram
+    participant Client
+    participant AuthController as Auth Controller
+    participant AuthService as Auth Service
+    participant UserRepo as User Repository
+    participant Database
+    participant PasswordUtil as Password Hasher
+
+    Client->>AuthController: POST /api/v1/auth/login
+    AuthController->>AuthService: login(username, password)
+    AuthService->>UserRepo: findByUsername(username)
+    UserRepo->>Database: query user
+    Database-->>UserRepo: user or null
+
+    alt User not found
+        AuthService-->>AuthController: Error
+        AuthController-->>Client: 401 Unauthorized
+    else User found
+        AuthService->>PasswordUtil: verifyPassword(password, hash)
+        PasswordUtil-->>AuthService: valid or invalid
+
+        alt Invalid password
+            AuthService-->>AuthController: Error
+            AuthController-->>Client: 401 Unauthorized
+        else Valid password
+            AuthService->>AuthService: generate token
+            AuthService->>Database: store token with expiry
+            AuthService-->>AuthController: token + expiry
+            AuthController-->>Client: 200 OK
+        end
+    end
+```
 
 The user or administrator authenticates by submitting credentials. The system validates them against stored credentials using PBKDF2 password verification. On success, a token is generated and returned for use in subsequent requests.
 
