@@ -22,19 +22,20 @@ jobs:
         run: |
           chmod +x start-application.sh
           chmod +x stop-application.sh
+          chmod +x test/load/run-loadtest.sh
 
       - name: Start backend services
         run: ./start-application.sh --backend-only --yes
 
       - name: Run baseline test
-        run: docker compose --profile loadtest run --rm k6 run tests/baseline-test.js
+        run: ./test/load/run-loadtest.sh tests/baseline-test.js
 
       - name: Run stress test
-        run: docker compose --profile loadtest run --rm k6 run tests/stress-test.js
+        run: ./test/load/run-loadtest.sh tests/stress-test.js
 
       - name: Run spike test
         if: github.event_name == 'workflow_dispatch'
-        run: docker compose --profile loadtest run --rm k6 run tests/spike-test.js
+        run: ./test/load/run-loadtest.sh tests/spike-test.js
 
       - name: Show service logs on failure
         if: failure()
