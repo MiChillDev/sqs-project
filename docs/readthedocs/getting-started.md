@@ -9,7 +9,7 @@
 
 ## Quick Start
 
-1. Clone the repository
+1. Clone the repository `git clone https://github.com/MiChillDev/sqs-project.git`
 2. Start all services with Docker Compose:
 
    ```bash

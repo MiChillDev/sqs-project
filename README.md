@@ -8,15 +8,32 @@ For further documentation and rerequisites: [Read the Docs](https://sqs-sose26-c
 ---
 
 ### Starting the application
-1. Clone Repository `git clone https://github.com/MiChillDev/sqs-project.git`
-2. Navigate to `cd ./sqs-project`
-3. Execute the interactive script `./start-application.sh`
+1. Clone the repository 
+```bash
+git clone https://github.com/MiChillDev/sqs-project.git
+```
+2. Navigate to the project folder
+```bash
+cd sqs-project
+```
+3. Execute the interactive script 
+```bash
+./start-application.sh
+```
 4. Follow the setup instructions to create an initial user that can later be used to log in to the web application accessible via the URL displayed by the script
 
 Use the script parameters `-h` or `--help` to get an overview of the various options like `--reset`, `--verbose` and `--show-credentials`.
 
 ### Stopping the application
-To stop the running application you can use the provided script `./stop-application` or stop it manually with `docker compose down`. The script also supports `-h` and `--help` for displaying a help message.
+To stop the running application you can use the provided script 
+```bash
+./stop-application
+```
+or stop it manually with 
+```bash
+docker compose down
+```
+. The script also supports `-h` and `--help` for displaying a help message.
 
 ### Possible Errors
 - *bash: ./start-application.sh: Permission denied* -> make sure to have execution rights: `chmod +x start-application.sh`
