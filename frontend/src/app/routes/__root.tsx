@@ -52,13 +52,13 @@ export const rootRoute = createRootRoute({
               <rect width='100%' height='6' fill='url(#hand-drawn-wave)' />
             </svg>
             {isHome ? (
-              <h1 className='text-base sm:text-lg font-heading text-playful-heading truncate max-w-40 sm:max-w-none'>
+              <h1 className='text-base sm:text-lg font-heading text-playful-heading truncate max-w-48 sm:max-w-none'>
                 {t('app.headerTitle')}
               </h1>
             ) : (
               <Link
                 to='/'
-                className='text-base sm:text-lg font-heading text-playful-heading hover:opacity-80 transition-opacity truncate max-w-40 sm:max-w-none'
+                className='text-base sm:text-lg font-heading text-playful-heading hover:opacity-80 transition-opacity truncate max-w-48 sm:max-w-none'
               >
                 {t('app.headerTitle')}
               </Link>
