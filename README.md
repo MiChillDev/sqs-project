@@ -7,6 +7,12 @@ For further documentation and rerequisites: [Read the Docs](https://sqs-sose26-c
 
 ---
 
+### Prerequisites
+- Node.js >= 22.0.0
+- pnpm (package manager)
+- Java 21
+- Docker with Docker Compose
+
 ### Starting the application
 1. Clone the repository 
 ```bash
@@ -20,7 +26,9 @@ cd sqs-project
 ```bash
 ./start-application.sh
 ```
-4. Follow the setup instructions to create an initial user that can later be used to log in to the web application accessible via the URL displayed by the script
+4. Follow the setup instructions to create an initial user that can later be used to log in to the application
+5. The frontend will be available at `http://localhost:5173` <br>
+The backend API will be available at `http://localhost:8080`
 
 Use the script parameters `-h` or `--help` to get an overview of the various options like `--reset`, `--verbose` and `--show-credentials`.
 
@@ -40,6 +48,22 @@ docker compose down
 chmod +x start-application.sh
 ```
 - *bash: ./start-application.sh: cannot execute: required file not found* -> change the file's "End of Line Sequence" from CRLF to LF
+
+## Project Structure
+```
+sqs-project/
+├── backend/                # Spring Boot REST API
+├── frontend/               # React/Vite SPA application
+├── docs/                   
+    ├── presentation/       # Final project presentation
+    ├── readthedocs/        # Architecture documentation (arc42)
+    └── retro/              # Team retrospective
+├── test/                   # Load and E2E test suites
+├── docker-compose.yml
+├── start-application.sh    # Interactive script for starting the application
+├── stop-application.sh     # Script for stopping the application
+└── README.md
+```
 
 <br>
 <br>
