@@ -25,18 +25,20 @@ cd sqs-project
 Use the script parameters `-h` or `--help` to get an overview of the various options like `--reset`, `--verbose` and `--show-credentials`.
 
 ### Stopping the application
-To stop the running application you can use the provided script 
+To stop the running application you can use the provided script. The script also supports `-h` and `--help` for displaying a help message.
 ```bash
 ./stop-application
 ```
-or stop it manually with 
+... or stop it manually with 
 ```bash
 docker compose down
 ```
-. The script also supports `-h` and `--help` for displaying a help message.
 
 ### Possible Errors
-- *bash: ./start-application.sh: Permission denied* -> make sure to have execution rights: `chmod +x start-application.sh`
+- *bash: ./start-application.sh: Permission denied* -> make sure to have execution rights:
+```bash
+chmod +x start-application.sh
+```
 - *bash: ./start-application.sh: cannot execute: required file not found* -> change the file's "End of Line Sequence" from CRLF to LF
 
 <br>
