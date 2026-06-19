@@ -4,21 +4,22 @@ This chapter describes key runtime scenarios for the system.
 
 ## Sign-In Flow
 
-The sign-in sequence is documented in [sequence-signin.mmd](mermaid/sequence-signin.mmd).
+The sign-in sequence is documented in [sequence-signin.mmd](diagrams/mermaid/sequence-signin.mmd).
+
 ```mermaid
 sequenceDiagram
     participant Client
     participant AuthController as Auth Controller
     participant AuthService as Auth Service
     participant UserRepo as User Repository
-    participant Database
+    participant DB as Database
     participant PasswordUtil as Password Hasher
 
     Client->>AuthController: POST /api/v1/auth/login
     AuthController->>AuthService: login(username, password)
     AuthService->>UserRepo: findByUsername(username)
-    UserRepo->>Database: query user
-    Database-->>UserRepo: user or null
+    UserRepo->>DB: query user
+    DB-->>UserRepo: user or null
 
     alt User not found
         AuthService-->>AuthController: Error
@@ -31,8 +32,8 @@ sequenceDiagram
             AuthService-->>AuthController: Error
             AuthController-->>Client: 401 Unauthorized
         else Valid password
-            AuthService->>AuthService: generate token
-            AuthService->>Database: store token with expiry
+            Note over AuthService: generate token
+            AuthService->>DB: store token with expiry
             AuthService-->>AuthController: token + expiry
             AuthController-->>Client: 200 OK
         end
