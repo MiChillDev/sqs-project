@@ -28,6 +28,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-sqs_db}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
       SPRING_CONFIG_IMPORT: optional:configtree:/run/secrets/
     ports:
       - "${BACKEND_PORT:-8080}:8080"
@@ -53,10 +54,15 @@ services:
   k6:
     image: grafana/k6
     profiles: ["loadtest"]
+    user: "12345:12345"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     environment:
       K6_BASE_URL: http://app:8080/api/v1
     volumes:
-      - ./test/load:/scripts
+      - ./test/load:/scripts:ro
     working_dir: /scripts
     entrypoint: ["k6"]
     secrets:
@@ -64,13 +70,16 @@ services:
         target: app.seed.admin.username
       - source: app_seed_admin_password
         target: app.seed.admin.password
+    depends_on:
+      app:
+        condition: service_healthy
     networks:
       - sqs-network
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
     profiles: ["prod"]
@@ -92,14 +101,15 @@ services:
 
   frontend-dev:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       target: dev
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
     volumes:
       - ./frontend:/app
       - frontend_node_modules:/app/node_modules
+      - ./api:/api
     command: ["corepack", "pnpm", "dev", "--host", "0.0.0.0"]
     environment:
       API_TARGET: http://app:8080

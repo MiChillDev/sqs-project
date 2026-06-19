@@ -59,6 +59,7 @@ export function SourceJokeSection() {
       </CardHeader>
       <CardContent className='flex flex-col gap-4'>
         <Button
+          data-testid="fetch-source-joke-button"
           onClick={handleFetch}
           disabled={sourceJoke.isFetching}
           className='bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
@@ -68,15 +69,16 @@ export function SourceJokeSection() {
 
         {sourceJoke.data && !sourceJoke.isFetching && (
           <div className='flex flex-col gap-3'>
-            <div className='rounded-md border border-green-500/50 bg-green-50 px-4 py-3 text-green-800 text-sm dark:bg-green-950 dark:text-green-200'>
+            <div data-testid="source-joke-content" className='rounded-md border border-green-500/50 bg-green-50 px-4 py-3 text-green-800 text-sm dark:bg-green-950 dark:text-green-200'>
               {sourceJoke.data.content}
             </div>
             {savedExternalId === sourceJoke.data.externalId ? (
-              <div className='rounded-md border border-green-500/50 bg-green-50 px-4 py-3 text-green-800 text-sm dark:bg-green-950 dark:text-green-200'>
+            <div data-testid="save-success-message" className='rounded-md border border-green-500/50 bg-green-50 px-4 py-3 text-green-800 text-sm dark:bg-green-950 dark:text-green-200'>
                 {t('admin.saved')}
               </div>
             ) : (
               <Button
+                data-testid="save-source-joke-button"
                 size='sm'
                 onClick={handleSave}
                 disabled={saveJoke.isPending}

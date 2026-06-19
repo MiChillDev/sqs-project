@@ -1,6 +1,6 @@
 import { authStorage } from 'src/shared/lib/auth-storage';
 import { ApiError, NetworkError } from './api-error';
-import type { components } from './generated/api-types';
+import type { components } from '@api/generated/api-types';
 
 export type Joke = components['schemas']['Joke'];
 export type SourceJoke = components['schemas']['SourceJoke'];

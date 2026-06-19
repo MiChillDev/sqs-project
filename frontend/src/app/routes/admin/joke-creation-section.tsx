@@ -64,6 +64,7 @@ export function JokeCreationSection() {
             <FieldLabel htmlFor='content'>{t('admin.contentLabel')}</FieldLabel>
             <FieldContent>
               <Textarea
+                data-testid="joke-content-textarea"
                 id='content'
                 rows={4}
                 aria-invalid={!!form.formState.errors.content}
@@ -79,6 +80,7 @@ export function JokeCreationSection() {
             <FieldLabel htmlFor='externalId'>{t('admin.externalIdLabel')}</FieldLabel>
             <FieldContent>
               <Input
+                data-testid="joke-external-id-input"
                 id='externalId'
                 aria-invalid={!!form.formState.errors.externalId}
                 {...form.register('externalId')}
@@ -89,15 +91,16 @@ export function JokeCreationSection() {
             )}
           </Field>
 
-          {errorMessage && <ErrorAlert messageKey={errorMessage} onRetry={handleRetry} />}
+          {errorMessage && <div data-testid="create-joke-error"><ErrorAlert messageKey={errorMessage} onRetry={handleRetry} /></div>}
 
           {createdJoke && (
-            <div className='rounded-md border border-green-500/50 bg-green-50 px-4 py-3 text-green-800 text-sm dark:bg-green-950 dark:text-green-200'>
+            <div data-testid="create-joke-success" className='rounded-md border border-green-500/50 bg-green-50 px-4 py-3 text-green-800 text-sm dark:bg-green-950 dark:text-green-200'>
               {createdJoke}
             </div>
           )}
 
           <Button
+            data-testid="create-joke-button"
             type='submit'
             disabled={createJoke.isPending}
             className='bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'

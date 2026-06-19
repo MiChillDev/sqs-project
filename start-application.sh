@@ -401,6 +401,10 @@ ensure_env_file() {
 
   cp "$ENV_TEMPLATE" "$ENV_FILE"
   chmod 600 "$ENV_FILE" 2>/dev/null || true
+
+  if [[ -s "$ENV_FILE" && "$(tail -c 1 "$ENV_FILE")" != "" ]]; then
+    echo "" >> "$ENV_FILE"
+  fi
   echo "Created local $ENV_FILE from $ENV_TEMPLATE."
 }
 
@@ -435,6 +439,13 @@ ensure_secrets() {
   validate_existing_secret_or_exit "$POSTGRES_PASSWORD_SECRET" password
   validate_existing_secret_or_exit "$ADMIN_USERNAME_SECRET" username
   validate_existing_secret_or_exit "$ADMIN_PASSWORD_SECRET" password
+
+  # H8: Credentials only live in .secrets/, not duplicated in .env
+  # if [[ -s "$ENV_FILE" && "$(tail -c 1 "$ENV_FILE")" != "" ]]; then
+  #   echo "" >> "$ENV_FILE"
+  # fi
+  # echo "SEED_ADMIN_USERNAME=$(read_secret "$ADMIN_USERNAME_SECRET")" >> "$ENV_FILE"
+  # echo "SEED_ADMIN_PASSWORD=$(read_secret "$ADMIN_PASSWORD_SECRET")" >> "$ENV_FILE"
 }
 
 show_credentials() {

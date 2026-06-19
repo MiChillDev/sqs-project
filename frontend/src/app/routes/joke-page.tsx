@@ -23,7 +23,7 @@ function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
 
       {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
 
-      {isSuccess && joke && <div className='text-3xl font-heading text-playful-text'>{joke}</div>}
+      {isSuccess && joke && <div data-testid="joke-content" className='text-3xl font-heading text-playful-text'>{joke}</div>}
 
       {!isError && !isSuccess && (
         <div className='text-xl text-playful-text'>{t('jokePage.placeholder')}</div>
@@ -72,7 +72,7 @@ function JokePage() {
 
   return (
     <div className='flex-1 flex flex-col items-center justify-center gap-12 bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end font-body relative overflow-hidden'>
-      <h1 className='text-[4rem] font-heading text-playful-heading drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] -rotate-2 tracking-wide'>
+      <h1 data-testid="joke-heading" className='text-[4rem] font-heading text-playful-heading drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] -rotate-2 tracking-wide'>
         {t('jokePage.heading')}
       </h1>
 
@@ -85,6 +85,7 @@ function JokePage() {
         `}
       >
         <div
+          data-testid="joke-counter"
           className={`
             absolute -top-5 -right-5
             w-12 h-12
@@ -109,6 +110,7 @@ function JokePage() {
       </Card>
 
       <Button
+        data-testid="fetch-joke-button"
         onClick={handleFetch}
         disabled={isFetching || isAnimating}
         className='px-10 py-4 text-xl font-heading bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'

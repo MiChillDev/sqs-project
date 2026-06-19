@@ -38,7 +38,6 @@
     "duplicate-exports": "off"
   },
   "ignorePatterns": [
-    "src/shared/api/generated/**", // openapi-typescript output
     "vitest.sonar.config.ts" // loaded by SonarQube, not imported
   ],
   // shadcn/ui barrels re-export same short names intentionally

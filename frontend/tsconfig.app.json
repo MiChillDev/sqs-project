@@ -22,7 +22,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "paths": { "src/*": ["./src/*"] }
+    "paths": { "src/*": ["./src/*"], "@api/*": ["../api/*"] }
   },
   "include": ["src"]
 }

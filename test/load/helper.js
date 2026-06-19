@@ -1,9 +1,20 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, open } from 'k6';
+
+const USERNAME_PATH = '/run/secrets/app.seed.admin.username';
+const PASSWORD_PATH = '/run/secrets/app.seed.admin.password';
+
+function readSecret(path) {
+  try { return open(path).trim(); }
+  catch (e) { throw new Error('Failed to read secret: ' + path); }
+}
+
+const SEED_ADMIN_USERNAME = readSecret(USERNAME_PATH);
+const SEED_ADMIN_PASSWORD = readSecret(PASSWORD_PATH);
 
 export const BASE_URL = 'http://app:8080/api/v1';
 
-export function login(username = 'admin', password = 'superSecurePassword123') {
+export function login(username = SEED_ADMIN_USERNAME, password = SEED_ADMIN_PASSWORD) {
   const payload = { username, password };
 
   const res = http.post(
