@@ -134,6 +134,7 @@ secrets:
   app_seed_admin_password:
     file: ./.secrets/app_seed_admin_password
 
+
 volumes:
   postgres_data:
   frontend_node_modules:

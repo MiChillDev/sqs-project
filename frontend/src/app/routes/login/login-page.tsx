@@ -76,13 +76,13 @@ export function LoginPage() {
     <div className='min-h-screen flex items-center justify-center bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end'>
       <Card className='w-full max-w-md shadow-[0_20px_40px_rgba(255,107,53,0.25)] dark:shadow-[0_0_30px_rgba(255,107,53,0.5),0_0_60px_rgba(255,107,53,0.2)]'>
         <CardHeader>
-          <CardTitle data-testid="login-title">{t('login.title')}</CardTitle>
+          <CardTitle data-testid='login-title'>{t('login.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className='flex flex-col gap-4'>
             {bannerKey && (
               <div
-                data-testid="login-error-banner"
+                data-testid='login-error-banner'
                 role='alert'
                 className='rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive text-sm'
               >
@@ -94,7 +94,7 @@ export function LoginPage() {
               <FieldLabel htmlFor='username'>{t('login.fields.username')}</FieldLabel>
               <FieldContent>
                 <Input
-                  data-testid="username-input"
+                  data-testid='username-input'
                   id='username'
                   autoComplete='username'
                   aria-invalid={!!form.formState.errors.username}
@@ -110,7 +110,7 @@ export function LoginPage() {
               <FieldLabel htmlFor='password'>{t('login.fields.password')}</FieldLabel>
               <FieldContent>
                 <Input
-                  data-testid="password-input"
+                  data-testid='password-input'
                   id='password'
                   type='password'
                   autoComplete='current-password'
@@ -124,7 +124,7 @@ export function LoginPage() {
             </Field>
 
             <Button
-              data-testid="submit-login-button"
+              data-testid='submit-login-button'
               type='submit'
               disabled={login.isPending}
               className='bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'

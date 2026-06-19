@@ -185,7 +185,7 @@ random_chars() {
   local chars="$1"
   local length="$2"
 
-  LC_ALL=C tr -dc "$chars" < /dev/urandom | head -c "$length"
+  LC_ALL=C tr -dc "$chars" < /dev/urandom 2>/dev/null | head -c "$length"
 }
 
 generate_password() {
@@ -615,7 +615,7 @@ if [[ "$STACK" == "backend" ]]; then
     docker compose up -d --wait postgres app
   else
     run_quietly "starting backend services" \
-      docker compose --progress quiet up -d --wait --quiet-pull --quiet-build postgres app
+      docker compose --progress quiet up -d --wait postgres app
   fi
 else
   if [[ "$MODE" == "prod" ]]; then
@@ -623,14 +623,14 @@ else
       docker compose --profile prod up -d --wait postgres app frontend
     else
       run_quietly "starting production services" \
-        docker compose --progress quiet --profile prod up -d --wait --quiet-pull --quiet-build postgres app frontend
+        docker compose --progress quiet --profile prod up -d --wait postgres app frontend
     fi
   else
     if [[ "$VERBOSE" == "true" ]]; then
       docker compose up -d --wait postgres app frontend-dev
     else
       run_quietly "starting development services" \
-        docker compose --progress quiet up -d --wait --quiet-pull --quiet-build postgres app frontend-dev
+        docker compose --progress quiet up -d --wait postgres app frontend-dev
     fi
   fi
 fi

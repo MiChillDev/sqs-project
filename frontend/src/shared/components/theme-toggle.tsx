@@ -13,7 +13,13 @@ export function ThemeToggle(props: Readonly<Props>) {
   const { t } = useTranslation();
 
   return (
-    <Button data-testid="theme-toggle" variant='ghost' size='icon' aria-label={t('app.toggleTheme')} onClick={onToggle}>
+    <Button
+      data-testid='theme-toggle'
+      variant='ghost'
+      size='icon'
+      aria-label={t('app.toggleTheme')}
+      onClick={onToggle}
+    >
       {theme === 'light' ? <Sun size={16} /> : <Moon size={16} />}
     </Button>
   );

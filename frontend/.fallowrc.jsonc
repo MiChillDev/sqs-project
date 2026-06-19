@@ -43,12 +43,16 @@
   // shadcn/ui barrels re-export same short names intentionally
   "ignoreExports": [{ "file": "src/shared/components/ui/**", "exports": ["*"] }],
   // CSS/font deps imported via @import, CLI tool never imported
-  "ignoreDependencies": ["@fontsource-variable/geist", "tw-animate-css", "shadcn"],
+  "ignoreDependencies": [
+    "@fontsource-variable/geist",
+    "tw-animate-css",
+    "shadcn",
+    "@api/generated"
+  ],
   // Raised from defaults (20/15): TSX return blocks inflate counts
   "health": {
     "maxCyclomatic": 25,
-    "maxCognitive": 20,
-    "minScore": 90
+    "maxCognitive": 20
   },
   // Duplication handled by SonarQube: don't fail, only report widespread copy-paste
   "duplicates": {

@@ -19,7 +19,9 @@ const indexRoute = createRoute({
           asChild
           className='px-10 py-4 text-xl font-heading bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
         >
-          <Link data-testid="go-to-jokes-link" to='/jokes'>{t('welcome.goToJokes')}</Link>
+          <Link data-testid='go-to-jokes-link' to='/jokes'>
+            {t('welcome.goToJokes')}
+          </Link>
         </Button>
       </div>
     );
