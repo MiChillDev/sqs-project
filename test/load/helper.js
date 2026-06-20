@@ -1,9 +1,20 @@
 import http from 'k6/http';
-import { check } from 'k6';
+import { check, open } from 'k6';
 
-export const BASE_URL = 'http://app:8080/api/v1';
+function readSecret(path, envName) {
+  if (__ENV[envName]) return __ENV[envName];
+  try {
+    return open(path).trim();
+  } catch (error) {
+    throw new Error(`Failed to read required secret: ${path} / ${envName}. Cause: ${error.message}`);
+  }
+}
 
-export function login(username = 'admin', password = 'superSecurePassword123') {
+const BASE_URL = __ENV.K6_BASE_URL || 'http://app:8080/api/v1';
+
+const SEED_ADMIN_USERNAME = readSecret('/run/secrets/app.seed.admin.username', 'K6_APP_SEED_ADMIN_USERNAME');
+const SEED_ADMIN_PASSWORD = readSecret('/run/secrets/app.seed.admin.password', 'K6_APP_SEED_ADMIN_PASSWORD');
+export function login(username = SEED_ADMIN_USERNAME, password = SEED_ADMIN_PASSWORD) {
   const payload = { username, password };
 
   const res = http.post(

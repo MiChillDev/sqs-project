@@ -11,6 +11,7 @@
 | Monorepo Organization                                              | Accepted | ADR-005 |
 | Functional error handling via Either monad                         | Accepted | ADR-006 |
 | Multi-layer testing with k6 load tests                             | Accepted | ADR-007 |
+| Shared API contract at project root (`/api`)                       | Accepted | ADR-008 |
 
 
 Full decision records with context, rationale, alternatives, and consequences are available in the [ADRs directory](ards/index.md).

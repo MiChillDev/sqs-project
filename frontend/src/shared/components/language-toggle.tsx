@@ -27,6 +27,7 @@ export function LanguageToggle() {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <Button
+            data-testid='language-toggle'
             variant='ghost'
             size='icon'
             aria-label={i18n.language === 'en' ? 'Switch to German' : 'Switch to English'}

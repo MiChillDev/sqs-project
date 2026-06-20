@@ -32,13 +32,15 @@ class ArchitectureTest {
     static final ArchRule repositoriesShouldBeInRepositoryPackage =
             classes()
                     .that().haveSimpleNameEndingWith("Repository")
+                    .or().haveSimpleNameEndingWith("RepositoryImpl")
                     .should().resideInAPackage("..repository..");
 
     @ArchTest
     static final ArchRule repositoryPackageContainsOnlyRepositories =
             classes()
                     .that().resideInAPackage("..repository..")
-                    .should().haveSimpleNameEndingWith("Repository");
+                    .should().haveSimpleNameEndingWith("Repository")
+                    .orShould().haveSimpleNameEndingWith("RepositoryImpl");
 
     @ArchTest
     static final ArchRule controllersShouldBeInControllerPackage =
@@ -82,11 +84,13 @@ class ArchitectureTest {
     static final ArchRule layeredArchitecture =
             layeredArchitecture()
                     .consideringAllDependencies()
+                    .layer("Config").definedBy("..config..")
                     .layer("Controller").definedBy("..controller..")
                     .layer("Service").definedBy("..service..")
                     .layer("Repository").definedBy("..repository..")
+                    .whereLayer("Config").mayNotBeAccessedByAnyLayer()
                     .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
-                    .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller")
+                    .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Config")
                     .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
 
     // ANNOTATION TESTS

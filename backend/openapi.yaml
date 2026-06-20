@@ -4,6 +4,10 @@ info:
   version: 1.0.0
   description: API for retrieving chuck norris jokes from the database and managing the joke collection
 
+servers:
+  - url: http://localhost:8080
+    description: Local development
+
 components:
   securitySchemes:
     basicAuth:
@@ -11,30 +15,13 @@ components:
       scheme: basic
       description: HTTP Basic Authentication with generated token
 
-  schemas:
-    LoginRequest:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-          
-    TokenResponse:
-      type: object
-      required:
-        - token
-        - expiresAt
-      properties:
-        token:
-          type: string
-        expiresAt:
-          type: string
-          format: date-time
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: UUID
+      description: Bearer token authentication using a UUID token
 
+  schemas:
     Joke:
       type: object
       required:
@@ -85,6 +72,19 @@ components:
           type: string
           description: Original ID from the chuck norris API
 
+    HealthCheck:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: Service status indicator
+        message:
+          type: string
+          description: Human-readable status message
+
     Error:
       type: object
       required:
@@ -97,6 +97,36 @@ components:
         message:
           type: string
           description: Human-readable error message
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Username for authentication
+        password:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Password for authentication
+
+    TokenResponse:
+      type: object
+      required:
+        - token
+        - expiresAt
+      properties:
+        token:
+          type: string
+          description: Authentication token (UUID format)
+        expiresAt:
+          type: string
+          description: Token expiration timestamp (ISO-8601 local date-time without timezone)
 
   responses:
     BadRequest:
@@ -140,10 +170,11 @@ components:
             message: An unexpected error occurred
 
 paths:
-  /auth/login:
+  /api/v1/auth/login:
     post:
       operationId: login
-      summary: Authenticate and get a token
+      summary: Authenticate and get a bearer token
+      description: Authenticates a user with username and password and returns a bearer token for subsequent authenticated requests
       tags:
         - Auth
       requestBody:
@@ -159,10 +190,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+        '4XX':
+          description: Client error - invalid credentials or bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
-  /source-joke:
+  /api/v1/source-joke:
     get:
       operationId: getRandomSourceJoke
       summary: Get a random joke from the external API
@@ -184,7 +225,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /jokes:
+  /api/v1/jokes:
     get:
       operationId: getRandomJoke
       summary: Get a random joke from the database
@@ -241,5 +282,25 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/health:
+    get:
+      operationId: healthCheck
+      summary: Health check
+      description: Returns the service health status. No authentication required.
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+              example:
+                status: UP
+                message: Service is healthy
         '500':
           $ref: '#/components/responses/InternalServerError'
