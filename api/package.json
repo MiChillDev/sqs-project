@@ -1,0 +1,12 @@
+{
+  "name": "sqs-api-types",
+  "private": true,
+  "packageManager": "pnpm@10.16.0",
+  "scripts": {
+    "generate": "openapi-typescript openapi.yaml -o generated/api-types.ts",
+    "generate:watch": "openapi-typescript openapi.yaml -o generated/api-types.ts --watch"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.13.0"
+  }
+}

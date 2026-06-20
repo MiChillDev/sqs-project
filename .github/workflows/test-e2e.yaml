@@ -1,33 +1,37 @@
-name: E2E Test Pipeline
+name: E2E Tests
+
+# NOTE: All `uses:` must be pinned to full-length commit SHAs.
+# The org policy rejects semantic version tags (@v4) and requires
+# actions from GitHub-owned, org-owned, or Marketplace-verified repos.
+# If you add a new action, use the SHA from the corresponding workflow on main.
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: [main]
     paths:
       - 'frontend/**'
       - 'backend/**'
       - 'test/e2e/**'
+      - 'api/**'
 
 concurrency:
   group: e2e-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  e2e-tests:
+  e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v4 (SHA required by org policy)
 
-      - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4 (SHA required by org policy)
         with:
           node-version: 22
 
-      - name: Enable pnpm via corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.1.2 --activate
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@10.16.0 --activate
 
       - name: Install e2e dependencies
         working-directory: test/e2e
@@ -38,10 +42,31 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Start application stack
-        run: docker compose --profile prod up -d --build --wait postgres app frontend
+        run: |
+          chmod +x start-application.sh stop-application.sh
+          SPRING_PROFILES_ACTIVE=mock-external-api ./start-application.sh --prod --yes
+          echo "SEED_ADMIN_USERNAME=$(cat .secrets/app_seed_admin_username)" >> "$GITHUB_ENV"
+          echo "SEED_ADMIN_PASSWORD=$(cat .secrets/app_seed_admin_password)" >> "$GITHUB_ENV"
+        env:
+          SPRING_PROFILES_ACTIVE: mock-external-api
 
-      - name: Wait for frontend server
-        run: timeout 60 bash -c 'until curl -sf http://localhost:5173 > /dev/null; do sleep 2; done'
+      - name: Wait for frontend
+        run: |
+          timeout 60 bash -c 'until curl -sf http://localhost:5173; do sleep 2; done'
+
+      - name: Generate API types and verify
+        working-directory: test/e2e
+        run: |
+          npx openapi-typescript ../../api/openapi.yaml -o ../../api/generated/api-types.ts
+          git diff --exit-code ../../api/generated/api-types.ts
+
+      - name: Type-check
+        working-directory: test/e2e
+        run: pnpm typecheck
+
+      - name: Seed database
+        working-directory: test/e2e
+        run: pnpm seed
 
       - name: Run E2E tests
         working-directory: test/e2e
