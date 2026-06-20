@@ -109,8 +109,8 @@ package "common.infrastructure" {
   ApiRepository --> ErrorResultStatus : creates errors
 }
 
-database "PostgreSQL 16" as PostgreSQL <<Database>>
-rectangle "Chuck Norris API\napi.chucknorris.io" as ChuckApi <<External API>>
+class "PostgreSQL 16" as PostgreSQL <<Database>>
+class "Chuck Norris API\napi.chucknorris.io" as ChuckApi <<External API>>
 
 SpringJokeRepository --> PostgreSQL : jokes
 SpringAuthSessionRepository --> PostgreSQL : auth_sessions
