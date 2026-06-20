@@ -6,11 +6,11 @@
   "scripts": {
     "generate-api-types": "cd ../../api && pnpm generate",
     "typecheck": "tsc --noEmit",
-    "seed": "tsx seed/seed-cli.ts",
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
+    "seed": "./run tsx seed/seed-cli.ts",
+    "test": "./run playwright test",
+    "test:headed": "./run playwright test --headed",
+    "test:ui": "./run playwright test --ui",
+    "test:debug": "./run playwright test --debug",
     "test:ci": "pnpm typecheck && pnpm seed && pnpm test"
   },
   "devDependencies": {

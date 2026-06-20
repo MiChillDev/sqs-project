@@ -7,7 +7,7 @@ on:
       - 'backend/**'
 
 jobs:
-  run-unit-tests:
+  build-and-test-backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,7 @@ jobs:
       - name: Compile backend
         run: cd backend && mvn clean compile
 
-      - name: Run unit tests with coverage
+      - name: Run unit tests with coverage (includes architecture tests)
         run: cd backend && mvn verify
 
       - name: Upload JaCoCo coverage report

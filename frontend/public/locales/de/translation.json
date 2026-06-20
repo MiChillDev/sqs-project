@@ -97,6 +97,11 @@
 		"save": "Speichern",
 		"saving": "Wird gespeichert...",
 		"saved": "Erfolgreich gespeichert!",
+		"tabs": {
+			"source": "Abrufen & Speichern",
+			"create": "Erstellen",
+			"label": "Admin-Bereiche"
+		},
 		"error": {
 			"networkError": "Verbindung nicht möglich. Bitte überprüfe deine Internetverbindung.",
 			"serverError": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
