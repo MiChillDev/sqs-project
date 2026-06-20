@@ -34,11 +34,11 @@ Types are regenerated manually when the specification changes and committed. The
 
 ## Alternatives Considered
 
-| Alternative | Reason for Rejection |
-|-------------|---------------------|
-| Keep specification in `frontend/` | Layering violation — test infrastructure depends on frontend source tree |
-| Generate types at Docker build time | Adds build dependency; requires wider Docker build context |
-| Separate `shared-types/` npm package | Over-engineered for two consumers |
+| Alternative                          | Reason for Rejection                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| Keep specification in `frontend/`    | Layering violation — test infrastructure depends on frontend source tree |
+| Generate types at Docker build time  | Adds build dependency; requires wider Docker build context               |
+| Separate `shared-types/` npm package | Over-engineered for two consumers                                        |
 
 ## Consequences
 

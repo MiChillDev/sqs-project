@@ -11,3 +11,5 @@ This chapter provides an overview of cross-cutting concerns and references to wh
 | Theming              | Light and dark mode with FOUC prevention via inline CSS           | [10. Quality](10-quality.md)                                                                         |
 | API Contract         | OpenAPI 3.1.0 specification with auto-generated frontend types    | [4. Solution Strategy](04-solution-strategy.md), [2. Constraints](02-constraints.md)                 |
 | Testing              | Multi-layer: unit/integration, load, static analysis, penetration | [ADR-007](ards/adr-07-testing-strategy.md), [10. Quality](10-quality.md)                             |
+
+<!-- TODO add ref to api adr for the 'api contract' concept-->

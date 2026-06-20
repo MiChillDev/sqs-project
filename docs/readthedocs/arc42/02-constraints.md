@@ -13,7 +13,7 @@
 | ORM                 | Spring Data JPA                                |
 | Database Migrations | Flyway 12                                      |
 | API Contract        | OpenAPI 3.1.0 (YAML)                           |
-| Type Generation     | openapi-typescript for frontend                |
+| Type Generation     | openapi-typescript                             |
 | Containerization    | Docker with Docker Compose                     |
 | Package Manager     | pnpm (frontend), Maven (backend)               |
 | Node.js             | >= 22.0.0                                      |
@@ -32,13 +32,13 @@
 
 ## Conventions
 
-| Convention            | Details                                                                                     |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| Backend Architecture  | Feature-based packages (jokes, auth, users, health, common) with layered Controller → Service → Repository; port/adapter separation in the repository layer |
-| Frontend Architecture | Feature-based routes with shared components, hooks, and API layer                           |
-| Error Handling        | Functional: custom `Either<L, R>` monad (backend), typed error classes (frontend)           |
-| Form Validation       | Zod schemas + react-hook-form with i18n-aware error messages                                |
-| Linting/Formatting    | Biome (frontend, replaces ESLint+Prettier)                                                  |
-| Testing               | Vitest + Testing Library (frontend) / JUnit 5 + Mockito (backend) / k6 (load)               |
-| Penetration Testing   | OWASP-based (TODO)                                                                          |
-| i18n                  | i18next with English and German translations                                                |
+| Convention            | Details                                                                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend Architecture  | Feature-based packages (jokes, auth, users, health, common) with layered Controller → Service → Repository; interface/implementation separation in the repository layer |
+| Frontend Architecture | Feature-based routes with shared components, hooks, and API layer                                                                                                       |
+| Error Handling        | Functional: custom `Either<L, R>` monad (backend), typed error classes (frontend)                                                                                       |
+| Form Validation       | Zod schemas + react-hook-form with i18n-aware error messages                                                                                                            |
+| Linting/Formatting    | Biome (frontend, replaces ESLint+Prettier)                                                                                                                              |
+| Testing               | Vitest + Testing Library (frontend) / JUnit 5 + Mockito (backend) / k6 (load)                                                                                           |
+| Penetration Testing   | Separate unit tests in backend                                                                                                                                          |
+| i18n                  | i18next with English and German translations for frontend components                                                                                                    |

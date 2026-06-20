@@ -13,6 +13,7 @@
 | Multi-layer testing with k6 load tests                             | Accepted | ADR-007 |
 | Shared API contract at project root (`/api`)                       | Accepted | ADR-008 |
 
+<!--TODO add more adrs-->
 
 Full decision records with context, rationale, alternatives, and consequences are available in the [ADRs directory](ards/index.md).
 

@@ -20,11 +20,11 @@ The `start-application.sh` script prompts for or generates these values on first
 
 Secrets:
 
-| Secret file | Docker secret target (mounted in container) | Consumer |
-|---|---|---|
-| `.secrets/postgres_password` | `/run/secrets/postgres_password` | PostgreSQL via `POSTGRES_PASSWORD_FILE` |
-| `.secrets/app_seed_admin_username` | `/run/secrets/app.seed.admin.username` | Spring configtree `@Value` injection |
-| `.secrets/app_seed_admin_password` | `/run/secrets/app.seed.admin.password` | Spring configtree `@Value` injection |
+| Secret file                        | Docker secret target (mounted in container) | Consumer                                |
+| ---------------------------------- | ------------------------------------------- | --------------------------------------- |
+| `.secrets/postgres_password`       | `/run/secrets/postgres_password`            | PostgreSQL via `POSTGRES_PASSWORD_FILE` |
+| `.secrets/app_seed_admin_username` | `/run/secrets/app.seed.admin.username`      | Spring configtree `@Value` injection    |
+| `.secrets/app_seed_admin_password` | `/run/secrets/app.seed.admin.password`      | Spring configtree `@Value` injection    |
 
 Non-secret `.env` (from template `.env.example`):
 

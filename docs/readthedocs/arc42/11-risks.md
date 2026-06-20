@@ -8,9 +8,8 @@
 | R-2 | Token lifecycle not fully enforced                       | High   | High       | Add expiry check in token validation; add cleanup job for expired sessions |
 | R-3 | No CORS configuration                                    | Medium | Low        | Add Spring CORS configuration before production deployment                 |
 | R-4 | No HTTPS enforcement                                     | High   | Medium     | Enforce HTTPS in production via reverse proxy or Spring configuration      |
-| R-5 | Admin credentials seeded via migration                   | High   | Medium     | Provision via environment variables; rotate credentials periodically       |
-| R-6 | Simplified role model (only two roles)                   | Medium | Low        | Current scope is small; add granular RBAC if user management is expanded   |
-| R-7 | Frontend runs dev server in Docker (no production build) | Medium | Medium     | Implement multi-stage Dockerfile with production build                     |
+| R-5 | Simplified role model (only two roles)                   | Medium | Low        | Current scope is small; add granular RBAC if user management is expanded   |
+| R-6 | Frontend runs dev server in Docker (no production build) | Medium | Medium     | Implement multi-stage Dockerfile with production build                     |
 
 ## Technical Debt
 

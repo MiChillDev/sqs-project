@@ -4,14 +4,17 @@
 
 ### 1. Feature-Based Package Structure with Layered Architecture
 
-The backend organizes code by **feature/domain** (jokes, auth, users, health) rather than by technical layer. Within each feature, a classic layered pattern (Controller → Service → Repository) is applied. The repository layer uses port/adapter separation to isolate infrastructure:
+The backend organizes code by **feature/domain** (jokes, auth, users, health) rather than by technical layer. 
+Within each feature, a classic layered pattern (Controller → Service → Repository) is applied. 
+The repository layer uses interface/implementation separation to isolate infrastructure:
 
-- **Port interfaces**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`) define repository contracts
-- **Adapter implementations**: Infrastructure classes in `spring/` (Spring Data JPA) and `api/` (external API calls) implement the port interfaces
+- **Repository interfaces**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`) define repository contracts
+- **Implementations**: Infrastructure classes in `spring/` (Spring Data JPA) and `api/` (external API calls) implement the repository interfaces
 - **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic
 
 ### 2. Functional Error Handling via Either Monad
 
+<!--TODO: link corresponding adr file-->
 Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface:
 
 - `Right<L, R>` = success
@@ -21,7 +24,10 @@ Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface
 
 ### 3. OpenAPI-First Type Contract
 
-The API contract is defined in OpenAPI 3.1.0 YAML. The frontend auto-generates TypeScript types from this spec using `openapi-typescript`. This provides:
+<!--TODO: link coresponding adr-->
+The API contract is defined in OpenAPI 3.1.0 YAML. 
+The /api package auto-generates TypeScript types from this spec using `openapi-typescript`. 
+This provides:
 
 - Single source of truth for API shapes
 - Compile-time type safety on the frontend
@@ -55,22 +61,22 @@ UI components are built on shadcn/ui (new-york style) with Radix UI primitives:
 
 ## Technology Selection Summary
 
-| Layer            | Technology                           | Rationale                                    |
-| ---------------- | ------------------------------------ | -------------------------------------------- |
-| Frontend         | React 19 + Vite 8 + TypeScript 6     | Modern, type-safe, fast DX                   |
-| UI Components    | shadcn/ui + Radix UI + TailwindCSS 4 | Accessible, customizable, modern             |
-| Routing          | TanStack Router                      | Type-safe file-based routing                 |
-| Server State     | TanStack React Query                 | Caching, deduplication, error handling       |
-| Forms            | react-hook-form + Zod                | Performant validation with i18n              |
-| Backend          | Spring Boot 4 + Java 21              | Enterprise-grade, mature ecosystem           |
-| Architecture     | Layered (Controller→Service→Repository) with feature packages and port/adapter repos | Simple, testable, familiar |
-| Database         | PostgreSQL 16                        | Reliable, ACID-compliant relational DB       |
-| Migrations       | Flyway                               | Version-controlled schema evolution          |
-| Auth             | Custom token-based (UUID + PBKDF2)   | Lightweight, suitable for scope              |
-| Error Handling   | Either monad                         | Functional, explicit, no hidden control flow |
-| API Contract     | OpenAPI 3.1.0                        | Type generation, documentation               |
-| Containerization | Docker + Docker Compose              | Reproducible environments                    |
-| CI/CD            | GitHub Actions                       | Automated testing and quality gates          |
-| Code Quality     | Biome + SonarQube                    | Linting, static analysis, coverage           |
-| Load Testing     | k6 (Grafana)                         | Baseline, stress, and spike scenarios        |
-| i18n             | i18next                              | EN/DE support from day one                   |
+| Layer            | Technology                                                                                       | Rationale                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| Frontend         | React 19 + Vite 8 + TypeScript 6                                                                 | Modern, type-safe, fast DX                   |
+| UI Components    | shadcn/ui + Radix UI + TailwindCSS 4                                                             | Accessible, customizable, modern             |
+| Routing          | TanStack Router                                                                                  | Type-safe file-based routing                 |
+| Server State     | TanStack React Query                                                                             | Caching, deduplication, error handling       |
+| Forms            | react-hook-form + Zod                                                                            | Performant validation with i18n              |
+| Backend          | Spring Boot 4 + Java 21                                                                          | Enterprise-grade, mature ecosystem           |
+| Architecture     | Layered (Controller→Service→Repository) with feature packages and interface/implementation repos | Simple, testable, familiar                   |
+| Database         | PostgreSQL 16                                                                                    | Reliable, ACID-compliant relational DB       |
+| Migrations       | Flyway                                                                                           | Version-controlled schema evolution          |
+| Auth             | Custom token-based (UUID + PBKDF2)                                                               | Lightweight, suitable for scope              |
+| Error Handling   | Either monad                                                                                     | Functional, explicit, no hidden control flow |
+| API Contract     | OpenAPI 3.1.0                                                                                    | Type generation, documentation               |
+| Containerization | Docker + Docker Compose                                                                          | Reproducible environments                    |
+| CI/CD            | GitHub Actions                                                                                   | Automated testing and quality gates          |
+| Code Quality     | Biome + SonarQube                                                                                | Linting, static analysis, coverage           |
+| Load Testing     | k6 (Grafana)                                                                                     | Baseline, stress, and spike scenarios        |
+| i18n             | i18next                                                                                          | EN/DE support from day one                   |
