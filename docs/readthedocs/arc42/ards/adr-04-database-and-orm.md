@@ -1,5 +1,7 @@
 # ADR-004: PostgreSQL with JPA and Flyway
 
+[Back to ADR overview](../09-decisions.md)
+
 **Status:** Accepted
 
 ## Context
