@@ -45,8 +45,12 @@ jobs:
         run: |
           chmod +x start-application.sh stop-application.sh
           SPRING_PROFILES_ACTIVE=mock-external-api ./start-application.sh --prod --yes
-          echo "SEED_ADMIN_USERNAME=$(cat .secrets/app_seed_admin_username)" >> "$GITHUB_ENV"
-          echo "SEED_ADMIN_PASSWORD=$(cat .secrets/app_seed_admin_password)" >> "$GITHUB_ENV"
+          ADMIN_USERNAME=$(tr -d '\r\n' < .secrets/app_seed_admin_username)
+          ADMIN_PASSWORD=$(tr -d '\r\n' < .secrets/app_seed_admin_password)
+          echo "::add-mask::$ADMIN_USERNAME"
+          echo "::add-mask::$ADMIN_PASSWORD"
+          echo "SEED_ADMIN_USERNAME=$ADMIN_USERNAME" >> "$GITHUB_ENV"
+          echo "SEED_ADMIN_PASSWORD=$ADMIN_PASSWORD" >> "$GITHUB_ENV"
         env:
           SPRING_PROFILES_ACTIVE: mock-external-api
 
