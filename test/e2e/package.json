@@ -1,16 +1,22 @@
 {
   "name": "sqs-e2e",
   "private": true,
+  "packageManager": "pnpm@10.16.0",
   "type": "module",
   "scripts": {
+    "generate-api-types": "cd ../../api && pnpm generate",
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx seed/seed-cli.ts",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
-    "typecheck": "tsc --noEmit"
+    "test:ci": "pnpm typecheck && pnpm seed && pnpm test"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
     "typescript": "^6.0.2"
   },
   "engines": {

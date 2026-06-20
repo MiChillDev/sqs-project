@@ -22,9 +22,9 @@ const renderApp = () => {
   );
 };
 
-initI18n()
-  .then(renderApp)
-  .catch((err) => {
-    debugLogger.error('i18n initialization failed:', err);
-    renderApp();
-  });
+try {
+  await initI18n();
+} catch (err) {
+  debugLogger.error('i18n initialization failed:', err);
+}
+renderApp();

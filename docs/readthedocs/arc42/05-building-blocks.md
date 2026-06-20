@@ -1,8 +1,22 @@
 # 5. Building Block View
 
+This is an interactive view of the C4 diagram created in Structurizr:
+
+<iframe
+  id="structurizr-c1"
+  src="../../structurizr/index.html?iframe=structurizr-c1#C1_SystemContext"
+  width="100%"
+  height="700"
+  frameborder="0"
+  scrolling="no"
+  allowfullscreen="true">
+</iframe>
+
+<script type="text/javascript" src="../../structurizr/js/structurizr-embed.js"></script>
+
 ## Level 1: System Context
 
-The system context diagram is available as [C4 Level 1 — System Context](mermaid/c1-context.mmd).
+The external actors are described in [Chapter 3 (Context and Scope)](03-context.md) 
 
 ## Level 2: Containers
 

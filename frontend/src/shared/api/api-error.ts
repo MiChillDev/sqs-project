@@ -4,7 +4,8 @@ export class ApiError extends Error {
   public readonly body?: unknown;
 
   constructor(status: number, statusText: string, body?: unknown) {
-    super(`HTTP ${status}${statusText ? `: ${statusText}` : ''}`);
+    const message = statusText ? `HTTP ${status}: ${statusText}` : `HTTP ${status}`;
+    super(message);
     this.name = 'ApiError';
     this.status = status;
     this.statusText = statusText;

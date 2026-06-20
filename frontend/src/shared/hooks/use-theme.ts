@@ -24,7 +24,7 @@ export function useTheme() {
   }, [theme]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`(prefers-color-scheme: ${DARK})`);
+    const mediaQuery = globalThis.matchMedia(`(prefers-color-scheme: ${DARK})`);
     const handleChange = (e: MediaQueryListEvent) => {
       let saved: string | null = null;
       try {

@@ -1,21 +1,21 @@
-import { expect, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { HomePage } from '../pages/home-page.ts';
+import { JokePage } from '../pages/joke-page.ts';
 
-test.describe('/ page', () => {
-  test('renders the home page heading', async ({ page }) => {
-    await page.goto('/');
-
-    await expect(page.getByRole('heading', { name: 'Welcome!' })).toBeVisible();
+test.describe('Home page', () => {
+  test('displays welcome message', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.navigate();
+    await homePage.verifyWelcomeMessage();
+    await expect(page.getByTestId('home-heading')).toBeVisible();
   });
 
-  test('renders the link to the jokes page', async ({ page }) => {
-    await page.goto('/');
-
-    await expect(page.getByRole('link', { name: 'Go to Jokes' })).toBeVisible();
-  });
-
-  test('renders the site header', async ({ page }) => {
-    await page.goto('/');
-
-    await expect(page.getByRole('heading', { name: 'Chuck Norris Jokes' })).toBeVisible();
+  test('navigates to jokes page', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.navigate();
+    await homePage.clickGoToJokes();
+    const jokePage = new JokePage(page);
+    await jokePage.waitForUrl('**/jokes');
+    await jokePage.verifyHeading();
   });
 });

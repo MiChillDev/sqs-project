@@ -1,12 +1,24 @@
 .idea/
-
 .DS_Store
-.env
+*.log
+
+# Node / frontend build artifacts
 node_modules/
 dist/
-*.log
+frontend/node_modules/
+frontend/dist/
+
+# Local environment files
+.env
 .env.*
-.env.local
-.env.development
+!.env.example
+*.local
+
+# Local Docker Compose secrets
+.secrets/
+secrets/
+
+# Tooling / generated local files
 .playwright-mcp
 structurizr/
+build/

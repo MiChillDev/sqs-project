@@ -82,11 +82,13 @@ class ArchitectureTest {
     static final ArchRule layeredArchitecture =
             layeredArchitecture()
                     .consideringAllDependencies()
+                    .layer("Config").definedBy("..config..")
                     .layer("Controller").definedBy("..controller..")
                     .layer("Service").definedBy("..service..")
                     .layer("Repository").definedBy("..repository..")
+                    .whereLayer("Config").mayNotBeAccessedByAnyLayer()
                     .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
-                    .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller")
+                    .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Config")
                     .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
 
     // ANNOTATION TESTS
