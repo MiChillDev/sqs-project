@@ -299,5 +299,5 @@ echo "────────────────────────�
 if [[ $FAIL -gt 0 ]]; then
   exit 1
 fi
-
+echo debug 
 exit 0
