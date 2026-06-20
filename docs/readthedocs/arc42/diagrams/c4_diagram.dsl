@@ -239,7 +239,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 }
 
                 group "Health" {
-                    healthController = component "HealthController" "Provides GET /api/v1/health and returns a static UP response. It does not extend BaseController and does not check the database." "Spring REST Controller" {
+                    healthController = component "HealthController" "Provides GET /api/v1/health and returns a static UP response. " "Spring REST Controller" {
                         tags "Controller"
                     }
                 }

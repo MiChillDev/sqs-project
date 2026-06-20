@@ -122,8 +122,7 @@ ChuckNorrisApiJokeRepositoryImpl ..> SourceJokeDto : receives
 
 note right of HealthController
   The current HealthController returns a static
-  status/message response and does not check
-  the database.
+  status/message.
 end note
 
 @enduml
