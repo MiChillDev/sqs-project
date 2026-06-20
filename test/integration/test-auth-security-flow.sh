@@ -75,7 +75,7 @@ fi
 echo ""
 echo "── Stage 1: Starting backend stack ──"
 
-if ./start-application.sh --backend-only --yes; then
+if ./start-application.sh --reset --backend-only --yes; then
   pass "Backend stack started successfully"
 else
   fail "Backend stack failed to start"
