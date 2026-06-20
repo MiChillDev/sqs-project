@@ -16,16 +16,7 @@ This is an interactive view of the C4 diagram created in Structurizr:
 
 ## Level 1: System Context
 
-The system context diagram is available as [C4 Level 1 — System Context](mermaid/c1-context.mmd).
-
-The external actors consist of:
-
-| Actor            | Type            | Description                                                                         |
-| ---------------- | --------------- | ----------------------------------------------------------------------------------- |
-| End User         | Human           | Browses Chuck Norris jokes without authentication                                   |
-| Administrator    | Human           | Authenticated user who imports jokes from the external API and creates new jokes    |
-| Chuck Norris API | External System | Public REST API at `https://api.chucknorris.io/jokes/random` providing random jokes |
-| PostgreSQL       | Infrastructure  | Relational database for persisting jokes, users, and authentication sessions  
+The external actors are described in [Chapter 3 (Context and Scope)](03-context.md) 
 
 ## Level 2: Containers
 
