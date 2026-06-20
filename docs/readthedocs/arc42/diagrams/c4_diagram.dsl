@@ -3,6 +3,10 @@
 workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris Joke Page" {
 
     model {
+        properties {
+            "structurizr.groupSeparator" "/"
+        }
+
         endUser = person "End User" "Can browse and view Chuck Norris jokes." {
             tags "UserEnd"
         }
