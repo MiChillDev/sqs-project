@@ -20,7 +20,6 @@ test.describe('Error paths', () => {
   });
 
   test('shows validation error on empty joke creation', async ({ page }) => {
-    test.skip(); // Frontend zod validation prevents submission — no error element rendered
     // Login first
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
@@ -28,10 +27,13 @@ test.describe('Error paths', () => {
     const adminPage = new AdminPage(page);
     await adminPage.waitForUrl('**/admin');
 
-    // Submit empty form
+    // Navigate to Create tab
+    await adminPage.clickCreateTab();
+    await expect(page.getByTestId('joke-content-textarea')).toBeVisible();
+
+    // Submit empty form — zod prevents submission, textarea marked invalid
     await adminPage.createJoke('');
-    const error = page.getByTestId('create-joke-error');
-    await expect(error).toBeVisible();
+    await expect(page.getByTestId('joke-content-textarea')).toHaveAttribute('aria-invalid', 'true');
   });
 
   test('shows 404 for non-existent route', async ({ page }) => {
