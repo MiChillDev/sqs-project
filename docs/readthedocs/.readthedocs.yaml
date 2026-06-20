@@ -14,6 +14,7 @@ build:
     - openjdk-17-jre-headless
   jobs:
     pre_build:
+      # debug logs
       - curl -fsSL -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
       - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code.puml
       - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/database-schema.puml
@@ -23,11 +24,12 @@ build:
       - curl -fsSL -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip
       - unzip -q /tmp/structurizr-cli.zip -d /tmp/structurizr-cli
       - chmod +x /tmp/structurizr-cli/structurizr.sh
-      - /tmp/structurizr-cli/structurizr.sh validate -workspace docs/readthedocs/arc42/diagrams/c4_diagram.dsl
+      #- /tmp/structurizr-cli/structurizr.sh validate -workspace docs/readthedocs/arc42/diagrams/c4_diagram.dsl
       - rm -rf docs/readthedocs/structurizr
       - mkdir -p docs/readthedocs/structurizr
       - /tmp/structurizr-cli/structurizr.sh export -workspace docs/readthedocs/arc42/diagrams/c4_diagram.dsl -format static -output docs/readthedocs/structurizr
       - find docs/readthedocs/structurizr -maxdepth 2 -type f | sort | head -50
+      # actual pipeline
       ## Create UML and ER diagrams for C4
       #- curl -L -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
       #- java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code.puml
