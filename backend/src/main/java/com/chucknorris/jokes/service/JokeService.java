@@ -7,16 +7,16 @@ import com.chucknorris.jokes.models.dto.JokeDto;
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
 import com.chucknorris.jokes.models.entity.JokeEntity;
 import com.chucknorris.jokes.repository.JokeRepository;
-import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
+import com.chucknorris.jokes.repository.api.ApiJokeRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JokeService {
 
-    private final ChuckNorrisApiJokeRepositoryImpl chuckNorrisJokeRepository;
+    private final ApiJokeRepository chuckNorrisJokeRepository;
     private final JokeRepository jokeRepository;
 
-    public JokeService(ChuckNorrisApiJokeRepositoryImpl chuckNorrisJokeRepository, JokeRepository jokeRepository) {
+    public JokeService(ApiJokeRepository chuckNorrisJokeRepository, JokeRepository jokeRepository) {
         this.chuckNorrisJokeRepository = chuckNorrisJokeRepository;
         this.jokeRepository = jokeRepository;
     }
