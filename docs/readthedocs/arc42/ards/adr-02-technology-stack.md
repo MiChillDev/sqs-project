@@ -6,22 +6,22 @@
 
 ## Context
 
-The Chuck Norris Joke Page requires a full-stack web application with a RESTful backend, dynamic single-page frontend, and relational database. The application has moderate complexity: CRUD operations for jokes and users, token-based authentication, external API integration, and a responsive UI.
+The Chuck Norris Joke Page requires a full-stack web application with a RESTful backend, dynamic single-page frontend, and relational database. The application has moderate complexity: CRUD operations for jokes, token-based authentication, external API integration, and a responsive UI.
 
-The development team consists of three students with mixed experience in JavaScript, Java, and database technologies. The course curriculum emphasizes backend development with Java and Spring Boot, but leaves frontend technology choices open.
+The development team consists of three students with mixed experience in JavaScript, Java, and database technologies. The course curriculum emphasizes allows development in Java, C#, Python and Typescript.
 
 ## Decision
 
-| Layer                     | Technology         |
-| ------------------------- | ------------------ |
-| **Frontend Framework**    | React (TypeScript) |
-| **Build Tool (Frontend)** | Vite               |
-| **CSS**                   | TailwindCSS        |
-| **Backend Framework**     | Spring Boot (Java) |
-| **Database**              | PostgreSQL         |
-| **ORM / Data Access**     | Spring Data JPA    |
-| **Schema Migrations**     | Flyway             |
-| **Containerization**      | Docker             |
+| Layer                     | Technology                |
+| ------------------------- | --------------------------|
+| **Frontend Framework**    | React (TypeScript)        |
+| **Build Tool (Frontend)** | Vite                      |
+| **CSS**                   | TailwindCSS               |
+| **Backend Framework**     | Spring Boot (Java, Maven) |
+| **Database**              | PostgreSQL                |
+| **ORM / Data Access**     | Spring Data JPA           |
+| **Schema Migrations**     | Flyway                    |
+| **Containerization**      | Docker                    |
 
 ## Rationale
 

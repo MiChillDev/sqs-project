@@ -26,6 +26,7 @@ com.chucknorris/
 ├── users/         # User management, profile operations
 ├── health/        # Health check endpoints
 ├── common/        # Shared infrastructure: error handling, base classes
+├── config/        # Initial user / database configuration
 └── Application.java
 ```
 
