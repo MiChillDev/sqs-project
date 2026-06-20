@@ -15,6 +15,7 @@ export function UserMenu() {
   if (!token) {
     return (
       <Button
+        data-testid='user-menu-login'
         variant='ghost'
         size='icon'
         aria-label={t('header.login')}
@@ -28,7 +29,7 @@ export function UserMenu() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <Button variant='ghost' size='icon' aria-label='User menu'>
+        <Button data-testid='user-menu-dropdown' variant='ghost' size='icon' aria-label='User menu'>
           <User className='size-5' />
         </Button>
       </DropdownMenu.Trigger>
@@ -37,6 +38,7 @@ export function UserMenu() {
           {t('admin.title')}
         </DropdownMenuItem>
         <DropdownMenuItem
+          data-testid='user-menu-logout'
           onSelect={() => {
             authStorage.clear();
             navigate({ to: '/login', search: { redirect: undefined } });

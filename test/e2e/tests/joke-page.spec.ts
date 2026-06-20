@@ -1,29 +1,30 @@
-import { expect, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { JokePage } from '../pages/joke-page.ts';
 
-test.describe('/jokes page', () => {
-  test('renders the page heading', async ({ page }) => {
-    await page.goto('/jokes');
-
-    await expect(
-      page.getByRole('heading', { name: 'Get your Chuck Norris joke!' }),
-    ).toBeVisible();
+test.describe('Joke page', () => {
+  test('displays heading and fetch button', async ({ page }) => {
+    const jokePage = new JokePage(page);
+    await jokePage.navigate();
+    await jokePage.verifyHeading();
+    await expect(page.getByTestId('fetch-joke-button')).toBeVisible();
   });
 
-  test('shows placeholder text before fetching', async ({ page }) => {
-    await page.goto('/jokes');
-
-    await expect(page.getByText('Click the button to fetch a joke!')).toBeVisible();
+  test('fetches a random joke on button click', async ({ page }) => {
+    const jokePage = new JokePage(page);
+    await jokePage.navigate();
+    await jokePage.clickFetchJoke();
+    const jokeText = await jokePage.getJokeText();
+    expect(jokeText).toBeDefined();
+    expect(jokeText!.length).toBeGreaterThan(5);
   });
 
-  test('renders the fetch joke button', async ({ page }) => {
-    await page.goto('/jokes');
-
-    await expect(page.getByRole('button', { name: 'Fetch Joke' })).toBeVisible();
-  });
-
-  test('renders the site header on joke page', async ({ page }) => {
-    await page.goto('/jokes');
-
-    await expect(page.getByRole('link', { name: 'Chuck Norris Jokes' })).toBeVisible();
+  test('counter increments after fetching a joke', async ({ page }) => {
+    const jokePage = new JokePage(page);
+    await jokePage.navigate();
+    const initialCount = await jokePage.getJokeCount();
+    await jokePage.clickFetchJoke();
+    await jokePage.getJokeText(); // wait for joke to appear
+    const newCount = await jokePage.getJokeCount();
+    expect(newCount).toBeGreaterThan(initialCount);
   });
 });

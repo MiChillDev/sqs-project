@@ -12,6 +12,7 @@ The project consists of a frontend application, backend API, documentation, and 
 
 ```
 sqs-project/
+├── api/                # Shared OpenAPI specification and generated TypeScript types
 ├── frontend/           # React/Vite SPA application
 ├── backend/            # Spring Boot REST API
 ├── docs/               # Project-related documents

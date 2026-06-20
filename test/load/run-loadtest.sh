@@ -47,4 +47,7 @@ if [[ "${CI:-}" == "true" ]]; then
   echo "::add-mask::$K6_APP_SEED_ADMIN_PASSWORD"
 fi
 
-docker compose --profile loadtest run --rm k6 run "$TEST_SCRIPT"
+docker compose --profile loadtest run --rm \
+  -e K6_APP_SEED_ADMIN_USERNAME \
+  -e K6_APP_SEED_ADMIN_PASSWORD \
+  k6 run "$TEST_SCRIPT"
