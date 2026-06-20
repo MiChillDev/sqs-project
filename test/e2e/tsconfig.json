@@ -11,5 +11,5 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["tests", "playwright.config.ts"]
+  "include": ["seed/**/*.ts", "pages/**/*.ts", "tests/**/*.ts", "playwright.config.ts"]
 }

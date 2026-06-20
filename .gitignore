@@ -21,3 +21,4 @@ secrets/
 # Tooling / generated local files
 .playwright-mcp
 structurizr/
+build/

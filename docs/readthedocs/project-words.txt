@@ -14,3 +14,5 @@ JPQL
 viewports
 Whitebox
 structurizr
+Structurizr
+prebuild
