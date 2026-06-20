@@ -97,6 +97,11 @@
 		"save": "Save",
 		"saving": "Saving...",
 		"saved": "Saved successfully!",
+		"tabs": {
+			"source": "Fetch and save",
+			"create": "Create",
+			"label": "Admin sections"
+		},
 		"error": {
 			"networkError": "Unable to connect. Please check your internet connection.",
 			"serverError": "Something went wrong. Please try again."

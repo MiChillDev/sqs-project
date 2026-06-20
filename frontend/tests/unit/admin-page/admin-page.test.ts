@@ -7,6 +7,7 @@ import {
   renderComponent,
   screen,
   setupAdminTests,
+  userEvent,
 } from './shared';
 
 describe('AdminPage', () => {
@@ -25,9 +26,20 @@ describe('AdminPage', () => {
     expect(innerDiv).toHaveClass('p-8');
   });
 
-  it('renders section headings for Create Joke and Fetch Source Joke', () => {
+  it('renders tab triggers and shows active tab content', async () => {
+    const user = userEvent.setup();
     renderComponent();
+
+    expect(screen.getByRole('tab', { name: 'Fetch and save' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Create' })).toBeInTheDocument();
+
+    // Source tab is active by default — Fetch Source Joke section is visible
+    expect(screen.getAllByText('Fetch Source Joke').length).toBeGreaterThanOrEqual(1);
+
+    // Switch to Create tab
+    await user.click(screen.getByRole('tab', { name: 'Create' }));
+
+    // Create Joke section is now visible
     expect(screen.getAllByText('Create Joke').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getAllByText('Fetch Source Joke').length).toBeGreaterThanOrEqual(2);
   });
 });

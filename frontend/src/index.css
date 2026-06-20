@@ -127,3 +127,7 @@ body {
 :where(.dark, .dark *) [data-sonner-toast][data-type="warning"] {
   @apply bg-amber-950 border-amber-800 text-amber-100;
 }
+
+.tab-list:has(> [data-state="active"]:nth-child(2)) .tab-indicator {
+  transform: translateX(100%);
+}
