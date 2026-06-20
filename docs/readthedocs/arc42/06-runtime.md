@@ -5,9 +5,10 @@ This chapter describes key runtime scenarios for the system.
 ## Sign-In Flow
 
 The sign-in sequence is documented in the following sequence diagram. It shows alternative sequences for:
-* entering a non-existing user name
-* entering the wrong password and
-* entering valid credentials
+
+- entering a non-existing user name
+- entering the wrong password and
+- entering valid credentials
 
 ```mermaid
 sequenceDiagram
@@ -48,8 +49,9 @@ The user or administrator authenticates by submitting credentials. The system va
 ## Fetch Random Joke (Public)
 
 The sequence for fetching a random joke from the database is documented in the follwing sequence diagram. It shows two different scenarios:
-* no joke found because database is empty (which is not an error technically, hence status code 204 instead of 404)
-* return valid joke
+
+- no joke found because database is empty (which is not an error technically, hence status code 204 instead of 404)
+- return valid joke
 
 ```mermaid
 sequenceDiagram
@@ -81,9 +83,10 @@ Users fetch a random joke from the local database. No authentication is required
 ## Import Joke from External API (Admin)
 
 The sequence for fetching a joke from the public API ("source joke") is documented in following diagram. It shows different scenarios:
-* invalid or missing token
-* API failure and
-* success
+
+- invalid or missing token
+- API failure and
+- success
 
 ```mermaid
 sequenceDiagram
@@ -124,8 +127,9 @@ Administrators import a joke from the external Chuck Norris API. The request inc
 ## Create Joke (Admin)
 
 The sequence for creatig a new joke is documented in the following sequence diagram. The two scenarios are:
-* invalid or missing token and
-* success
+
+- invalid or missing token and
+- success
 
 ```mermaid
 sequenceDiagram

@@ -1,6 +1,6 @@
 # 5. Building Block View
 
-This is an interactive view of the C4 diagram created in structurizr:
+This is an interactive view of the C4 diagram created in Structurizr:
 
 <iframe
   id="structurizr-c1"
@@ -17,6 +17,15 @@ This is an interactive view of the C4 diagram created in structurizr:
 ## Level 1: System Context
 
 The system context diagram is available as [C4 Level 1 — System Context](mermaid/c1-context.mmd).
+
+The external actors consist of:
+
+| Actor            | Type            | Description                                                                         |
+| ---------------- | --------------- | ----------------------------------------------------------------------------------- |
+| End User         | Human           | Browses Chuck Norris jokes without authentication                                   |
+| Administrator    | Human           | Authenticated user who imports jokes from the external API and creates new jokes    |
+| Chuck Norris API | External System | Public REST API at `https://api.chucknorris.io/jokes/random` providing random jokes |
+| PostgreSQL       | Infrastructure  | Relational database for persisting jokes, users, and authentication sessions  
 
 ## Level 2: Containers
 
