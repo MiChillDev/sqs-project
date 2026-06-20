@@ -382,11 +382,6 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         userRepositoryImpl -> springUserRepository "Delegates persistence operations"
         springUserRepository -> database "Reads UserEntity" "JPA"
 
-        // C3 - Backend Health
-        healthController -> errorResultStatus "Does not use; health endpoint returns a static UP response" {
-            tags "Note"
-        }
-
         // C3 - Common Infrastructure
         baseController -> authService "Checks Authorization header token for authenticated actions"
         baseController -> either "Handles success/error results"
@@ -394,7 +389,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         apiRepository -> either "Returns success/error results"
         apiRepository -> errorResultStatus "Creates API error results"
 
-        deploymentEnvironment "Docker Compose" {
+        dockerCompose = deploymentEnvironment "Docker Compose" {
             deploymentNode "Docker Host" "Runs the local Docker Compose stack." "Docker Engine / Docker Compose" {
                 deploymentNode "sqs-network" "Docker bridge network used by the application services." "Docker bridge network" {
                     deploymentNode "frontend service" "Production frontend service. Docker Compose service: frontend. Active with profile prod." "Docker container" {
