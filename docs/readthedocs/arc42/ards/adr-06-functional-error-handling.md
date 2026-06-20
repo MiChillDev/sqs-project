@@ -1,5 +1,7 @@
 # ADR-006: Functional Error Handling
 
+[Back to ADR overview](../09-decisions.md)
+
 **Status:** Accepted
 
 ## Context

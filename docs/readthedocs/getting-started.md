@@ -45,11 +45,12 @@ chmod +x start-application.sh
 ## Project Structure
 ```
 sqs-project/
+├── api/                    # Shared OpenAPI specification and generated TypeScript types
 ├── backend/                # Spring Boot REST API
 ├── frontend/               # React/Vite SPA application
 ├── docs/                   
     ├── presentation/       # Final project presentation
-    ├── readthedocs/        # Architecture documentation (arc42)
+    ├── readthedocs/        # Architecture documentation (ADRs, arc42, C4)
     └── retro/              # Team retrospective
 ├── test/                   # Load and E2E test suites
 ├── docker-compose.yml
