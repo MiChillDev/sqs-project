@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "spell-check": "cspell --config cspell.json \"**/*.md\"",
+    "normalize-tables": "node --experimental-transform-types scripts/normalize-tables.mts"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "cspell": "^8"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": []
+  }
+}

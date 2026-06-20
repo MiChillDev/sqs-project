@@ -17,16 +17,6 @@ build:
       # Create UML diagram for C4 code view
       - curl -L -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
       - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code.puml
-
-      # Create Mermaid diagrams
-      - npm install -g @mermaid-js/mermaid-cli
-      - mkdir -p docs/readthedocs/generated/mermaid
-      - |
-        for file in docs/readthedocs/arc42/diagrams/mermaid/*.mmd; do
-          name=$(basename "$file" .mmd)
-          mmdc -p docs/readthedocs/puppeteer-config.json -i "$file" -o "docs/readthedocs/generated/mermaid/${name}.svg"
-        done
-
       # Create C4 diagrams
       - curl -L -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip
       - unzip -q /tmp/structurizr-cli.zip -d /tmp/structurizr-cli
