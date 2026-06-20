@@ -14,7 +14,7 @@ The repository layer uses interface/implementation separation to isolate infrast
 
 ### 2. Functional Error Handling via Either Monad
 
-<!--TODO: link corresponding adr file-->
+[ADR-006](ards/adr-06-functional-error-handling.md)
 Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface:
 
 - `Right<L, R>` = success
@@ -24,7 +24,7 @@ Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface
 
 ### 3. OpenAPI-First Type Contract
 
-<!--TODO: link coresponding adr-->
+[ADR-008](ards/adr-08-shared-api-contract.md)
 The API contract is defined in OpenAPI 3.1.0 YAML. 
 The /api package auto-generates TypeScript types from this spec using `openapi-typescript`. 
 This provides:
