@@ -181,27 +181,8 @@ write_secret() {
   chmod 600 "$file" 2>/dev/null || true
 }
 
-random_chars() {
-  local chars="$1"
-  local length="$2"
-
-  LC_ALL=C tr -dc "$chars" < /dev/urandom 2>/dev/null | head -c "$length"
-}
-
 generate_password() {
-  local lower
-  local upper
-  local digit
-  local special
-  local rest
-
-  lower="$(random_chars 'a-z' 6)"
-  upper="$(random_chars 'A-Z' 6)"
-  digit="$(random_chars '0-9' 6)"
-  special="$(random_chars '@_%+=:,.!?-' 4)"
-  rest="$(random_chars 'A-Za-z0-9@_%+=:,.!?-' 10)"
-
-  printf "%s%s%s%s%s" "$lower" "$upper" "$digit" "$special" "$rest"
+  LC_ALL=C tr -dc 'A-Za-z0-9@_%+=:,.!?-' < /dev/urandom 2>/dev/null | head -c 32
 }
 
 validate_username() {

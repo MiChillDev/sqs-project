@@ -16,3 +16,4 @@ Whitebox
 structurizr
 Structurizr
 prebuild
+configtree
