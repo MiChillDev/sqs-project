@@ -1,4 +1,4 @@
-# ADR-001: Layered Architecture with Feature-Based Packages
+# ADR-01: Layered Architecture with Feature-Based Packages
 
 [Back to ADR overview](../09-decisions.md)
 

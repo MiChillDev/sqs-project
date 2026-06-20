@@ -1,4 +1,4 @@
-# ADR-009: Docker Compose Secrets Over .env for Credentials
+# ADR-09: Docker Compose Secrets Over .env for Credentials
 
 **Status:** Accepted
 

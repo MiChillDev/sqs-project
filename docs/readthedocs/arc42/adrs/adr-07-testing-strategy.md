@@ -1,4 +1,4 @@
-# ADR-007: Multi-Layer Testing Strategy
+# ADR-07: Multi-Layer Testing Strategy
 
 [Back to ADR overview](../09-decisions.md)
 

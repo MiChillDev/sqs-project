@@ -1,4 +1,4 @@
-# ADR-003: Token-Based Authentication
+# ADR-03: Token-Based Authentication
 
 [Back to ADR overview](../09-decisions.md)
 

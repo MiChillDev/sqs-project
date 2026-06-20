@@ -1,4 +1,4 @@
-# ADR-005: Monorepo Organization
+# ADR-05: Monorepo Organization
 
 [Back to ADR overview](../09-decisions.md)
 
