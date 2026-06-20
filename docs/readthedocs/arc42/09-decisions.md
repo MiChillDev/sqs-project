@@ -2,7 +2,7 @@
 
 ## Architecture Decision Records
 
-Open the linked pages for a more detailed descriptions. These contain the full decision records with context, rationale, alternatives, and consequences.
+Open the linked pages for more detailed descriptions. These contain the full decision records with context, rationale, alternatives, and consequences.
 
 | ADR                                                 | Title                                            | Status   |
 | --------------------------------------------------- | ------------------------------------------------ |----------|

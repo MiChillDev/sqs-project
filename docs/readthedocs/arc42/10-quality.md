@@ -13,13 +13,13 @@
 - **PBKDF2** password hashing with appropriate iteration count and key length
 - **Constant-time comparison** to prevent timing attacks
 - **Server-side opaque tokens** (not stateless JWTs), making token revocation straightforward
-- **No username enumeration** — identical error messages whether the user exists or the password is wrong
+- **No username enumeration**: identical error messages whether the user exists or the password is wrong
 - **No information leakage** in authentication error responses
 
 ### 3. Maintainability
 
 - **Feature-based package structure** keeps related code together and reduces cognitive load
-- **Port/adapter separation in the repository layer** enables isolated unit testing of service logic by mocking repository interfaces
+- **Interface/implementation separation in the repository layer** enables isolated unit testing of service logic by mocking repository interfaces
 - **Biome** linting with strict rules (e.g., `noConsole=error`, consistent formatting)
 - **SonarQube** for continuous static analysis and code quality tracking
 
