@@ -14,7 +14,7 @@ build:
     - openjdk-17-jre-headless
   jobs:
     pre_build:
-     - curl -fsSL -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
+      - curl -fsSL -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
       - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code.puml
       - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/database-schema.puml
       - ls -la docs/readthedocs/arc42/diagrams
