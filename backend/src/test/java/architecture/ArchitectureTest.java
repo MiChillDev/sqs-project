@@ -23,16 +23,36 @@ class ArchitectureTest {
                     .should().resideInAPackage("..service..");
 
     @ArchTest
+    static final ArchRule servicePackageContainsOnlyServices =
+            classes()
+                    .that().resideInAPackage("..service..")
+                    .should().haveSimpleNameEndingWith("Service");
+
+    @ArchTest
     static final ArchRule repositoriesShouldBeInRepositoryPackage =
             classes()
                     .that().haveSimpleNameEndingWith("Repository")
+                    .or().haveSimpleNameEndingWith("RepositoryImpl")
                     .should().resideInAPackage("..repository..");
+
+    @ArchTest
+    static final ArchRule repositoryPackageContainsOnlyRepositories =
+            classes()
+                    .that().resideInAPackage("..repository..")
+                    .should().haveSimpleNameEndingWith("Repository")
+                    .orShould().haveSimpleNameEndingWith("RepositoryImpl");
 
     @ArchTest
     static final ArchRule controllersShouldBeInControllerPackage =
             classes()
                     .that().haveSimpleNameEndingWith("Controller")
                     .should().resideInAPackage("..controller..");
+
+    @ArchTest
+    static final ArchRule controllerPackageContainsOnlyControllers =
+            classes()
+                    .that().resideInAPackage("..controller..")
+                    .should().haveSimpleNameEndingWith("Controller");
 
     @ArchTest
     static final ArchRule dtoNamingConvention =
