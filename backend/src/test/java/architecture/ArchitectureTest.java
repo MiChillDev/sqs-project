@@ -32,13 +32,15 @@ class ArchitectureTest {
     static final ArchRule repositoriesShouldBeInRepositoryPackage =
             classes()
                     .that().haveSimpleNameEndingWith("Repository")
+                    .or().haveSimpleNameEndingWith("RepositoryImpl")
                     .should().resideInAPackage("..repository..");
 
     @ArchTest
     static final ArchRule repositoryPackageContainsOnlyRepositories =
             classes()
                     .that().resideInAPackage("..repository..")
-                    .should().haveSimpleNameEndingWith("Repository");
+                    .should().haveSimpleNameEndingWith("Repository")
+                    .orShould().haveSimpleNameEndingWith("RepositoryImpl");
 
     @ArchTest
     static final ArchRule controllersShouldBeInControllerPackage =
