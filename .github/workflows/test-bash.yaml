@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Install Bats
-        run: npm install -g bats
+          run: sudo npm install -g bats
 
       - name: Run Bats tests
         run: bats test/bash/
