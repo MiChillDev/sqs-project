@@ -1,10 +1,9 @@
-package com.chucknorris.jokes.repository;
+package com.chucknorris.jokes.repository.api;
 
 import com.chucknorris.jokes.models.api.ChuckNorrisResponse;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
-import com.chucknorris.jokes.repository.api.ChuckNorrisApiJokeRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ChuckNorrisJokeRepositoryTest {
+class ChuckNorrisApiJokeRepositoryImplTest {
 
     private ChuckNorrisApiJokeRepositoryImpl repository;
 

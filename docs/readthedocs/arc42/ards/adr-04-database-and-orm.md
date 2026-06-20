@@ -1,10 +1,12 @@
 # ADR-004: PostgreSQL with JPA and Flyway
 
+[Back to ADR overview](../09-decisions.md)
+
 **Status:** Accepted
 
 ## Context
 
-The application requires persistent storage for users, jokes, and authentication sessions. The data model includes entities with relationships (users own jokes, sessions reference users), requires schema version control, and must support both simple CRUD operations and queries requiring database-specific features (e.g., random row selection).
+The application requires persistent storage for users, jokes, and authentication sessions. The data model includes entities with relationships (sessions reference users), requires schema version control, and must support both simple CRUD operations and queries requiring database-specific features (e.g., random row selection).
 
 ## Decision
 

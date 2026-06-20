@@ -8,6 +8,15 @@ export class AdminPage extends BasePage {
     super(page);
   }
 
+  async clickCreateTab(): Promise<void> {
+    await this.page.getByRole('tab', { name: 'Create' }).click();
+  }
+
+  async getActiveTabLabel(): Promise<string> {
+    const tab = this.page.getByRole('tab', { selected: true });
+    return (await tab.textContent()) ?? '';
+  }
+
   async createJoke(content: string, externalId?: string): Promise<void> {
     await this.page.getByTestId('joke-content-textarea').fill(content);
     if (externalId) {

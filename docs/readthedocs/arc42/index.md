@@ -23,17 +23,3 @@ This documentation follows the [arc42](https://arc42.org/) template (Version 8.2
 | [10](10-quality.md)          | Quality Requirements     |
 | [11](11-risks.md)            | Risks and Technical Debt |
 | [12](12-glossary.md)         | Glossary                 |
-
-## Architecture Decision Records
-
-| ADR                                                 | Title                                            |
-| --------------------------------------------------- | ------------------------------------------------ |
-| [ADR-001](ards/adr-01-feature-packages.md)          | Layered Architecture with Feature-Based Packages |
-| [ADR-002](ards/adr-02-technology-stack.md)          | Technology Stack Selection                       |
-| [ADR-003](ards/adr-03-authentication.md)            | Token-Based Authentication                       |
-| [ADR-004](ards/adr-04-database-and-orm.md)          | PostgreSQL with JPA and Flyway                   |
-| [ADR-005](ards/adr-05-monorepo-organization.md)     | Monorepo Organization                            |
-| [ADR-006](ards/adr-06-functional-error-handling.md) | Functional Error Handling via Either Monad       |
-| [ADR-007](ards/adr-07-testing-strategy.md)          | Multi-Layer Testing Strategy                     |
-
-

@@ -1,5 +1,7 @@
 # ADR-001: Layered Architecture with Feature-Based Packages
 
+[Back to ADR overview](../09-decisions.md)
+
 **Status:** Accepted
 
 ## Context
@@ -24,6 +26,7 @@ com.chucknorris/
 ├── users/         # User management, profile operations
 ├── health/        # Health check endpoints
 ├── common/        # Shared infrastructure: error handling, base classes
+├── config/        # Initial user / database configuration
 └── Application.java
 ```
 

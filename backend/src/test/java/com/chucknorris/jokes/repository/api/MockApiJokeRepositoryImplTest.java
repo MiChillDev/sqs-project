@@ -1,18 +1,17 @@
-package com.chucknorris.jokes.repository;
+package com.chucknorris.jokes.repository.api;
 
 import com.chucknorris.jokes.models.dto.SourceJokeDto;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
-import com.chucknorris.jokes.repository.api.MockApiJokeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MockApiJokeRepositoryTest {
+class MockApiJokeRepositoryImplTest {
 
-    private final MockApiJokeRepository repository = new MockApiJokeRepository();
+    private final MockApiJokeRepositoryImpl repository = new MockApiJokeRepositoryImpl();
 
     @Test
     @DisplayName("implements ApiJokeRepository")

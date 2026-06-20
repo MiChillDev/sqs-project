@@ -1,5 +1,7 @@
 # ADR-003: Token-Based Authentication
 
+[Back to ADR overview](../09-decisions.md)
+
 **Status:** Accepted
 
 ## Context
@@ -31,7 +33,7 @@ Security hardening measures include: constant-time comparison for password and t
 - **Lightweight for small scope**: The entire authentication module is compact and auditable. No Spring Security filter chains, configuration classes, or `UserDetailsService` implementations needed.
 - **No framework coupling**: Authentication logic is independent of Spring Security's lifecycle. Migrating frameworks would not require rewriting auth.
 - **Server-side token invalidation**: Since tokens are stored in the database, invalidating a session is a single row deletion. JWT-based systems require blocklists or short expiry windows to achieve the same effect.
-- **Educational value**: Building authentication from first principles teaches the team about hashing, session management, constant-time comparison, and bearer token patterns — aligning with the university project's learning objectives.
+- **Educational value**: Building authentication from first principles teaches the team about hashing, session management, constant-time comparison, and bearer token patterns.
 
 ## Alternatives Considered
 
