@@ -1,4 +1,6 @@
-# ADR-09: Docker Compose Secrets Over .env for Credentials
+# ADR-10: Docker Compose Secrets Over .env for Credentials
+
+[Back to ADR overview](../09-decisions.md)
 
 **Status:** Accepted
 
@@ -37,12 +39,21 @@ POSTGRES_PORT=5432
 VITE_API_BASE_URL=
 ```
 
+Load test use these secrets:
+
+| Docker secret | Source | Target in k6 container | Consumer |
+| ------------- | ------ | ---------------------- | -------- |
+| `k6_app_seed_admin_username` | `K6_APP_SEED_ADMIN_USERNAME` host environment variable | `/run/secrets/app.seed.admin.username` | k6 |
+| `k6_app_seed_admin_password` | `K6_APP_SEED_ADMIN_PASSWORD` host environment variable | `/run/secrets/app.seed.admin.password` | k6 |
+
+The k6 secrets intentionally use environment-backed Compose secrets instead of file-backed secrets. This allows Docker Compose to set `uid`, `gid`, and `mode` for the non-root k6 user. The values are exported only by `run-loadtest.sh` immediately before the k6 container is started and are not passed as normal container environment variables.
+
 ## Rationale
 
-- **No secrets in Docker image layers**: `.env` values passed via `environment:` or `args:` in docker-compose.yml can end up in image metadata. Docker Compose secrets are injected at container runtime via tmpfs and never touch image layers.
+- **No secrets in Docker image layers**: Build arguments (passed via `args`) may leak into image metadata or build history, while runtime environment variables (passed via `environment`) are easier to expose through container inspection, process environments, debug output, or logs. Secrets avoid both patterns for credentials. Docker Compose secrets are mounted into containers at runtime as files under `/run/secrets/...`. They are not copied into Docker image layers.
 - **Secret isolation**: Each secret is its own file (`chmod 600`). Compromising one file (e.g., via log output or directory listing) does not expose all others.
 - **No quoting/escaping issues**: `.env` files require careful quoting of values containing special characters (`$`, `#`, spaces). Raw files bypass this entirely.
-- **Docker Compose `config` safety**: `docker compose config` prints resolved environment variables but hides secret values — preventing accidental exposure in issue reports or CI logs.
+- **Docker Compose `config` safety**: For file-backed secrets, `docker compose config` shows the secret definition and file path, not the secret value. In contrast, normal environment variables may be rendered as resolved values.
 - **Config tree integration**: Spring Boot's config tree import (`optional:configtree:/run/secrets/`) reads files as property values natively, avoiding manual `Environment` parsing.
 - **Principle of least exposure**: `.env.example` is committed and serves as documentation. `.env` (copied from it) contains only non-sensitive defaults. Secrets never coexist with documented configuration.
 - **Load test flexibility**: Docker Compose secrets support both `file` and `environment` sources, allowing the k6 container to receive credentials from the host environment (`K6_APP_SEED_ADMIN_*`) while the backend receives them from files.
