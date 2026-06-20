@@ -41,18 +41,12 @@ jobs:
         working-directory: test/e2e
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Create secrets for application stack
-        run: |
-          mkdir -p .secrets
-          echo "admin" > .secrets/app_seed_admin_username
-          openssl rand -base64 24 | tr -d '\n' > .secrets/app_seed_admin_password
-          cat .secrets/app_seed_admin_password > .secrets/postgres_password
-          chmod 600 .secrets/*
-          echo "SEED_ADMIN_USERNAME=admin" >> "$GITHUB_ENV"
-          echo "SEED_ADMIN_PASSWORD=$(cat .secrets/app_seed_admin_password)" >> "$GITHUB_ENV"
-
       - name: Start application stack
-        run: docker compose --profile prod up -d --build --wait postgres app frontend
+        run: |
+          chmod +x start-application.sh stop-application.sh
+          SPRING_PROFILES_ACTIVE=mock-external-api ./start-application.sh --prod --yes
+          echo "SEED_ADMIN_USERNAME=$(cat .secrets/app_seed_admin_username)" >> "$GITHUB_ENV"
+          echo "SEED_ADMIN_PASSWORD=$(cat .secrets/app_seed_admin_password)" >> "$GITHUB_ENV"
         env:
           SPRING_PROFILES_ACTIVE: mock-external-api
 

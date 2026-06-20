@@ -440,12 +440,6 @@ ensure_secrets() {
   validate_existing_secret_or_exit "$ADMIN_USERNAME_SECRET" username
   validate_existing_secret_or_exit "$ADMIN_PASSWORD_SECRET" password
 
-  # H8: Credentials only live in .secrets/, not duplicated in .env
-  # if [[ -s "$ENV_FILE" && "$(tail -c 1 "$ENV_FILE")" != "" ]]; then
-  #   echo "" >> "$ENV_FILE"
-  # fi
-  # echo "SEED_ADMIN_USERNAME=$(read_secret "$ADMIN_USERNAME_SECRET")" >> "$ENV_FILE"
-  # echo "SEED_ADMIN_PASSWORD=$(read_secret "$ADMIN_PASSWORD_SECRET")" >> "$ENV_FILE"
 }
 
 show_credentials() {
