@@ -39,10 +39,10 @@ jobs:
           cache: maven
 
       - name: Make scripts executable
-        run: chmod +x start-application.sh stop-application.sh test/integration/test-secrets-flow.sh
+        run: chmod +x start-application.sh stop-application.sh test/integration/test-auth-security-flow.sh
 
       - name: Run integration tests
-        run: ./test/integration/test-secrets-flow.sh
+        run: ./test/integration/test-auth-security-flow.sh
 
       - name: Show Docker Compose logs on failure
         if: failure()
