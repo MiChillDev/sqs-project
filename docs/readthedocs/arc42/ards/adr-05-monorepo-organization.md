@@ -42,5 +42,5 @@ Each directory contains its own build configuration, Dockerfile, and dependency 
 
 - Single CI pipeline triggers tests for all components on every push — the full test suite runs even when only one component changed. This can be mitigated with path-based trigger filtering.
 - Potential for merge conflicts in shared areas (Docker Compose configuration, environment files). This is manageable at the team size of three.
-- Monorepo scales well for small-to-medium teams. Neither the team nor the codebase grow significatly during this university project. Otherwise, splitting into separate repositories for frontend and backend may become warranted.
+- Monorepo scales well for small-to-medium teams. Neither the team nor the codebase grow significantly during this university project. Otherwise, splitting into separate repositories for frontend and backend may become warranted.
 - Shared dependency on Docker Compose at the root ties the development environment together. Changes to the Compose file must be coordinated between developers.
