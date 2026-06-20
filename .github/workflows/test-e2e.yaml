@@ -44,7 +44,7 @@ jobs:
       - name: Start application stack
         run: |
           chmod +x start-application.sh stop-application.sh
-          SPRING_PROFILES_ACTIVE=mock-external-api ./start-application.sh --prod --yes
+          ./start-application.sh --prod --yes --e2e
 
       - name: Wait for frontend
         run: |

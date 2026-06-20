@@ -11,6 +11,7 @@ RESET=false
 SHOW_CREDENTIALS=false
 ASSUME_YES=false
 VERBOSE=false
+E2E=false
 
 SECRETS_DIR=".secrets"
 ENV_FILE=".env"
@@ -46,8 +47,10 @@ Options:
   --show-credentials    Print the local seed admin credentials and exit.
                         Use with care. Do not run this in CI logs.
 
+  --e2e                 Start app with mock external API for E2E testing.
+
   --verbose             Show Docker pull, build, and startup output.
-                        By default, Docker output is hidden unless an error occurs.
+                         By default, Docker output is hidden unless an error occurs.
 
   -h, --help            Show this help message.
 
@@ -100,6 +103,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --verbose)
       VERBOSE=true
+      shift
+      ;;
+    --e2e)
+      E2E=true
       shift
       ;;
     -h|--help)
@@ -546,6 +553,10 @@ fi
 
 ensure_env_file
 ensure_secrets
+
+if [[ "$E2E" == "true" ]]; then
+  export SPRING_PROFILES_ACTIVE="mock-external-api"
+fi
 stop_existing_containers
 
 echo "Pulling base images..."
