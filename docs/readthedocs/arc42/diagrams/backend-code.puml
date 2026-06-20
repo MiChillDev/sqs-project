@@ -1,0 +1,128 @@
+@startuml
+title C4 Level 4 - Backend Code View
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "jokes" {
+  class JokeController <<RestController>>
+  class JokeService <<Service>>
+
+  interface JokeRepository <<Interface>>
+  class JokeRepositoryImpl <<Repository Adapter>>
+  interface SpringJokeRepository <<JpaRepository>>
+
+  class ChuckNorrisApiJokeRepositoryImpl <<External API Client>>
+
+  class JokeEntity <<Entity>>
+  class CreateJokeDto <<DTO>>
+  class JokeDto <<DTO>>
+  class SourceJokeDto <<DTO>>
+
+  JokeController --|> BaseController
+  JokeController --> JokeService : delegates requests
+  JokeController ..> CreateJokeDto : receives
+  JokeController ..> JokeDto : returns
+
+  JokeService --> JokeRepository : uses interface
+  JokeService --> ChuckNorrisApiJokeRepositoryImpl : fetches source jokes
+  JokeService ..> SourceJokeDto : maps API response
+  JokeService ..> JokeDto : maps DB entity
+
+  JokeRepository <|.. JokeRepositoryImpl : implements
+  JokeRepositoryImpl --> SpringJokeRepository : delegates to Spring Data
+  SpringJokeRepository --> JokeEntity : manages
+
+  JokeEntity ..> JokeDto : mapped to
+}
+
+package "auth" {
+  class AuthController <<RestController>>
+  class AuthService <<Service>>
+
+  interface AuthRepository <<Interface>>
+  class AuthRepositoryImpl <<Repository Adapter>>
+  interface SpringAuthSessionRepository <<JpaRepository>>
+
+  class LoginRequestDto <<DTO>>
+  class TokenResponseDto <<DTO>>
+  class AuthSessionEntity <<Entity>>
+
+  AuthController --|> BaseController
+  AuthController --> AuthService : login
+  AuthController ..> LoginRequestDto : receives
+  AuthController ..> TokenResponseDto : returns
+
+  AuthService --> AuthRepository : reads/writes sessions
+  AuthService --> UserRepository : looks up users
+  AuthService --> PasswordHasher : verifies password hash
+  AuthService ..> TokenResponseDto : creates
+
+  AuthRepository <|.. AuthRepositoryImpl : implements
+  AuthRepositoryImpl --> SpringAuthSessionRepository : delegates to Spring Data
+  SpringAuthSessionRepository --> AuthSessionEntity : manages
+
+  AuthSessionEntity --> UserEntity : belongs to
+}
+
+package "users" {
+  class UserService <<Service>>
+
+  interface UserRepository <<Interface>>
+  class UserRepositoryImpl <<Repository Adapter>>
+  interface SpringUserRepository <<JpaRepository>>
+
+  class UserEntity <<Entity>>
+
+  UserService --> UserRepository : looks up users
+  UserRepository <|.. UserRepositoryImpl : implements
+  UserRepositoryImpl --> SpringUserRepository : delegates to Spring Data
+  SpringUserRepository --> UserEntity : manages
+}
+
+package "health" {
+  class HealthController <<RestController>> {
+    +GET /api/v1/health
+  }
+}
+
+package "common.infrastructure" {
+  class BaseController <<Superclass>> {
+    +executeAuthenticated()
+    +executeUnauthenticated()
+    -handleEither()
+  }
+
+  class Either<L,R> <<Monad / Result Type>>
+  class ErrorResultStatus <<Error Result>>
+  class PasswordHasher <<PBKDF2>>
+  abstract class ApiRepository <<Abstract Class>> {
+    RestTemplate
+  }
+
+  BaseController --> AuthService : validates Authorization token
+  BaseController --> Either : handles
+  BaseController --> ErrorResultStatus : maps errors
+
+  ApiRepository --> Either : returns
+  ApiRepository --> ErrorResultStatus : creates errors
+}
+
+class "PostgreSQL 16" as PostgreSQL <<Database>>
+class "Chuck Norris API\napi.chucknorris.io" as ChuckApi <<External API>>
+
+SpringJokeRepository --> PostgreSQL : jokes
+SpringAuthSessionRepository --> PostgreSQL : auth_sessions
+SpringUserRepository --> PostgreSQL : users
+
+ChuckNorrisApiJokeRepositoryImpl --|> ApiRepository
+ChuckNorrisApiJokeRepositoryImpl --> ChuckApi : HTTPS GET /jokes/random
+ChuckNorrisApiJokeRepositoryImpl ..> SourceJokeDto : receives
+
+note right of HealthController
+  The current HealthController returns a static
+  status/message.
+end note
+
+@enduml
