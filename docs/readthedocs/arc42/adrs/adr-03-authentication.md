@@ -1,4 +1,4 @@
-# ADR-003: Token-Based Authentication
+# ADR-03: Token-Based Authentication
 
 [Back to ADR overview](../09-decisions.md)
 
@@ -7,6 +7,8 @@
 ## Context
 
 The application requires user authentication for protected operations such as joke creation and external API access. There are two access levels: public joke browsing (unauthenticated) and administrative operations (authenticated). Two roles exist: Administrator (can import jokes from external API and create jokes) and Regular User (read-only access to jokes from the local database).
+
+The application does not provide public user registration because the current scope only requires one administrative account for importing and creating jokes. Public joke browsing does not require authentication, so additional regular user accounts would add user-management complexity without supporting an implemented use case.
 
 Three options were evaluated:
 

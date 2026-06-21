@@ -30,11 +30,11 @@ The system provides the following capabilities:
 
 ### Out of Scope
 
-- User registration via separate endpoint (admin is created during first run of application)
+- User registration via separate endpoint (admin is created during first run of application); The system only needs an administrator account to populate the local joke database; reading jokes from the local database is public.
 - Fine-grained role-based access control (only Administrator and Regular User roles exist)
 - Multi-tenancy
 - Real-time notifications
-- Translation of jokes
+- Translation of joke content: The frontend UI *does* support English and German, but joke texts are stored as plain text in the database and are displayed as provided or entered.
 - (Paginated) List endpoint to display all jokes from the database for admin(s) 
 - File uploads or media storage
 - Email delivery (no password reset or registration invite links)

@@ -15,6 +15,12 @@
 - **Server-side opaque tokens** (not stateless JWTs), making token revocation straightforward
 - **No username enumeration**: identical error messages whether the user exists or the password is wrong
 - **No information leakage** in authentication error responses
+- **No committed credentials**: local and CI credentials are generated dynamically and excluded from version control
+- **Secrets separated from configuration**: `.env` contains only non-secret values; credentials are stored or injected through Docker Compose secrets
+- **No hardcoded seed user**: the initial admin user is created from generated or user-provided secrets, not from static migration data
+- **No credential logging**: scripts and application startup logic must not print passwords or tokens
+- **Least-privilege load testing**: k6 runs as a non-root container user and receives credentials as mounted secret files, not as normal container environment variables
+- **Defense-in-depth credential validation**: seed credential rules are enforced both by the startup script and by backend startup validation
 
 ### 3. Maintainability
 
@@ -47,10 +53,14 @@
 | QS-3 | Unauthenticated user attempts to access an authenticated endpoint | 401 Unauthorized response                           |
 | QS-4 | User toggles language between English and German                  | All UI text updates immediately without page reload |
 | QS-5 | User toggles theme between light and dark                         | Theme persists across page reloads via localStorage |
+| QS-6 | Developer starts the project from a fresh clone                   | Required local credentials are generated/prompted for, stored outside version control |
+| QS-7 | CI executes load tests | k6 authenticates with dynamically generated credentials without printing them in logs |
 
 ### Change Scenarios
 
-| ID   | Scenario                                      | Expected Outcome                                          |
-| ---- | --------------------------------------------- | --------------------------------------------------------- |
-| CS-1 | Developer extends API with a new endpoint     | No breaking changes to existing endpoints                 |
-| CS-2 | External Chuck Norris API becomes unavailable | System degrades gracefully; local jokes remain accessible |
+| ID   | Scenario                                                | Expected Outcome                                          |
+| ---- | ------------------------------------------------------- | --------------------------------------------------------- |
+| CS-1 | Developer extends API with a new endpoint               | No breaking changes to existing endpoints                 |
+| CS-2 | External Chuck Norris API becomes unavailable           | System degrades gracefully; local jokes remain accessible |
+| CS-3 | Seed admin credentials are reset locally                | Backend updates local seed admin user without changing database migration scripts |
+| CS-4 | Developer adds another external joke or translation API | Existing logic remains unchanged; only a new API adapter/repository implementation and mapping logic are required |

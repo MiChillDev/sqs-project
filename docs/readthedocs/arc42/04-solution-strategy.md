@@ -10,11 +10,11 @@ The repository layer uses interface/implementation separation to isolate infrast
 
 - **Repository interfaces**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`) define repository contracts
 - **Implementations**: Infrastructure classes in `spring/` (Spring Data JPA) and `api/` (external API calls) implement the repository interfaces
-- **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic
+- **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic. This also allows adding further external joke or translation APIs by introducing additional repository implementations without changing controller logic.
 
 ### 2. Functional Error Handling via Either Monad
 
-[ADR-006](ards/adr-06-functional-error-handling.md)
+[ADR-06](adrs/adr-06-functional-error-handling.md)
 Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface:
 
 - `Right<L, R>` = success
@@ -24,7 +24,7 @@ Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface
 
 ### 3. OpenAPI-First Type Contract
 
-[ADR-008](ards/adr-08-shared-api-contract.md)
+[ADR-08](adrs/adr-08-shared-api-contract.md)
 The API contract is defined in OpenAPI 3.1.0 YAML. 
 The /api package auto-generates TypeScript types from this spec using `openapi-typescript`. 
 This provides:
@@ -42,7 +42,15 @@ Authentication is implemented without Spring Security, using a custom mechanism:
 - Protected endpoints validate `Authorization: Bearer <token>` header via `BaseController.executeAuthenticated()`
 - Security hardening: identical error messages for wrong password / missing user (prevents username enumeration); obfuscated error messages for missing tokens
 
-### 5. Modern React Stack with Manual API Client
+### 5. Dynamic Credential Bootstrap and Docker Compose Secrets
+
+[ADR-09](adrs/adr-09-initial-admin-user-generation.md), [ADR-10](adrs/adr-10-docker-compose-secrets-over-env-for-credentials.md)
+
+The local development and CI setup avoids hardcoded credentials. `start-application.sh` creates non-secret configuration from `.env.example` and creates required local secret files under `.secrets/`. PostgreSQL, the backend, and k6 receive credentials through Docker Compose secrets.
+
+The initial admin user is not created by a hardcoded Flyway migration. Instead, the backend validates the configured seed admin credentials at startup and creates or updates the seed admin user based on the mounted secrets. This keeps database migrations schema-focused and allows fresh local and CI environments to bootstrap without repository secrets.
+
+### 6. Modern React Stack with Manual API Client
 
 The frontend uses React 19 with TanStack Router and React Query:
 
@@ -51,7 +59,7 @@ The frontend uses React 19 with TanStack Router and React Query:
 - Custom `fetchApi<T>()` wrapper around native `fetch` (not a generated client)
 - Hooks pattern: `useRandomJoke()`, `useHealthCheck()`, etc.
 
-### 6. Component Library via shadcn/ui
+### 7. Component Library via shadcn/ui
 
 UI components are built on shadcn/ui (new-york style) with Radix UI primitives:
 
@@ -75,7 +83,7 @@ UI components are built on shadcn/ui (new-york style) with Radix UI primitives:
 | Auth             | Custom token-based (UUID + PBKDF2)                                                               | Lightweight, suitable for scope              |
 | Error Handling   | Either monad                                                                                     | Functional, explicit, no hidden control flow |
 | API Contract     | OpenAPI 3.1.0                                                                                    | Type generation, documentation               |
-| Containerization | Docker + Docker Compose                                                                          | Reproducible environments                    |
+| Containerization | Docker + Docker Compose + Compose Secrets                                                        | Reproducible local/CI environments           |
 | CI/CD            | GitHub Actions                                                                                   | Automated testing and quality gates          |
 | Code Quality     | Biome + SonarQube                                                                                | Linting, static analysis, coverage           |
 | Load Testing     | k6 (Grafana)                                                                                     | Baseline, stress, and spike scenarios        |

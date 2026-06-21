@@ -1,4 +1,4 @@
-# ADR-004: PostgreSQL with JPA and Flyway
+# ADR-04: PostgreSQL with JPA and Flyway
 
 [Back to ADR overview](../09-decisions.md)
 
@@ -17,7 +17,7 @@ Schema changes are managed exclusively through SQL migration scripts. The ORM va
 Key aspects of this decision:
 
 - **Flyway owns schema creation and evolution.** Every schema change is a numbered SQL migration file. Migration history is tracked in a dedicated Flyway table, providing a reproducible database state from any point in history.
-- **Spring Data JPA maps entities to tables.** Declarative repository interfaces provide CRUD operations without boilerplate SQL. Native queries are available for database-specific operations that JPQL cannot express.
+- **Spring Data JPA maps entities to tables.** Declarative repository interfaces provide CRUD operations without boilerplate SQL. Native queries are available for database-specific operations that JPQL cannot express. Spring Data repositories are not injected directly into services. They are wrapped by repository implementations so that persistence details, native queries, and mapping between entities and domain-facing DTOs remain isolated from business logic.
 - **Same database engine in all environments.** PostgreSQL runs in development, CI, and production via Docker. This eliminates "works on my machine" issues caused by different SQL dialects or locking behavior between database engines.
 
 ## Rationale

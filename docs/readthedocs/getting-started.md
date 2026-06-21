@@ -24,6 +24,8 @@ cd sqs-project
 The backend API will be available at `http://localhost:8080`
 
 Use the script parameters `-h` or `--help` to get an overview of the various options like `--reset`, `--verbose` and `--show-credentials`.
+For detailed startup options, credential generation, validation rules, and reset behavior, see [Local Development](local-development.md).
+
 
 ### Stopping the application
 To stop the running application you can use the provided script. The script also supports `-h` and `--help` for displaying a help message.
@@ -34,6 +36,7 @@ To stop the running application you can use the provided script. The script also
 ```bash
 docker compose down
 ```
+For details about reset behavior and local configuration cleanup, see [Local Development](local-development.md).
 
 ### Possible Errors
 - *bash: ./start-application.sh: Permission denied* -> make sure to have execution rights:
@@ -52,7 +55,7 @@ sqs-project/
     ├── presentation/       # Final project presentation
     ├── readthedocs/        # Architecture documentation (ADRs, arc42, C4)
     └── retro/              # Team retrospective
-├── test/                   # Load and E2E test suites
+├── test/                   # Load, E2E, Integration test suites
 ├── docker-compose.yml
 ├── start-application.sh    # Interactive script for starting the application
 ├── stop-application.sh     # Script for stopping the application
@@ -62,3 +65,5 @@ sqs-project/
 ## Documentation
 - [Architecture Documentation (arc42)](arc42/index.md)
 - [Architecture Decision Records](arc42/09-decisions.md)
+- [Local Development](local-development.md)
+- [Testing](testing.md)

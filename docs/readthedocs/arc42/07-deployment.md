@@ -4,37 +4,30 @@ This view describes the current development setup only. No production deployment
 
 ```mermaid
 flowchart TB
-    subgraph sqs-network["sqs-network (bridge)"]
+    subgraph sqs_network["sqs-network (bridge)"]
         direction TB
 
-        subgraph default-services["Default (no profile)"]
-            postgres[("postgres :5432
-            vol: postgres_data")]
+        subgraph svc_default["Default (no profile)"]
+            postgres[("postgres :5432<br/>vol: postgres_data")]
             app["app :8080"]
-            frontend-dev["frontend-dev :5173
-            Vite dev + HMR
-            bind: ./frontend:/app
-            bind: ./api:/api
-            vol: frontend_node_modules"]
+            frontend_dev["frontend-dev :5173<br/>Vite dev + HMR<br/>bind: ./frontend:/app<br/>bind: ./api:/api<br/>vol: frontend_node_modules"]
         end
 
-        subgraph profile-prod["--profile prod"]
-            frontend["frontend :8080
-            nginx"]
+        subgraph profile_prod["--profile prod"]
+            frontend["frontend :8080<br/>nginx"]
         end
 
-        subgraph profile-load["--profile loadtest"]
-            k6["k6
-            no exposed port"]
+        subgraph profile_load["--profile loadtest"]
+            k6["k6<br/>no exposed port"]
         end
     end
 
     postgres -- "depends_on" --> app
-    app -- "depends_on" --> frontend-dev
+    app -- "depends_on" --> frontend_dev
     app -- "depends_on" --> frontend
     app -- "depends_on" --> k6
 
-    frontend-dev -- "/api proxy (Vite)" --> app
+    frontend_dev -- "/api proxy (Vite)" --> app
     frontend -- "/api proxy (nginx)" --> app
     k6 -- "HTTP" --> app
     app -- "SQL" --> postgres
@@ -62,4 +55,6 @@ PostgreSQL 16 stores all persistent data. Schema changes are managed through Fly
 
 ## Environment Configuration
 
-Configuration is managed through environment variables and Docker Compose. Sensitive values (database credentials, passwords) are injected via Docker secrets at `/run/secrets/` and excluded from version control.
+Configuration is managed through environment variables and Docker Compose. Non-secret values are stored in `.env`, which the starting scipt creates from `.env.example` for local runs. Sensitive values (database credentials, passwords) are injected through Docker Compose secrets at `/run/secrets/` and excluded from version control.
+
+The default development stack uses file-backed Compose secrets from the project-local `.secrets/` directory. The `k6` load-test container, as an exception, cannot read those files. It is started only on demand through the `loadtest` profile and receives credentials through k6-specific Compose secrets so that it can run as a non-root user. The reasoning behind this distinction is documented in [ADR-10](adrs/adr-10-secrets-management.md).
