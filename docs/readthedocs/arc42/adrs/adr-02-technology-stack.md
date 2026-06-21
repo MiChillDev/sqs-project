@@ -2,6 +2,10 @@
 
 [Back to ADR overview](../09-decisions.md)
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 **Status:** Accepted
 
 ## Context

@@ -1,0 +1,150 @@
+@startuml
+title C4 Level 4 - Backend Code Overview
+
+top to bottom direction
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+skinparam monochrome false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classFontSize 15
+skinparam nodesep 80
+skinparam ranksep 100
+
+hide members
+hide circle
+
+skinparam class<<RestController>> {
+  BackgroundColor #FFF3E0
+  BorderColor #F39C12
+}
+skinparam class<<Service>> {
+  BackgroundColor #E8F5E9
+  BorderColor #43A047
+}
+skinparam class<<Repository Adapter>> {
+  BackgroundColor #E8EAF6
+  BorderColor #3F51B5
+}
+skinparam class<<JpaRepository>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<Interface>> {
+  BackgroundColor #E3F2FD
+  BorderColor #1E88E5
+}
+skinparam class<<Common>> {
+  BackgroundColor #EEEEEE
+  BorderColor #777777
+}
+skinparam class<<External API Client>> {
+  BackgroundColor #E1F5FE
+  BorderColor #0288D1
+}
+skinparam class<<Database>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<External API>> {
+  BackgroundColor #B7D9FF
+  BorderColor #4B8FD3
+}
+
+
+package "jokes" {
+  class JokeController <<RestController>>
+  class JokeService <<Service>>
+  interface JokeRepository <<Interface>>
+  class JokeRepositoryImpl <<Repository Adapter>>
+  interface SpringJokeRepository <<JpaRepository>>
+  interface ApiJokeRepository <<Interface>>
+  class "ChuckNorrisApi\nJokeRepositoryImpl" as ChuckNorrisApiJokeRepositoryImpl <<External API Client>>
+}
+
+package "auth" {
+  class AuthController <<RestController>>
+  class AuthService <<Service>>
+  interface AuthRepository <<Interface>>
+  class AuthRepositoryImpl <<Repository Adapter>>
+  interface "SpringAuthSession\nRepository" as SpringAuthSessionRepository <<JpaRepository>>
+}
+
+package "users" {
+  class UserService <<Service>>
+  interface UserRepository <<Interface>>
+  class UserRepositoryImpl <<Repository Adapter>>
+  interface SpringUserRepository <<JpaRepository>>
+}
+
+package "health" {
+  class HealthController <<RestController>>
+}
+
+package "common" {
+  class BaseController <<Common>>
+  abstract class ApiRepository <<Common>>
+  class PasswordHasher <<Common>>
+  abstract class Either <<Common>>
+  class ErrorResultStatus <<Common>>
+}
+
+class "PostgreSQL 16" as PostgreSQL <<Database>>
+class "Chuck Norris API\napi.chucknorris.io" as ChuckApi <<External API>>
+
+' Layout guidance only
+JokeController -[hidden]right- AuthController
+UserService -[hidden]right- BaseController
+JokeController -[hidden]down- UserService
+AuthController -[hidden]down- BaseController
+HealthController -[hidden]down- PostgreSQL
+
+' Controller inheritance
+JokeController --|> BaseController
+AuthController --|> BaseController
+
+' Jokes chain
+JokeController --> JokeService
+JokeService --> JokeRepository
+JokeService --> ApiJokeRepository
+JokeRepositoryImpl ..|> JokeRepository
+JokeRepositoryImpl --> SpringJokeRepository
+ChuckNorrisApiJokeRepositoryImpl ..|> ApiJokeRepository
+ChuckNorrisApiJokeRepositoryImpl --|> ApiRepository
+ChuckNorrisApiJokeRepositoryImpl --> ChuckApi
+SpringJokeRepository --> PostgreSQL
+
+' Auth chain
+AuthController --> AuthService
+AuthService --> AuthRepository
+AuthService --> UserService
+AuthService --> PasswordHasher
+AuthRepositoryImpl ..|> AuthRepository
+AuthRepositoryImpl --> SpringAuthSessionRepository
+SpringAuthSessionRepository --> PostgreSQL
+
+' Users chain
+UserService --> UserRepository
+UserRepositoryImpl ..|> UserRepository
+UserRepositoryImpl --> SpringUserRepository
+SpringUserRepository --> PostgreSQL
+
+' Common result handling
+BaseController --> AuthService : validates token
+BaseController --> Either
+BaseController --> ErrorResultStatus
+ApiRepository --> Either
+ApiRepository --> ErrorResultStatus
+PasswordHasher --> Either
+PasswordHasher --> ErrorResultStatus
+
+
+note right of health
+  GET /api/v1/health returns a static
+  status/message response.
+end note
+
+@enduml
