@@ -21,8 +21,8 @@ test.describe('Admin user happy paths', () => {
     const adminPage = new AdminPage(page);
     expect((await adminPage.getActiveTabLabel()).trim()).toBe('Fetch and save');
     await adminPage.clickCreateTab();
-    await expect(page.getByTestId('joke-content-textarea')).toBeVisible();
-    await expect(page.getByTestId('create-joke-button')).toBeVisible();
+    await expect(adminPage.jokeContentTextarea).toBeVisible();
+    await expect(adminPage.createJokeButton).toBeVisible();
     expect((await adminPage.getActiveTabLabel()).trim()).toBe('Create');
   });
 
@@ -54,6 +54,6 @@ test.describe('Admin user happy paths', () => {
     await adminPage.logout();
     await adminPage.waitForUrl('**/login');
     await adminPage.verifyUnauthenticated();
-    await expect(page.getByTestId('user-menu-login')).toBeVisible();
+    await expect(adminPage.userMenuLogin).toBeVisible();
   });
 });

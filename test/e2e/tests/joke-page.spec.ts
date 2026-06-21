@@ -6,7 +6,7 @@ test.describe('Joke page', () => {
     const jokePage = new JokePage(page);
     await jokePage.navigate();
     await jokePage.verifyHeading();
-    await expect(page.getByTestId('fetch-joke-button')).toBeVisible();
+    await expect(jokePage.fetchJokeButton).toBeVisible();
   });
 
   test('fetches a random joke on button click', async ({ page }) => {
