@@ -3,12 +3,16 @@ import { ApiError, NetworkError } from 'src/shared/api/api-error';
 import { describe, expect, it } from 'vitest';
 
 describe('resolveRedirect', () => {
-  it.each([undefined, '', 'https://evil.com', '//evil.com', 'javascript:alert(1)', 'dashboard'])(
-    'returns /admin for invalid redirect: %s',
-    (input) => {
-      expect(resolveRedirect(input as string)).toBe('/admin');
-    },
-  );
+  it.each([
+    undefined,
+    '',
+    'https://evil.com',
+    '//evil.com',
+    'javascript:alert(1)',
+    'dashboard',
+  ])('returns /admin for invalid redirect: %s', (input) => {
+    expect(resolveRedirect(input as string)).toBe('/admin');
+  });
 
   it('passes through valid relative paths', () => {
     expect(resolveRedirect('/dashboard')).toBe('/dashboard');
@@ -34,10 +38,11 @@ describe('loginErrorKey', () => {
     expect(loginErrorKey(new DOMException('aborted', 'AbortError'))).toBe('error.timeout');
   });
 
-  it.each([new Error('fail'), { message: 'fail' }, 'string error'])(
-    'unknown error → toast.unknownError',
-    (error) => {
-      expect(loginErrorKey(error)).toBe('toast.unknownError');
-    },
-  );
+  it.each([
+    new Error('fail'),
+    { message: 'fail' },
+    'string error',
+  ])('unknown error → toast.unknownError', (error) => {
+    expect(loginErrorKey(error)).toBe('toast.unknownError');
+  });
 });

@@ -1,4 +1,8 @@
-import { getNextCount, scheduleConfettiReset, shouldShowConfetti } from 'src/shared/lib/joke-counter';
+import {
+  getNextCount,
+  scheduleConfettiReset,
+  shouldShowConfetti,
+} from 'src/shared/lib/joke-counter';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('getNextCount', () => {

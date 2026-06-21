@@ -24,12 +24,13 @@ describe('handle401', () => {
     expect(navigateMock).toHaveBeenCalledWith({ to: '/login', search: { redirect: '/dashboard' } });
   });
 
-  it.each([new ApiError(403, ''), new Error('fail'), 'string'])(
-    'non-401: no side effects, returns false',
-    (error) => {
-      expect(handle401(error, navigateMock)).toBe(false);
-      expect(clearMock).not.toHaveBeenCalled();
-      expect(navigateMock).not.toHaveBeenCalled();
-    },
-  );
+  it.each([
+    new ApiError(403, ''),
+    new Error('fail'),
+    'string',
+  ])('non-401: no side effects, returns false', (error) => {
+    expect(handle401(error, navigateMock)).toBe(false);
+    expect(clearMock).not.toHaveBeenCalled();
+    expect(navigateMock).not.toHaveBeenCalled();
+  });
 });

@@ -18,12 +18,14 @@ describe('extractErrorKey', () => {
     expect(extractErrorKey(new NetworkError())).toBe('admin.error.networkError');
   });
 
-  it.each([new Error('fail'), 'string', null, undefined])(
-    'non-ApiError/NetworkError → toast.unknownError',
-    (input) => {
-      expect(extractErrorKey(input)).toBe('toast.unknownError');
-    },
-  );
+  it.each([
+    new Error('fail'),
+    'string',
+    null,
+    undefined,
+  ])('non-ApiError/NetworkError → toast.unknownError', (input) => {
+    expect(extractErrorKey(input)).toBe('toast.unknownError');
+  });
 });
 
 describe('is401', () => {
@@ -31,10 +33,14 @@ describe('is401', () => {
     expect(is401(new ApiError(401, ''))).toBe(true);
   });
 
-  it.each([new ApiError(200, ''), new ApiError(403, ''), new ApiError(500, ''), new NetworkError(), new Error('fail'), { status: 401 }])(
-    'false for non-401',
-    (input) => {
-      expect(is401(input)).toBe(false);
-    },
-  );
+  it.each([
+    new ApiError(200, ''),
+    new ApiError(403, ''),
+    new ApiError(500, ''),
+    new NetworkError(),
+    new Error('fail'),
+    { status: 401 },
+  ])('false for non-401', (input) => {
+    expect(is401(input)).toBe(false);
+  });
 });

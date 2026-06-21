@@ -10,7 +10,9 @@ let mockLanguage = 'en';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ i18n: { language: mockLanguage } }) }));
 vi.mock('src/shared/lib/zod-locales', () => ({
-  getZodLocale: vi.fn((lang: string) => ({ localeError: vi.fn(() => ({ message: () => `err-${lang}` })) })),
+  getZodLocale: vi.fn((lang: string) => ({
+    localeError: vi.fn(() => ({ message: () => `err-${lang}` })),
+  })),
 }));
 vi.mock('@hookform/resolvers/zod', () => ({ zodResolver: vi.fn(() => vi.fn()) }));
 
