@@ -2,9 +2,9 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 import confettiUrl from '../../animations/Confetti.json?url';
 
-type ConfettiProps = {
+type ConfettiProps = Readonly<{
   trigger: boolean;
-};
+}>;
 
 export function Confetti({ trigger }: ConfettiProps) {
   if (!trigger) return null;

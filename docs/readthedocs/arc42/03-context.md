@@ -2,27 +2,17 @@
 
 ## Business Context
 
-The system context diagram is available as [C4 Level 1 — System Context](mermaid/c1-context.mmd).
-<iframe
-  id="structurizr-c1"
-  src="../../structurizr/index.html?iframe=structurizr-c1#C1_SystemContext"
-  width="100%"
-  height="700"
-  frameborder="0"
-  scrolling="no"
-  allowfullscreen="true">
-</iframe>
+The system context diagram is available at [Chapter 5 (Building Block View)](05-building-blocks.md).
 
-<script type="text/javascript" src="../../structurizr/js/structurizr-embed.js"></script>
 
 ### External Actors
 
-| Actor            | Type            | Description                                                                         |
-| ---------------- | --------------- | ----------------------------------------------------------------------------------- |
-| End User         | Human           | Browses Chuck Norris jokes without authentication                                   |
-| Administrator    | Human           | Authenticated user who imports jokes from the external API and creates new jokes    |
-| Chuck Norris API | External System | Public REST API at `https://api.chucknorris.io/jokes/random` providing random jokes |
-| PostgreSQL       | Infrastructure  | Relational database for persisting jokes, users, and authentication sessions        |
+| Actor            | Type            | Description                                                                                     |
+| ---------------- | --------------- | ----------------------------------------------------------------------------------------------- |
+| End User         | Human           | Browses Chuck Norris jokes without authentication on /jokes                                     |
+| Administrator    | Human           | Authenticated user who imports jokes from the external API and creates new jokes on page /admin |
+| Chuck Norris API | External System | Public REST API at `https://api.chucknorris.io/jokes/random` providing random jokes             |
+| PostgreSQL       | Infrastructure  | Relational database for persisting jokes, users, and authentication sessions                    |
 
 ## System Scope
 
@@ -40,9 +30,11 @@ The system provides the following capabilities:
 
 ### Out of Scope
 
-- User registration (admin user seeded via migration)
+- User registration via separate endpoint (admin is created during first run of application); The system only needs an administrator account to populate the local joke database; reading jokes from the local database is public.
 - Fine-grained role-based access control (only Administrator and Regular User roles exist)
 - Multi-tenancy
 - Real-time notifications
+- Translation of joke content: The frontend UI *does* support English and German, but joke texts are stored as plain text in the database and are displayed as provided or entered.
+- (Paginated) List endpoint to display all jokes from the database for admin(s) 
 - File uploads or media storage
-- Email delivery
+- Email delivery (no password reset or registration invite links)

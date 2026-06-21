@@ -1,18 +1,18 @@
 # 9. Architecture Decisions
 
-## Decision Summary
+## Architecture Decision Records
 
-| Decision                                                           | Status   | ADR     |
-| ------------------------------------------------------------------ | -------- | ------- |
-| Layered architecture with feature-based packages                   | Accepted | ADR-001 |
-| Java 21 + Spring Boot 4 backend / React 19 + TypeScript 6 frontend | Accepted | ADR-002 |
-| Token-based authentication (no Spring Security)                    | Accepted | ADR-003 |
-| PostgreSQL with JPA and Flyway migrations                          | Accepted | ADR-004 |
-| Monorepo Organization                                              | Accepted | ADR-005 |
-| Functional error handling via Either monad                         | Accepted | ADR-006 |
-| Multi-layer testing with k6 load tests                             | Accepted | ADR-007 |
+Open the linked pages for more detailed descriptions. These contain the full decision records with context, rationale, alternatives, and consequences.
 
-
-Full decision records with context, rationale, alternatives, and consequences are available in the [ADRs directory](ards/).
-
-
+| ADR                                                 | Title                                            | Status   |
+| --------------------------------------------------- | ------------------------------------------------ |----------|
+| [ADR-01](adrs/adr-01-feature-packages.md)           | Layered Architecture with Feature-Based Packages | Accepted |
+| [ADR-02](adrs/adr-02-technology-stack.md)           | Technology Stack Selection                       | Accepted |
+| [ADR-03](adrs/adr-03-authentication.md)             | Token-Based Authentication (no Spring Security)  | Accepted |
+| [ADR-04](adrs/adr-04-database-and-orm.md)           | PostgreSQL with JPA and Flyway migrations        | Accepted |
+| [ADR-05](adrs/adr-05-monorepo-organization.md)      | Monorepo Organization                            | Accepted |
+| [ADR-06](adrs/adr-06-functional-error-handling.md)  | Functional Error Handling via Either Monad       | Accepted |
+| [ADR-07](adrs/adr-07-testing-strategy.md)           | Multi-Layer Testing Strategy                     | Accepted |
+| [ADR-08](adrs/adr-08-shared-api-contract.md)        | Shared API contract at project root (`/api`)     | Accepted |
+| [ADR-09](adrs/adr-09-initial-user.md)               | Initial Admin User Generation                    | Accepted |
+| [ADR-10](adrs/adr-10-secrets-management.md)         | Docker Compose Secrets Over .env for Credentials | Accepted |

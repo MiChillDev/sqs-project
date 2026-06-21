@@ -1,0 +1,36 @@
+name: API Type Generation Check
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "api/openapi.yaml"
+      - "api/generated/api-types.ts"
+      - "api/package.json"
+      - "api/pnpm-lock.yaml"
+
+jobs:
+  check-api-types:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10
+
+      - name: Install API dependencies
+        working-directory: api
+        run: pnpm install --frozen-lockfile
+
+      - name: Regenerate API types
+        working-directory: api
+        run: pnpm generate
+
+      - name: Check generated API types are committed
+        run: git diff --exit-code -- api/generated/api-types.ts
+```

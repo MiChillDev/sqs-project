@@ -11,7 +11,7 @@ import { rootRoute } from './__root';
 type JokeCardContentProps = Readonly<{
   isError: boolean;
   isSuccess: boolean;
-  joke?: string;
+  joke?: string | null;
 }>;
 
 function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
@@ -21,9 +21,15 @@ function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
     <CardContent className='flex-1 flex flex-col items-center justify-center gap-6 text-center'>
       {isError && <div className='text-xl text-destructive'>{t('jokePage.error')}</div>}
 
-      {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
+      {isSuccess && joke === null && (
+        <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>
+      )}
 
-      {isSuccess && joke && <div className='text-3xl font-heading text-playful-text'>{joke}</div>}
+      {isSuccess && typeof joke === 'string' && joke && (
+        <div data-testid='joke-content' className='text-3xl font-heading text-playful-text'>
+          {joke}
+        </div>
+      )}
 
       {!isError && !isSuccess && (
         <div className='text-xl text-playful-text'>{t('jokePage.placeholder')}</div>
@@ -40,7 +46,7 @@ function getButtonLabel(t: (key: string) => string, isSuccess: boolean) {
 function JokePage() {
   const { t } = useTranslation();
 
-  const [joke, setJoke] = useState<string>();
+  const [joke, setJoke] = useState<string | null>();
   const [isError, setIsError] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -71,26 +77,30 @@ function JokePage() {
   const buttonLabel = getButtonLabel(t, isSuccess);
 
   return (
-    <div className='flex-1 flex flex-col items-center justify-center gap-12 bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end font-body relative overflow-hidden'>
-      <h1 className='text-[4rem] font-heading text-playful-heading drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] -rotate-2 tracking-wide'>
+    <div className='flex-1 flex flex-col items-center justify-center gap-8 sm:gap-12 bg-linear-to-br from-playful-bg-start via-playful-bg-mid to-playful-bg-end font-body relative overflow-auto'>
+      <h1
+        data-testid='joke-heading'
+        className='text-5xl sm:text-[4rem] font-heading text-playful-heading drop-shadow-[3px_3px_0px_var(--color-playful-accent)] dark:drop-shadow-[0_0_15px_var(--color-playful-accent)] sm:-rotate-2 tracking-wide text-center px-4'
+      >
         {t('jokePage.heading')}
       </h1>
 
       <Card
         className={`
-          relative w-150 min-h-75 p-8 border-[3px] border-playful-accent flex flex-col
+          relative w-full sm:w-150 min-h-75 p-6 sm:p-8 border-[3px] border-playful-accent flex flex-col mx-auto
           shadow-[0_20px_40px_rgba(255,107,53,0.25)] dark:shadow-[0_0_30px_rgba(255,107,53,0.5),0_0_60px_rgba(255,107,53,0.2)]
           transition-all duration-300 ease-in-out
           ${isAnimating ? 'scale-95 opacity-60' : 'scale-100 opacity-100'}
         `}
       >
         <div
+          data-testid='joke-counter'
           className={`
-            absolute -top-5 -right-5
+            absolute top-0 right-0 sm:-top-5 sm:-right-5
             w-12 h-12
             overflow-visible
             flex items-center justify-center
-            rounded-full
+            rounded-tl-full rounded-bl-full rounded-br-full rounded-tr-xl sm:rounded-full
             bg-playful-accent/90 backdrop-blur-md
             text-white
             font-bold
@@ -109,9 +119,10 @@ function JokePage() {
       </Card>
 
       <Button
+        data-testid='fetch-joke-button'
         onClick={handleFetch}
         disabled={isFetching || isAnimating}
-        className='px-10 py-4 text-xl font-heading bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
+        className='px-8 sm:px-10 py-3 sm:py-4 text-lg sm:text-xl font-heading bg-linear-to-r from-playful-accent to-playful-accent-light text-white rounded-full shadow-lg dark:shadow-[0_0_25px_rgba(255,107,53,0.5)] hover:scale-105 transition'
       >
         {buttonLabel}
       </Button>

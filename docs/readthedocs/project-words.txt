@@ -14,3 +14,7 @@ JPQL
 viewports
 Whitebox
 structurizr
+Structurizr
+prebuild
+configtree
+loadtest

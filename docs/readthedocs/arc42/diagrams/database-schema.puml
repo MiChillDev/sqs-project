@@ -1,0 +1,51 @@
+@startuml
+title Entity-Relationship Diagram - Chuck Norris Joke Page Database Schema
+
+hide circle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+entity "users" as users {
+  * id : UUID <<PK>>
+  --
+  username : VARCHAR(255) <<NOT NULL, UNIQUE>>
+  password_hash : VARCHAR(255) <<NOT NULL>>
+  created_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+  updated_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+}
+
+entity "auth_sessions" as auth_sessions {
+  * user_id : UUID <<PK, FK>>
+  --
+  token : VARCHAR(255) <<NOT NULL, UNIQUE>>
+  expires_at : TIMESTAMP <<NOT NULL>>
+  created_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+  updated_at : TIMESTAMP <<DEFAULT CURRENT_TIMESTAMP>>
+}
+
+entity "jokes" as jokes {
+  * id : UUID <<PK>>
+  --
+  external_id : VARCHAR(255) <<NOT NULL>>
+  content : TEXT <<NOT NULL>>
+}
+
+users ||--o| auth_sessions : has
+
+note right of auth_sessions
+  auth_sessions.user_id references users.id
+  ON DELETE CASCADE
+
+  user_id is both the primary key
+  and the foreign key.
+end note
+
+note right of jokes
+  external_id comes from
+  api.chucknorris.io.
+
+  It is not marked UNIQUE
+  in the Flyway migration.
+end note
+
+@enduml

@@ -1,8 +1,8 @@
+import type { components } from '@api/generated/api-types';
 import { authStorage } from 'src/shared/lib/auth-storage';
 import { ApiError, NetworkError } from './api-error';
-import type { components } from './generated/api-types';
 
-export type Joke = components['schemas']['Joke'];
+export type Joke = components['schemas']['Joke'] | components['schemas']['EmptyJoke'];
 export type SourceJoke = components['schemas']['SourceJoke'];
 export type JokeInput = components['schemas']['JokeInput'];
 export type HealthCheck = components['schemas']['HealthCheck'];

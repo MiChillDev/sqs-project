@@ -16,16 +16,21 @@ describe('AdminPage — integration flows', () => {
   setupAdminTests();
 
   describe('Full admin page rendering with sections', () => {
-    it('renders all sections: JokeCreationSection, SourceJokeSection', () => {
+    it('renders all sections: JokeCreationSection, SourceJokeSection', async () => {
+      const user = userEvent.setup();
       renderComponent();
+
+      // Source tab is active by default
+      expect(screen.getAllByText('Fetch Source Joke').length).toBeGreaterThanOrEqual(2);
+      expect(screen.getByRole('button', { name: 'Fetch Source Joke' })).toBeInTheDocument();
+
+      // Switch to Create tab
+      await user.click(screen.getByRole('tab', { name: 'Create' }));
 
       expect(screen.getAllByText('Create Joke').length).toBeGreaterThanOrEqual(2);
       expect(screen.getByLabelText('Content')).toBeInTheDocument();
       expect(screen.getByLabelText('External ID')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Create Joke' })).toBeInTheDocument();
-
-      expect(screen.getAllByText('Fetch Source Joke').length).toBeGreaterThanOrEqual(2);
-      expect(screen.getByRole('button', { name: 'Fetch Source Joke' })).toBeInTheDocument();
     });
   });
 
@@ -44,6 +49,9 @@ describe('AdminPage — integration flows', () => {
       );
 
       renderComponent();
+
+      // Switch to Create tab
+      await user.click(screen.getByRole('tab', { name: 'Create' }));
 
       await user.type(screen.getByLabelText('Content'), 'Chuck Norris can divide by zero.');
       await user.type(screen.getByLabelText('External ID'), 'ext-1');
