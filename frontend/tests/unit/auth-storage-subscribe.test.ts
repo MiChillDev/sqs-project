@@ -1,5 +1,5 @@
+import { authStorage } from 'src/shared/lib/auth-storage';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { authStorage } from '../../src/shared/lib/auth-storage';
 
 const KEY = 'sqs.auth';
 
@@ -9,7 +9,7 @@ describe('authStorage.subscribe', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('registers a storage event listener on globalThis', () => {

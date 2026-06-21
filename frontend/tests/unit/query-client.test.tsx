@@ -1,8 +1,8 @@
 import { toast } from 'sonner';
+import { handleQueryClientError } from 'src/app/providers/query-client';
+import { ApiError, NetworkError } from 'src/shared/api/api-error';
+import { getUserSafeError } from 'src/shared/lib/error-messages';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleQueryClientError } from '../../src/app/providers/query-client';
-import { ApiError, NetworkError } from '../../src/shared/api/api-error';
-import { getUserSafeError } from '../../src/shared/lib/error-messages';
 
 vi.mock('i18next', () => ({
   default: {
@@ -171,7 +171,7 @@ describe('handleMutationClientError skipGlobalErrorToast', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('does NOT call toast.error when skipGlobalErrorToast is truthy', async () => {
@@ -244,7 +244,7 @@ describe('handleMutationClientError full pipeline', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('calls toast.error with correct title and description for ApiError 404', async () => {

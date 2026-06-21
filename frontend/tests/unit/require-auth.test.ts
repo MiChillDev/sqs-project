@@ -1,7 +1,7 @@
 import { isRedirect } from '@tanstack/react-router';
+import { requireAuth } from 'src/shared/guards/require-auth';
+import type { AuthStorageValue } from 'src/shared/lib/auth-storage';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { requireAuth } from '../../src/shared/guards/require-auth';
-import type { AuthStorageValue } from '../../src/shared/lib/auth-storage';
 
 const KEY = 'sqs.auth';
 

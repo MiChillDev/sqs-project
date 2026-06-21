@@ -1,34 +1,24 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
-import type { ReactNode } from 'react';
 
 import { ApiError } from 'src/shared/api/api-error';
 import { useCreateJoke, useHealthCheck, useRandomJoke, useSourceJoke } from 'src/shared/api/hooks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-  });
-  return function Wrapper({ children }: { children: ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-  };
-}
+import { createQueryWrapper } from '../shared/test-utils';
 
 beforeEach(() => {
-  vi.restoreAllMocks();
+  vi.clearAllMocks();
 });
 
 describe('useRandomJoke', () => {
   it('does not fetch on mount (enabled: false)', () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal('fetch', fetchSpy);
-    renderHook(() => useRandomJoke(), { wrapper: createWrapper() });
+    renderHook(() => useRandomJoke(), { wrapper: createQueryWrapper() });
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('queryKey and initial state are correct', () => {
-    const { result } = renderHook(() => useRandomJoke(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useRandomJoke(), { wrapper: createQueryWrapper() });
     expect(result.current.data).toBeUndefined();
     expect(result.current.fetchStatus).toBe('idle');
   });
@@ -42,7 +32,7 @@ describe('useRandomJoke', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useRandomJoke(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useRandomJoke(), { wrapper: createQueryWrapper() });
 
     await result.current.refetch();
 
@@ -57,12 +47,12 @@ describe('useHealthCheck', () => {
   it('does not fetch on mount (enabled: false)', () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal('fetch', fetchSpy);
-    renderHook(() => useHealthCheck(), { wrapper: createWrapper() });
+    renderHook(() => useHealthCheck(), { wrapper: createQueryWrapper() });
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('queryKey and initial state are correct', () => {
-    const { result } = renderHook(() => useHealthCheck(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useHealthCheck(), { wrapper: createQueryWrapper() });
     expect(result.current.data).toBeUndefined();
     expect(result.current.fetchStatus).toBe('idle');
   });
@@ -76,7 +66,7 @@ describe('useHealthCheck', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useHealthCheck(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useHealthCheck(), { wrapper: createQueryWrapper() });
 
     await result.current.refetch();
 
@@ -96,7 +86,7 @@ describe('useCreateJoke', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useCreateJoke(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useCreateJoke(), { wrapper: createQueryWrapper() });
 
     const data = await result.current.mutateAsync({ content: 'A new joke', externalId: 'ext-2' });
 
@@ -121,7 +111,7 @@ describe('useCreateJoke', () => {
       })
     );
 
-    const { result } = renderHook(() => useCreateJoke(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useCreateJoke(), { wrapper: createQueryWrapper() });
 
     await expect(
       result.current.mutateAsync({ content: 'bad joke', externalId: 'bad-ext' })
@@ -133,12 +123,12 @@ describe('useSourceJoke', () => {
   it('does not fetch on mount (enabled: false)', () => {
     const fetchSpy = vi.fn();
     vi.stubGlobal('fetch', fetchSpy);
-    renderHook(() => useSourceJoke(), { wrapper: createWrapper() });
+    renderHook(() => useSourceJoke(), { wrapper: createQueryWrapper() });
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('queryKey and initial state are correct', () => {
-    const { result } = renderHook(() => useSourceJoke(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSourceJoke(), { wrapper: createQueryWrapper() });
     expect(result.current.data).toBeUndefined();
     expect(result.current.fetchStatus).toBe('idle');
   });
@@ -152,7 +142,7 @@ describe('useSourceJoke', () => {
     });
     vi.stubGlobal('fetch', fetchMock);
 
-    const { result } = renderHook(() => useSourceJoke(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSourceJoke(), { wrapper: createQueryWrapper() });
 
     await result.current.refetch();
 

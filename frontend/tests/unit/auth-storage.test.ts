@@ -1,5 +1,5 @@
+import { type AuthStorageValue, authStorage } from 'src/shared/lib/auth-storage';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { type AuthStorageValue, authStorage } from '../../src/shared/lib/auth-storage';
 
 const KEY = 'sqs.auth';
 

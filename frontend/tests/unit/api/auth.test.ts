@@ -3,7 +3,7 @@ import { fetchApi } from './shared';
 
 describe('fetchApi', () => {
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('auth option', () => {

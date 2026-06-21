@@ -19,7 +19,7 @@ function stubAbortableFetch() {
 
 describe('fetchApi', () => {
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('returns parsed JSON on successful response', async () => {

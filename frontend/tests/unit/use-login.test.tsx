@@ -1,22 +1,12 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { ApiError, NetworkError } from 'src/shared/api/api-error';
+import { useLogin } from 'src/shared/api/hooks';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ApiError, NetworkError } from '../../src/shared/api/api-error';
-import { useLogin } from '../../src/shared/api/hooks';
-
-function createWrapper() {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-  });
-  return function Wrapper({ children }: { children: ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-  };
-}
+import { createQueryWrapper } from './shared/test-utils';
 
 describe('useLogin', () => {
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('posts credentials and returns TokenResponse on success', async () => {
@@ -31,7 +21,7 @@ describe('useLogin', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useLogin(), {
-      wrapper: createWrapper(),
+      wrapper: createQueryWrapper(),
     });
 
     const value = await result.current.mutateAsync({
@@ -60,7 +50,7 @@ describe('useLogin', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const { result } = renderHook(() => useLogin(), {
-      wrapper: createWrapper(),
+      wrapper: createQueryWrapper(),
     });
 
     try {
@@ -81,7 +71,7 @@ describe('useLogin', () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')));
 
     const { result } = renderHook(() => useLogin(), {
-      wrapper: createWrapper(),
+      wrapper: createQueryWrapper(),
     });
 
     try {

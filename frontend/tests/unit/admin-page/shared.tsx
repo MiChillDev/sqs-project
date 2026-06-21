@@ -16,24 +16,11 @@ export {
 
 import { cleanup } from '@testing-library/react';
 import { render, screen, userEvent } from '../shared/test-utils';
+import { adminMockAuthStorageClear, mockCreateJokeMutation, mockSourceJokeQuery } from './mocks';
 
 const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
   mockReset: () => void;
   toHaveBeenCalledWith: (args: unknown) => void;
-};
-const mockAuthStorageClear = (globalThis as Record<string, unknown>)
-  .__adminMockAuthStorageClear as {
-  mockReset: () => void;
-};
-const mockCreateJokeMutation = (globalThis as Record<string, unknown>).__mockCreateJokeMutation as {
-  mutate: ReturnType<typeof vi.fn>;
-  isPending: boolean;
-};
-const mockSourceJokeQuery = (globalThis as Record<string, unknown>).__mockSourceJokeQuery as {
-  refetch: ReturnType<typeof vi.fn>;
-  isFetching: boolean;
-  data: { content: string } | undefined;
-  error: Error | null;
 };
 
 function renderComponent() {
@@ -49,7 +36,7 @@ function resetMocks() {
   mockSourceJokeQuery.data = undefined;
   mockSourceJokeQuery.error = null;
   mockNavigate.mockReset();
-  mockAuthStorageClear.mockReset();
+  adminMockAuthStorageClear.mockReset();
 }
 
 /** Helper: fill the joke creation form and click submit. Returns the user instance. */
@@ -90,9 +77,10 @@ function setupAdminTests() {
 }
 
 export {
+  adminMockAuthStorageClear,
+  adminMockAuthStorageClear as mockAuthStorageClear,
   adminRoute,
   fillJokeFormAndSubmit,
-  mockAuthStorageClear,
   mockCreateJokeMutation,
   mockJokeMutationError,
   mockJokeMutationSuccess,

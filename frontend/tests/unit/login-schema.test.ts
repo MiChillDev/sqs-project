@@ -1,6 +1,6 @@
+import type { LoginFormValues } from 'src/shared/lib/login-schema';
+import { loginSchema } from 'src/shared/lib/login-schema';
 import { describe, expect, it } from 'vitest';
-import type { LoginFormValues } from '../../src/shared/lib/login-schema';
-import { loginSchema } from '../../src/shared/lib/login-schema';
 
 describe('loginSchema', () => {
   it('fails validation when username is empty', () => {

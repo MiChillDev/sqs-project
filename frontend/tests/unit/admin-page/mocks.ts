@@ -9,8 +9,7 @@ const { mockAuthStorageClear, mockAuthStorageGet } = vi.hoisted(() => ({
   })),
 }));
 
-(globalThis as Record<string, unknown>).__adminMockAuthStorageGet = mockAuthStorageGet;
-(globalThis as Record<string, unknown>).__adminMockAuthStorageClear = mockAuthStorageClear;
+export const adminMockAuthStorageClear = mockAuthStorageClear;
 
 vi.mock('src/shared/lib/auth-storage', () => ({
   authStorage: {
@@ -20,20 +19,17 @@ vi.mock('src/shared/lib/auth-storage', () => ({
   },
 }));
 
-const mockCreateJokeMutation = {
+export const mockCreateJokeMutation = {
   mutate: vi.fn(),
   isPending: false,
 };
 
-const mockSourceJokeQuery = {
+export const mockSourceJokeQuery = {
   refetch: vi.fn(),
   isFetching: false,
   data: undefined as { content: string } | undefined,
   error: null as Error | null,
 };
-
-(globalThis as Record<string, unknown>).__mockCreateJokeMutation = mockCreateJokeMutation;
-(globalThis as Record<string, unknown>).__mockSourceJokeQuery = mockSourceJokeQuery;
 
 vi.mock('src/shared/api/hooks', () => ({
   useCreateJoke: () => mockCreateJokeMutation,
