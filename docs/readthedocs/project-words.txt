@@ -16,3 +16,5 @@ Whitebox
 structurizr
 Structurizr
 prebuild
+configtree
+loadtest

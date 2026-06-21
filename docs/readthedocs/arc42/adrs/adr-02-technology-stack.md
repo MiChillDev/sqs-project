@@ -1,4 +1,6 @@
-# ADR-002: Technology Stack Selection
+# ADR-02: Technology Stack Selection
+
+[Back to ADR overview](../09-decisions.md)
 
 [Back to ADR overview](../09-decisions.md)
 

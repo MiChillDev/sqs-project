@@ -10,7 +10,7 @@ function readSecret(path, envName) {
   }
 }
 
-export const BASE_URL = __ENV.K6_BASE_URL || 'http://app:8080/api/v1';
+const BASE_URL = __ENV.K6_BASE_URL || 'http://app:8080/api/v1';
 
 const SEED_ADMIN_USERNAME = readSecret('/run/secrets/app.seed.admin.username', 'K6_APP_SEED_ADMIN_USERNAME');
 const SEED_ADMIN_PASSWORD = readSecret('/run/secrets/app.seed.admin.password', 'K6_APP_SEED_ADMIN_PASSWORD');

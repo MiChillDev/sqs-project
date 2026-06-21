@@ -39,8 +39,20 @@ function renderComponent() {
   return render(<Component />);
 }
 
-function mockSuccessfulFetch(content = 'Funny joke') {
-  fetchApiMock.mockResolvedValueOnce({ content });
+function mockSuccessfulFetch(content: string | null = 'Funny joke') {
+  fetchApiMock.mockResolvedValueOnce(
+    content === null
+      ? {
+          id: null,
+          externalId: null,
+          content: null,
+        }
+      : {
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          externalId: 'test-external-id',
+          content,
+        }
+  );
 }
 
 function mockFailedFetch() {
@@ -107,9 +119,9 @@ describe('JokePage', () => {
     expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
   });
 
-  it('shows empty message when fetch returns empty content', async () => {
+  it('shows empty message when fetch returns an empty joke DTO', async () => {
     const user = userEvent.setup();
-    mockSuccessfulFetch('');
+    mockSuccessfulFetch(null);
 
     renderComponent();
 
@@ -121,7 +133,9 @@ describe('JokePage', () => {
 
     expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: enTranslation.jokePage.refetchButton })
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.refetchButton,
+      })
     ).toBeInTheDocument();
   });
 
@@ -135,7 +149,9 @@ describe('JokePage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: enTranslation.jokePage.refetchButton })
+        screen.getByRole('button', {
+          name: enTranslation.jokePage.refetchButton,
+        })
       ).toBeInTheDocument();
     });
   });
@@ -161,7 +177,9 @@ describe('JokePage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: enTranslation.jokePage.refetchButton })
+        screen.getByRole('button', {
+          name: enTranslation.jokePage.refetchButton,
+        })
       ).toBeInTheDocument();
     });
   });
@@ -180,7 +198,9 @@ describe('JokePage', () => {
 
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: enTranslation.jokePage.refetchButton })
+      screen.getByRole('button', {
+        name: enTranslation.jokePage.refetchButton,
+      })
     ).toBeInTheDocument();
     expect(screen.queryByText(enTranslation.jokePage.placeholder)).not.toBeInTheDocument();
   });
@@ -202,7 +222,7 @@ describe('JokePage', () => {
 
   it('does not increment counter when fetch returns an empty joke', async () => {
     const user = userEvent.setup();
-    mockSuccessfulFetch('');
+    mockSuccessfulFetch(null);
 
     renderComponent();
 

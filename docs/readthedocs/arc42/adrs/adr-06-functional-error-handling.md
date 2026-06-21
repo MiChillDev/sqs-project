@@ -1,4 +1,6 @@
-# ADR-006: Functional Error Handling
+# ADR-06: Functional Error Handling
+
+[Back to ADR overview](../09-decisions.md)
 
 [Back to ADR overview](../09-decisions.md)
 

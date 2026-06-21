@@ -57,7 +57,7 @@ export const rootRoute = createRootRoute({
             {isHome ? (
               <h1
                 data-testid='header-title'
-                className='text-base sm:text-lg font-heading text-playful-heading truncate max-w-40 sm:max-w-none'
+                className='text-base sm:text-lg font-heading text-playful-heading truncate max-w-48 sm:max-w-none'
               >
                 {t('app.headerTitle')}
               </h1>
@@ -65,7 +65,7 @@ export const rootRoute = createRootRoute({
               <Link
                 data-testid='header-title'
                 to='/'
-                className='text-base sm:text-lg font-heading text-playful-heading hover:opacity-80 transition-opacity truncate max-w-40 sm:max-w-none'
+                className='text-base sm:text-lg font-heading text-playful-heading hover:opacity-80 transition-opacity truncate max-w-48 sm:max-w-none'
               >
                 {t('app.headerTitle')}
               </Link>

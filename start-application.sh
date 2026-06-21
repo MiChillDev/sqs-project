@@ -11,6 +11,7 @@ RESET=false
 SHOW_CREDENTIALS=false
 ASSUME_YES=false
 VERBOSE=false
+E2E=false
 
 SECRETS_DIR=".secrets"
 ENV_FILE=".env"
@@ -45,6 +46,8 @@ Options:
 
   --show-credentials    Print the local seed admin credentials and exit.
                         Use with care. Do not run this in CI logs.
+
+  --e2e                 Start app with mock external API for E2E testing.
 
   --verbose             Show Docker pull, build, and startup output.
                         By default, Docker output is hidden unless an error occurs.
@@ -100,6 +103,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --verbose)
       VERBOSE=true
+      shift
+      ;;
+    --e2e)
+      E2E=true
       shift
       ;;
     -h|--help)
@@ -181,27 +188,8 @@ write_secret() {
   chmod 600 "$file" 2>/dev/null || true
 }
 
-random_chars() {
-  local chars="$1"
-  local length="$2"
-
-  LC_ALL=C tr -dc "$chars" < /dev/urandom 2>/dev/null | head -c "$length"
-}
-
 generate_password() {
-  local lower
-  local upper
-  local digit
-  local special
-  local rest
-
-  lower="$(random_chars 'a-z' 6)"
-  upper="$(random_chars 'A-Z' 6)"
-  digit="$(random_chars '0-9' 6)"
-  special="$(random_chars '@_%+=:,.!?-' 4)"
-  rest="$(random_chars 'A-Za-z0-9@_%+=:,.!?-' 10)"
-
-  printf "%s%s%s%s%s" "$lower" "$upper" "$digit" "$special" "$rest"
+  LC_ALL=C tr -dc 'A-Za-z0-9@_%+=:,.!?-' < /dev/urandom 2>/dev/null | head -c 32
 }
 
 validate_username() {
@@ -527,7 +515,7 @@ print_summary() {
     echo "Frontend:     http://localhost:${frontend_port}"
   fi
   echo "Backend API:  http://localhost:${backend_port}"
-  echo "PostgreSQL:   localhost:${postgres_port}"
+  echo "PostgreSQL:   http://localhost:${postgres_port}"
   echo ""
   echo "Seed admin:"
   echo "  Username: $admin_username"
@@ -565,6 +553,10 @@ fi
 
 ensure_env_file
 ensure_secrets
+
+if [[ "$E2E" == "true" ]]; then
+  export SPRING_PROFILES_ACTIVE="mock-external-api"
+fi
 stop_existing_containers
 
 echo "Pulling base images..."
