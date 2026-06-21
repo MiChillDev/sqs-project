@@ -20,6 +20,7 @@
 - **No hardcoded seed user**: the initial admin user is created from generated or user-provided secrets, not from static migration data
 - **No credential logging**: scripts and application startup logic must not print passwords or tokens
 - **Least-privilege load testing**: k6 runs as a non-root container user and receives credentials as mounted secret files, not as normal container environment variables
+- **Defense-in-depth credential validation**: seed credential rules are enforced both by the startup script and by backend startup validation
 
 ### 3. Maintainability
 

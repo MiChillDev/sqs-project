@@ -55,38 +55,6 @@ PostgreSQL 16 stores all persistent data. Schema changes are managed through Fly
 
 ## Environment Configuration
 
-Configuration is managed through environment variables and Docker Compose. Sensitive values (database credentials, passwords) are injected via Docker secrets at `/run/secrets/` and excluded from version control.
+Configuration is managed through environment variables and Docker Compose. Non-secret values are stored in `.env`, which the starting scipt creates from `.env.example` for local runs. Sensitive values (database credentials, passwords) are injected through Docker Compose secrets at `/run/secrets/` and excluded from version control.
 
-## Local Credential Bootstrap
-
-Local runtime configuration is split into non-secret configuration and secrets.
-
-Non-secret configuration is stored in `.env`, which is created from `.env.example` by `start-application.sh` if it does not exist. It contains values such as service ports, database name, database user, and frontend API configuration.
-
-Secrets are stored separately in the gitignored `.secrets/` directory. On first startup, `start-application.sh` creates the required secret files:
-
-| File | Purpose |
-| ---- | ------- |
-| `.secrets/postgres_password` | PostgreSQL database password |
-| `.secrets/app_seed_admin_username` | Initial backend seed admin username |
-| `.secrets/app_seed_admin_password` | Initial backend seed admin password |
-
-The backend imports Docker secrets through Spring Boot config tree support from `/run/secrets/`. PostgreSQL reads its password via `POSTGRES_PASSWORD_FILE`.
-
-The startup script supports both interactive and non-interactive operation. In interactive mode, the user can accept the default seed admin username or enter a custom one. If no seed admin password is entered, the script generates one. In non-interactive mode (`--yes` or CI), all required values are generated automatically.
-
-The backend validates the configured seed admin credentials on startup and creates or updates the seed admin user accordingly. The database migration layer is responsible for schema evolution only and does not seed hardcoded credentials.
-
-For the architectural decisions behind this mechanism, see [ADR-09](adrs/adr-09-initial-user.md) and [ADR-10](adrs/adr-10-secrets-management.md).
-
-## Load Test Secret Handling
-
-The `k6` service runs only on demand through the `loadtest` profile and does not expose any port. It runs as a non-root user and receives credentials through k6-specific Docker Compose secrets.
-
-The backend uses file-backed secrets from `.secrets/`. k6 uses environment-backed Compose secrets created by `run-loadtest.sh`. This avoids running k6 as root and avoids weakening the permissions of the persistent local secret files. The credentials are mounted into the k6 container as files under `/run/secrets/...` and are not passed as normal k6 container environment variables.
-
-Load tests should be started through:
-
-```bash
-./run-loadtest.sh tests/baseline-test.js
-```
+The default development stack uses file-backed Compose secrets from the project-local `.secrets/` directory. The `k6` load-test container, as an exception, cannot read those files. It is started only on demand through the `loadtest` profile and receives credentials through k6-specific Compose secrets so that it can run as a non-root user. The reasoning behind this distinction is documented in [ADR-10](adrs/adr-10-secrets-management.md).

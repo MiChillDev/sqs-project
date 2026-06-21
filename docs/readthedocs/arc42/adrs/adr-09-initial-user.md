@@ -37,6 +37,17 @@ The database migration layer does not create a hardcoded admin user. Database mi
 
 Operational details such as prompt behavior, default username selection, password generation, validation rules, and reset behavior are documented in [7. Deployment View](../07-deployment.md).
 
+
+### Implementation note
+
+The implementation is split into a startup adapter and a service: 
+
+- `SeedAdminInitializer` is a Spring startup component. It reads the configured seed credentials from Spring configuration, validates them, and triggers the seed-user use case during application startup. 
+- `SeedAdminService` contains the actual seed-user use case. It checks whether the configured user exists, creates the user if missing, or updates the stored password hash if the configured secret changed. 
+
+`SeedAdminInitializer` is placed in the `config` package because it belongs to application bootstrap, not to a specific HTTP endpoint. It is allowed to call the service layer for the same reason a controller is allowed to call the service layer: it is an entry point into an application use case. It must not access repositories directly. Repository access remains encapsulated in the service layer.
+
+
 ## Rationale
 
 * **No hardcoded credentials**: No default password or reusable password hash is committed to the repository.

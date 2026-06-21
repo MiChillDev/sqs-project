@@ -28,6 +28,7 @@ Load tests validate system behavior under realistic traffic conditions:
 - **Spike scenario**: Sudden traffic burst to validate that the system recovers gracefully.
 
 Load tests run against a deployed Docker Compose environment. Performance thresholds are defined for each scenario (p95 latency, error rate) and tracked over time.
+Operational details for running the load tests are documented in [Testing](../../testing.md). Credential handling for k6 is part of the secret-management decision in [ADR-10](adr-10-secrets-management.md).
 
 ### Layer 3: Static Code Analysis
 

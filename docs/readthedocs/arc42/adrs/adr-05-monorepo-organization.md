@@ -21,7 +21,7 @@ sqs-project/
    ├── presentation/        # Final project presentation 
    ├── readthedocs/         # Architecture documentation (ADRs, arc42, C4)
    └── retro/               # Team retrospective
-├── test/                   # Load and E2E test suites
+├── test/                   # Load, E2E, Integration test suites
 ├── docker-compose.yml
 ├── start-application.sh    # Interactive script for starting the application
 ├── stop-application.sh     # Script for stopping the application
