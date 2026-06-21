@@ -11,7 +11,7 @@ import { rootRoute } from './__root';
 type JokeCardContentProps = Readonly<{
   isError: boolean;
   isSuccess: boolean;
-  joke?: string;
+  joke?: string | null;
 }>;
 
 function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
@@ -21,9 +21,9 @@ function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
     <CardContent className='flex-1 flex flex-col items-center justify-center gap-6 text-center'>
       {isError && <div className='text-xl text-destructive'>{t('jokePage.error')}</div>}
 
-      {isSuccess && !joke && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
+      {isSuccess && joke === null && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
 
-      {isSuccess && joke && (
+      {isSuccess && typeof joke === 'string' && joke && (
         <div data-testid='joke-content' className='text-3xl font-heading text-playful-text'>
           {joke}
         </div>
@@ -44,7 +44,7 @@ function getButtonLabel(t: (key: string) => string, isSuccess: boolean) {
 function JokePage() {
   const { t } = useTranslation();
 
-  const [joke, setJoke] = useState<string>();
+  const [joke, setJoke] = useState<string | null>();
   const [isError, setIsError] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
