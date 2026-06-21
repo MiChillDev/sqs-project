@@ -28,3 +28,4 @@ The primary goal is to apply and demonstrate software architecture, quality assu
 | Development Team   | Three student developers | Maintainable architecture, high test coverage, CI/CD automation         |
 | University Faculty | Course instructors       | Demonstration of software quality practices, architecture documentation |
 | End Users          | General public           | Fun, responsive Chuck Norris joke experience                            |
+

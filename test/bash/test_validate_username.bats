@@ -64,3 +64,4 @@ teardown() {
   run validate_username "ad@min"
   [ "$status" -eq 1 ]
 }
+
