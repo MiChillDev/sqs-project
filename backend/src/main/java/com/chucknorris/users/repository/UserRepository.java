@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface UserRepository {
     Either<ErrorResultStatus, Optional<UserEntity>> findByUsername(String username);
+
+    Either<ErrorResultStatus, UserEntity> save(UserEntity user);
 }
