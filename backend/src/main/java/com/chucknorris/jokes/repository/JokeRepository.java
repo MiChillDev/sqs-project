@@ -10,4 +10,6 @@ public interface JokeRepository {
     Either<ErrorResultStatus, JokeEntity> saveJoke(JokeEntity joke);
 
     Either<ErrorResultStatus, Optional<JokeEntity>> getRandomJoke();
+
+    Either<ErrorResultStatus, Optional<JokeEntity>> getJokeByExternalId(String externalId);
 }

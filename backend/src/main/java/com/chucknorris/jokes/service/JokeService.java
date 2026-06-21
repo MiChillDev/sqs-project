@@ -10,6 +10,8 @@ import com.chucknorris.jokes.repository.JokeRepository;
 import com.chucknorris.jokes.repository.api.ApiJokeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class JokeService {
 
@@ -36,7 +38,16 @@ public class JokeService {
         newJoke.setContent(input.content());
         newJoke.setExternalId(input.externalId());
 
-        return jokeRepository.saveJoke(newJoke)
+        Either<ErrorResultStatus, JokeEntity> jokeEither = Either.right(newJoke);
+
+        return jokeEither
+                .validate(joke -> !joke.getContent().isEmpty(), new ErrorResultStatus(400, "joke cannot be empty"))
+                .validate(joke -> !joke.getExternalId().isEmpty(), new ErrorResultStatus(400, "externalId cannot be empty"))
+                .flatMap(joke ->
+                        jokeRepository.getJokeByExternalId(joke.getExternalId())
+                                .validate(Optional::isEmpty, new ErrorResultStatus(400, "joke with the same external ID already exists"))
+                                .map(existingJokeOpt -> joke))
+                .flatMap(jokeRepository::saveJoke)
                 .map(saved -> new JokeDto(saved.getId(), saved.getExternalId(), saved.getContent()));
     }
 
