@@ -19,3 +19,4 @@ test.describe('Home page', () => {
     await jokePage.verifyHeading();
   });
 });
+
