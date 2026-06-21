@@ -57,9 +57,6 @@ The initial admin bootstrap consists of two backend components:
 | `SeedAdminInitializer` | `config`        | Reads seed credentials from Spring configuration, validates them, and triggers the seed-admin use case |
 | `SeedAdminService`     | `users/service` | Creates or updates the configured seed admin user and stores only the password hash                    |
 
-There is no persistence logic in `SeedAdminInitializer`. It validates configuration and delegates to `SeedAdminService`.
-The database-related use case belongs to `SeedAdminService`. It checks whether the configured username already exists. If the user is missing, it creates the user with a hashed password. If the user exists but the configured password no longer matches the stored hash, it updates the password hash.
-
 This preserves the layered architecture:
 
 ```text

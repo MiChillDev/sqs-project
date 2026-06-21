@@ -16,15 +16,7 @@ Three options were evaluated:
 
 ## Decision
 
-**Use functional error handling with a result type across the backend.**
-
-Operations return a result type with two branches: failure (carrying an HTTP status code and error message) and success (carrying the computed value). Operations are chained via `map` (transform success) and `flatMap` (chain operations that may also fail). At the controller boundary, the result is converted to an HTTP response: failures become error responses with the appropriate status code, successes become the expected response body.
-
-This pattern is applied consistently across all layers:
-
-- **Repositories** return failure results for database errors, missing entities, and external API failures.
-- **Services** chain repository calls and business validations using `flatMap`, short-circuiting on the first failure.
-- **Controllers** convert the final result to an HTTP response via shared infrastructure in the `common` package.
+**Use functional error handling with a result type across the backend: every operation from repository to controller returns `Either<ErrorResultStatus, T>`, making failure paths explicit and compiler-enforced.**
 
 ## Rationale
 
