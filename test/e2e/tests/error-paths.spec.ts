@@ -14,13 +14,12 @@ test.describe('Error paths', () => {
     await loginPage.navigate();
     await loginPage.login(SEED_ADMIN_USERNAME, 'wrong-password-that-is-definitely-incorrect');
     // Wait for error banner to appear after failed login
-    await page.getByTestId('login-error-banner').waitFor({ state: 'visible', timeout: 10000 });
+    await loginPage.errorBanner.waitFor({ state: 'visible', timeout: 10000 });
     const errorMsg = await loginPage.getErrorMessage();
     expect(errorMsg).toBeTruthy();
   });
 
   test('shows validation error on empty joke creation', async ({ page }) => {
-    test.skip(); // Frontend zod validation prevents submission — no error element rendered
     // Login first
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
@@ -28,9 +27,9 @@ test.describe('Error paths', () => {
     const adminPage = new AdminPage(page);
     await adminPage.waitForUrl('**/admin');
 
-    // Submit empty form
+    await adminPage.clickCreateTab();
     await adminPage.createJoke('');
-    const error = page.getByTestId('create-joke-error');
+    const error = page.getByRole('alert');
     await expect(error).toBeVisible();
   });
 

@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { authStorage } from 'src/shared/lib/auth-storage';
@@ -8,8 +8,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem } from './ui/dropdo
 export function UserMenu() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  useLocation();
-
   const token = authStorage.get();
 
   if (!token) {

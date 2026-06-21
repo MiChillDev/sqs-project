@@ -11,12 +11,7 @@ import { Textarea } from 'src/shared/components/ui/textarea';
 import { useZodForm } from 'src/shared/hooks/use-zod-form';
 import { extractErrorKey } from 'src/shared/lib/error-classifier';
 import { handle401 } from 'src/shared/lib/handle-401';
-import { z } from 'zod';
-
-const jokeCreationSchema = z.object({
-  content: z.string().min(1).max(500),
-  externalId: z.string().optional(),
-});
+import { jokeCreationSchema } from 'src/shared/lib/joke-creation-schema';
 
 export function JokeCreationSection() {
   const { t } = useTranslation();

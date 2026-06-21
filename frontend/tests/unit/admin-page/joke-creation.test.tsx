@@ -96,6 +96,30 @@ describe('JokeCreationSection', () => {
     });
   });
 
+  it('displays client error message on ApiError 400 (non-500, non-401)', async () => {
+    mockJokeMutationError(new ApiError(400, 'Bad Request', {}));
+
+    renderComponent();
+
+    await fillJokeFormAndSubmit('A funny joke');
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('The request could not be processed');
+    });
+  });
+
+  it('displays fallback message for unknown error types', async () => {
+    mockJokeMutationError(new Error('something weird'));
+
+    renderComponent();
+
+    await fillJokeFormAndSubmit('A funny joke');
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('Unknown error');
+    });
+  });
+
   it('displays network error message on NetworkError', async () => {
     mockJokeMutationError(new NetworkError(new Error('Failed')));
 
