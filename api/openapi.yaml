@@ -10,11 +10,6 @@ servers:
 
 components:
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-      description: HTTP Basic Authentication with generated token
-
     bearerAuth:
       type: http
       scheme: bearer
@@ -41,6 +36,24 @@ components:
           minLength: 1
           maxLength: 1000
           description: The joke text
+    
+    EmptyJoke:
+      type: object
+      description: Empty-state response returned when the local joke database contains no jokes
+      required:
+        - id
+        - externalId
+        - content
+      properties:
+        id:
+          type: "null"
+          description: No joke ID exists because the local joke database is empty
+        externalId:
+          type: "null"
+          description: No external ID exists because the local joke database is empty
+        content:
+          type: "null"
+          description: No joke content exists because the local joke database is empty
 
     SourceJoke:
       type: object
@@ -149,16 +162,6 @@ components:
             code: 401
             message: Missing or invalid authentication token
 
-    Forbidden:
-      description: Forbidden - Insufficient permissions
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: 403
-            message: Only administrators can add jokes
-
     InternalServerError:
       description: Internal Server Error
       content:
@@ -209,7 +212,7 @@ paths:
       summary: Get a random joke from the external API
       description: Retrieves a random joke from the external chuck norris API
       security:
-        - basicAuth: [ ]
+        - bearerAuth: [ ]
       tags:
         - Source Jokes
       responses:
@@ -220,8 +223,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/SourceJoke'
               example:
-                externalId: 12345
+                externalId: "12345"
                 content: Why did Chuck Norris cross the road? To get to the other side... of the world!
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -234,25 +241,37 @@ paths:
         - Jokes
       responses:
         '200':
-          description: Successfully retrieved a random joke
+          description: Successfully handled random joke request. Returns a joke if the local database contains one; otherwise returns an empty joke DTO.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Joke'
-              example:
-                id: 550e8400-e29b-41d4-a716-446655440000
-                content: Why did Chuck Norris cross the road? To get to the other side... of the world!
+                oneOf:
+                  - $ref: '#/components/schemas/Joke'
+                  - $ref: '#/components/schemas/EmptyJoke'
+              examples:
+                jokeFound:
+                  summary: Joke found
+                  value:
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    externalId: "abc123"
+                    content: Why did Chuck Norris cross the road? To get to the other side... of the world!
+                emptyDatabase:
+                  summary: Local joke database is empty
+                  value:
+                    id: null
+                    externalId: null
+                    content: null
         '500':
           $ref: '#/components/responses/InternalServerError'
 
     post:
       operationId: createJoke
       summary: Add a new joke to the database
-      description: Creates a new joke and stores it in the database. Requires admin authentication.
+      description: Creates a new joke and stores it in the database. Requires a valid bearer token.
       tags:
         - Jokes
       security:
-        - basicAuth: [ ]
+        - bearerAuth: [ ]
       requestBody:
         required: true
         description: Joke data to be added
@@ -264,7 +283,7 @@ paths:
               example1:
                 value:
                   content: Why did Chuck Norris go to the gym? To lift the world!
-                  externalId: 12345
+                  externalId: "12345"
       responses:
         '200':
           description: Joke successfully created and stored in the database
@@ -274,14 +293,12 @@ paths:
                 $ref: '#/components/schemas/Joke'
               example:
                 id: 550e8400-e29b-41d4-a716-446655440001
-                externalId: 12345
+                externalId: "12345"
                 content: Why did Chuck Norris go to the gym? To lift the world!
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
 

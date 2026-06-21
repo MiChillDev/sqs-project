@@ -21,7 +21,15 @@
       { "from": "app-core", "allow": ["shared", "routes-login", "routes-admin", "routes-shared"] },
       // Shared layer is isolated
       { "from": "shared", "allow": [] }
-    ]
+    ],
+    "calls": {
+      "forbidden": [
+        // forbid api on page files
+        { "from": "routes-login", "callee": ["useQuery", "useMutation", "fetch"] },
+        { "from": "routes-admin", "callee": ["useQuery", "useMutation", "fetch"] },
+        { "from": "routes-shared", "callee": ["useQuery", "useMutation", "fetch"] }
+      ]
+    }
   },
   "rules": {
     // Architecture violations and cycles block CI

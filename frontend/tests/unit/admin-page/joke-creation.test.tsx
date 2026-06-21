@@ -14,6 +14,7 @@ import {
   renderComponent,
   screen,
   setupAdminTests,
+  switchToCreateTab,
   userEvent,
   waitFor,
 } from './shared';
@@ -21,8 +22,9 @@ import {
 describe('JokeCreationSection', () => {
   setupAdminTests();
 
-  it('renders content textarea, external ID input, and submit button', () => {
+  it('renders content textarea, external ID input, and submit button', async () => {
     renderComponent();
+    await switchToCreateTab();
 
     expect(screen.getByLabelText('Content')).toBeInTheDocument();
     expect(screen.getByLabelText('External ID')).toBeInTheDocument();
@@ -94,6 +96,30 @@ describe('JokeCreationSection', () => {
     });
   });
 
+  it('displays client error message on ApiError 400 (non-500, non-401)', async () => {
+    mockJokeMutationError(new ApiError(400, 'Bad Request', {}));
+
+    renderComponent();
+
+    await fillJokeFormAndSubmit('A funny joke');
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('The request could not be processed');
+    });
+  });
+
+  it('displays fallback message for unknown error types', async () => {
+    mockJokeMutationError(new Error('something weird'));
+
+    renderComponent();
+
+    await fillJokeFormAndSubmit('A funny joke');
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent('Unknown error');
+    });
+  });
+
   it('displays network error message on NetworkError', async () => {
     mockJokeMutationError(new NetworkError(new Error('Failed')));
 
@@ -119,10 +145,11 @@ describe('JokeCreationSection', () => {
     });
   });
 
-  it('shows "Submitting..." and disables button while pending', () => {
+  it('shows "Submitting..." and disables button while pending', async () => {
     mockCreateJokeMutation.isPending = true;
 
     renderComponent();
+    await switchToCreateTab();
 
     const button = screen.getByRole('button', { name: 'Submitting...' });
     expect(button).toBeDisabled();
@@ -132,6 +159,7 @@ describe('JokeCreationSection', () => {
     const user = userEvent.setup();
     renderComponent();
 
+    await user.click(screen.getByRole('tab', { name: 'Create' }));
     await user.click(screen.getByRole('button', { name: 'Create Joke' }));
 
     expect(mockCreateJokeMutation.mutate).not.toHaveBeenCalled();

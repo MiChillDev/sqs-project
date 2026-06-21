@@ -10,4 +10,7 @@ public interface SpringJokeRepository extends JpaRepository<JokeEntity, UUID> {
     
     @Query(value = "SELECT * FROM jokes ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Optional<JokeEntity> findRandomJoke();
+
+    @Query(value = "SELECT * FROM jokes WHERE external_id = :externalId LIMIT 1", nativeQuery = true)
+    Optional<JokeEntity> findByExternalId(String externalId);
 }

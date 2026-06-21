@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
 @AnalyzeClasses(packages = "com.chucknorris", importOptions = ImportOption.DoNotIncludeTests.class)
@@ -92,6 +93,14 @@ class ArchitectureTest {
                     .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
                     .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Config")
                     .whereLayer("Repository").mayOnlyBeAccessedByLayers("Service");
+
+    // REPOSITORY ACCESS TESTS
+
+    @ArchTest
+    static final ArchRule servicesMustNotDependOnRepositoryImplementations =
+            noClasses()
+                    .that().resideInAPackage("..service..")
+                    .should().dependOnClassesThat().haveSimpleNameEndingWith("Impl");
 
     // ANNOTATION TESTS
 

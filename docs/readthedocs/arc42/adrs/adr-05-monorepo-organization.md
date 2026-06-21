@@ -1,4 +1,6 @@
-# ADR-005: Monorepo Organization
+# ADR-05: Monorepo Organization
+
+[Back to ADR overview](../09-decisions.md)
 
 **Status:** Accepted
 
@@ -12,15 +14,17 @@ The project consists of a frontend application, backend API, documentation, and 
 
 ```
 sqs-project/
-├── api/                # Shared OpenAPI specification and generated TypeScript types
-├── frontend/           # React/Vite SPA application
-├── backend/            # Spring Boot REST API
-├── docs/               # Project-related documents
-   ├── diagrams/        # Architecture diagrams like C4
-   ├── presentation/    # Final project presentation 
-   ├── readthedocs/     # Architecture documentation, ADRs, arc42
-   └── retro/           # Team retrospective
-├── test/               # Load and performance test suites
+├── api/                    # Shared OpenAPI specification and generated TypeScript types
+├── backend/                # Spring Boot REST API
+├── frontend/               # React/Vite SPA application
+├── docs/                   # Project-related documents
+   ├── presentation/        # Final project presentation 
+   ├── readthedocs/         # Architecture documentation (ADRs, arc42, C4)
+   └── retro/               # Team retrospective
+├── test/                   # Load, E2E, Integration test suites
+├── docker-compose.yml
+├── start-application.sh    # Interactive script for starting the application
+├── stop-application.sh     # Script for stopping the application
 ├── docker-compose.yml
 └── README.md
 ```
@@ -38,5 +42,5 @@ Each directory contains its own build configuration, Dockerfile, and dependency 
 
 - Single CI pipeline triggers tests for all components on every push — the full test suite runs even when only one component changed. This can be mitigated with path-based trigger filtering.
 - Potential for merge conflicts in shared areas (Docker Compose configuration, environment files). This is manageable at the team size of three.
-- Monorepo scales well for small-to-medium teams. If the team or codebase grows significantly, splitting into separate repositories for frontend and backend may become warranted.
+- Monorepo scales well for small-to-medium teams. Neither the team nor the codebase grow significantly during this university project. Otherwise, splitting into separate repositories for frontend and backend may become warranted.
 - Shared dependency on Docker Compose at the root ties the development environment together. Changes to the Compose file must be coordinated between developers.

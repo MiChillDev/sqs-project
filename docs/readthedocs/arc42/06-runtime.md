@@ -50,7 +50,7 @@ The user or administrator authenticates by submitting credentials. The system va
 
 The sequence for fetching a random joke from the database is documented in the follwing sequence diagram. It shows two different scenarios:
 
-- no joke found because database is empty (which is not an error technically, hence status code 204 instead of 404)
+- no joke found because database is empty (which is not an error: response contains an empty joke)
 - return valid joke
 
 ```mermaid
@@ -69,8 +69,8 @@ sequenceDiagram
 
     alt No jokes found
         JokeRepo-->>JokeService: empty
-        JokeService-->>JokeController: no content
-        JokeController-->>Client: 204 No Content
+        JokeService-->>JokeController: empty joke data
+        JokeController-->>Client: 200 OK
     else Joke found
         JokeRepo-->>JokeService: joke
         JokeService-->>JokeController: joke data
@@ -79,6 +79,9 @@ sequenceDiagram
 ```
 
 Users fetch a random joke from the local database. No authentication is required. The backend queries the database and returns the joke content.
+
+If no joke exists, the service returns an empty JokeDto with null fields. This is treated as a valid empty-state response, not as a missing resource error.
+The endpoint does not address a specific joke resource by ID. It asks the collection for a random joke. If the collection is empty, the request itself is still valid. The frontend must handle the empty-state DTO and show an appropriate message.
 
 ## Import Joke from External API (Admin)
 

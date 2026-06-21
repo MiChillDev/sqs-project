@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * for Transparency: this interface has been mostly AI GENERATED. Since Java does not have built-in support for Eithers we add a basic implementation ourselves.
+ * for Transparency: this interface has been partially AI GENERATED. Since Java does not have built-in support for Eithers we add a basic implementation ourselves.
  * This is similar to how Scala handles Eithers, where Left is typically used for errors and Right for successful results.
  * The map and flatMap methods allow us to work with the Right value in a functional style, while preserving the Left value in case of errors.
  * Usage of Either enables a more functional approach to error handling, avoiding the need for exceptions and allowing us to compose operations that may fail in a more elegant way.

@@ -39,9 +39,16 @@ function resetMocks() {
   adminMockAuthStorageClear.mockReset();
 }
 
+/** Helper: switch to the Create tab. */
+async function switchToCreateTab() {
+  const user = userEvent.setup();
+  await user.click(screen.getByRole('tab', { name: 'Create' }));
+}
+
 /** Helper: fill the joke creation form and click submit. Returns the user instance. */
 async function fillJokeFormAndSubmit(content: string, externalId?: string) {
   const user = userEvent.setup();
+  await user.click(screen.getByRole('tab', { name: 'Create' }));
   await user.type(screen.getByLabelText('Content'), content);
   if (externalId !== undefined) {
     await user.type(screen.getByLabelText('External ID'), externalId);
@@ -90,5 +97,6 @@ export {
   resetMocks,
   screen,
   setupAdminTests,
+  switchToCreateTab,
   userEvent,
 };

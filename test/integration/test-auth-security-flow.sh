@@ -17,6 +17,8 @@ ADMIN_PASSWORD_SECRET="$SECRETS_DIR/app_seed_admin_password"
 BASE_URL="http://localhost:8080/api/v1"
 HEALTH_URL="$BASE_URL/health"
 LOGIN_URL="$BASE_URL/auth/login"
+JOKES_URL="$BASE_URL/jokes"
+SOURCE_JOKE_URL="$BASE_URL/source-joke"
 
 # ── Counters ──────────────────────────────────────────────────────────────────
 PASS=0
@@ -73,7 +75,7 @@ fi
 echo ""
 echo "── Stage 1: Starting backend stack ──"
 
-if ./start-application.sh --backend-only --yes; then
+if ./start-application.sh --reset --backend-only --yes; then
   pass "Backend stack started successfully"
 else
   fail "Backend stack failed to start"
@@ -160,6 +162,15 @@ else
   fail "Login response body does not contain 'token' field"
 fi
 
+TOKEN="$(echo "$HTTP_BODY" | sed -n 's/.*"token"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+
+if [[ -n "$TOKEN" ]]; then
+  pass "Login token extracted"
+else
+  fail "Could not extract login token from response body"
+  exit 1
+fi
+
 # ── Stage 5: Wrong password ───────────────────────────────────────────────────
 echo ""
 echo "── Stage 5: Wrong password login attempt ──"
@@ -176,6 +187,107 @@ if [[ "$WRONG_CODE" == "404" ]]; then
   pass "Wrong password returned HTTP 404 as expected"
 else
   fail "Wrong password returned HTTP $WRONG_CODE (expected 404)"
+fi
+
+# ── Stage 6: Public endpoint access ───────────────────────────────────────────
+echo ""
+echo "── Stage 6: Public endpoint access ──"
+
+PUBLIC_RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -X GET "$JOKES_URL" 2>/dev/null)
+
+PUBLIC_CODE=$(echo "$PUBLIC_RESPONSE" | tail -n 1)
+
+if [[ "$PUBLIC_CODE" == "200" ]]; then
+  pass "GET /jokes without authentication returned HTTP 200"
+else
+  fail "GET /jokes without authentication returned HTTP $PUBLIC_CODE (expected 200)"
+fi
+
+# ── Stage 7: Penetration test - protected endpoint without token ──────────────
+echo ""
+echo "── Stage 7: Penetration test - protected endpoint without token ──"
+
+NO_AUTH_RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -X POST "$JOKES_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"content":"Security test joke","externalId":"security-no-auth"}' 2>/dev/null)
+
+NO_AUTH_CODE=$(echo "$NO_AUTH_RESPONSE" | tail -n 1)
+
+if [[ "$NO_AUTH_CODE" == "401" ]]; then
+  pass "POST /jokes without Authorization header returned HTTP 401"
+else
+  fail "POST /jokes without Authorization header returned HTTP $NO_AUTH_CODE (expected 401)"
+fi
+
+# ── Stage 8: Penetration test - malformed Authorization header ────────────────
+echo ""
+echo "── Stage 8: Penetration test - malformed Authorization header ──"
+
+MALFORMED_RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -X POST "$JOKES_URL" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: not-a-bearer-token" \
+  -d '{"content":"Security test joke","externalId":"security-malformed-auth"}' 2>/dev/null)
+
+MALFORMED_CODE=$(echo "$MALFORMED_RESPONSE" | tail -n 1)
+
+if [[ "$MALFORMED_CODE" == "401" || "$MALFORMED_CODE" == "400" ]]; then
+  pass "POST /jokes with malformed Authorization header returned HTTP $MALFORMED_CODE"
+else
+  fail "POST /jokes with malformed Authorization header returned HTTP $MALFORMED_CODE (expected 401 or 400)"
+fi
+
+# ── Stage 9: Penetration test - unknown Bearer token ──────────────────────────
+echo ""
+echo "── Stage 9: Penetration test - unknown Bearer token ──"
+
+INVALID_TOKEN_RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -X POST "$JOKES_URL" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer definitely-invalid-token" \
+  -d '{"content":"Security test joke","externalId":"security-invalid-token"}' 2>/dev/null)
+
+INVALID_TOKEN_CODE=$(echo "$INVALID_TOKEN_RESPONSE" | tail -n 1)
+
+if [[ "$INVALID_TOKEN_CODE" == "401" ]]; then
+  pass "POST /jokes with unknown Bearer token returned HTTP 401"
+else
+  fail "POST /jokes with unknown Bearer token returned HTTP $INVALID_TOKEN_CODE (expected 401)"
+fi
+
+# ── Stage 10: Penetration test - protected endpoint with valid token ──────────
+echo ""
+echo "── Stage 10: Penetration test - protected endpoint with valid token ──"
+
+VALID_TOKEN_RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -X POST "$JOKES_URL" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"content":"Security test joke from protected endpoint test","externalId":"security-valid-token"}' 2>/dev/null)
+
+VALID_TOKEN_CODE=$(echo "$VALID_TOKEN_RESPONSE" | tail -n 1)
+
+if [[ "$VALID_TOKEN_CODE" == "200" || "$VALID_TOKEN_CODE" == "201" ]]; then
+  pass "POST /jokes with valid token returned HTTP $VALID_TOKEN_CODE"
+else
+  fail "POST /jokes with valid token returned HTTP $VALID_TOKEN_CODE (expected 200 or 201)"
+fi
+
+# ── Stage 11: Penetration test - source joke without token ────────────────────
+echo ""
+echo "── Stage 11: Penetration test - source joke endpoint without token ──"
+
+SOURCE_NO_AUTH_RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -X GET "$SOURCE_JOKE_URL" 2>/dev/null)
+
+SOURCE_NO_AUTH_CODE=$(echo "$SOURCE_NO_AUTH_RESPONSE" | tail -n 1)
+
+if [[ "$SOURCE_NO_AUTH_CODE" == "401" ]]; then
+  pass "GET /source-joke without Authorization header returned HTTP 401"
+else
+  fail "GET /source-joke without Authorization header returned HTTP $SOURCE_NO_AUTH_CODE (expected 401)"
 fi
 
 # ── Summary ───────────────────────────────────────────────────────────────────

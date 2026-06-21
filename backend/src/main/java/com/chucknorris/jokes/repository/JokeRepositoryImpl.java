@@ -35,4 +35,13 @@ public class JokeRepositoryImpl implements JokeRepository {
             return new Either.Left<>(new ErrorResultStatus(500, "Failed to fetch random joke"));
         }
     }
+
+    @Override
+    public Either<ErrorResultStatus, Optional<JokeEntity>> getJokeByExternalId(String externalId) {
+        try {
+            return new Either.Right<>(repository.findByExternalId(externalId));
+        } catch (Exception e) {
+            return new Either.Left<>(new ErrorResultStatus(500, "Failed to fetch joke by external ID"));
+        }
+    }
 }

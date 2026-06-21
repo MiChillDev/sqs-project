@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: ["main"]
     paths:
+      - '.github/workflows/test-bash.yaml'
       - 'start-application.sh'
       - 'stop-application.sh'
       - 'docker-compose.yml'
@@ -19,7 +20,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Install Bats
-          run: sudo npm install -g bats
+        run: sudo npm install -g bats
 
       - name: Run Bats tests
         run: bats test/bash/
@@ -39,10 +40,10 @@ jobs:
           cache: maven
 
       - name: Make scripts executable
-        run: chmod +x start-application.sh stop-application.sh test/integration/test-secrets-flow.sh
+        run: chmod +x start-application.sh stop-application.sh test/integration/test-auth-security-flow.sh
 
       - name: Run integration tests
-        run: ./test/integration/test-secrets-flow.sh
+        run: ./test/integration/test-auth-security-flow.sh
 
       - name: Show Docker Compose logs on failure
         if: failure()

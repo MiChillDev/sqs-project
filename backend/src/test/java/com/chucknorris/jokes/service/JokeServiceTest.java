@@ -71,12 +71,41 @@ class JokeServiceTest {
     @DisplayName("createJoke")
     class CreateJoke {
         @Test
+        @DisplayName("return 400 if joke is empty")
+        void shouldFailIfJokeIsEmpty() {
+            CreateJokeDto input = new CreateJokeDto("", "ext-123");
+
+            Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
+
+            assertThat(res).isInstanceOf(Either.Left.class);
+            if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
+                assertThat(value.code()).isEqualTo(400);
+                assertThat(value.message()).isEqualTo("joke cannot be empty");
+            }
+        }
+
+        @Test
+        @DisplayName("return 400 if externalId is empty")
+        void shouldFailIfExternalIdIsEmpty() {
+            CreateJokeDto input = new CreateJokeDto("hello123", "");
+
+            Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
+
+            assertThat(res).isInstanceOf(Either.Left.class);
+            if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
+                assertThat(value.code()).isEqualTo(400);
+                assertThat(value.message()).isEqualTo("externalId cannot be empty");
+            }
+        }
+
+        @Test
         @DisplayName("should save and return JokeDto when repository saves successfully")
         void shouldSaveAndReturnDto() {
             CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
             JokeEntity saved = new JokeEntity(java.util.UUID.randomUUID(), "ext-2", "hello");
 
             when(jokeRepository.saveJoke(any(JokeEntity.class))).thenReturn(Either.right(saved));
+            when(jokeRepository.getJokeByExternalId(any(String.class))).thenReturn(Either.right(Optional.empty()));
 
             Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);
 
@@ -91,7 +120,7 @@ class JokeServiceTest {
         @DisplayName("should propagate repository error when repository returns Left")
         void shouldPropagateRepositoryError() {
             CreateJokeDto input = new CreateJokeDto("hello", "ext-2");
-            when(jokeRepository.saveJoke(any(JokeEntity.class)))
+            when(jokeRepository.getJokeByExternalId(any(String.class)))
                     .thenReturn(Either.left(new ErrorResultStatus(500, "db error")));
 
             Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(input);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Profile("mock-external-api")
-public class MockApiJokeRepository implements ApiJokeRepository {
+public class MockApiJokeRepositoryImpl implements ApiJokeRepository {
 
     @Override
     public Either<ErrorResultStatus, SourceJokeDto> getRandomSourceJoke() {

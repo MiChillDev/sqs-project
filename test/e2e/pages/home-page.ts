@@ -1,18 +1,12 @@
 import { BasePage } from './base-page.ts';
-import { type Page } from '@playwright/test';
 
 export class HomePage extends BasePage {
   readonly url = '/';
 
-  constructor(page: Page) {
-    super(page);
-  }
+  get homeHeading() { return this.page.getByTestId('home-heading'); }
+  get goToJokesLink() { return this.page.getByTestId('go-to-jokes-link'); }
 
-  async verifyWelcomeMessage(): Promise<void> {
-    await this.page.getByTestId('home-heading').waitFor({ state: 'visible' });
-  }
+  async verifyWelcomeMessage() { await this.homeHeading.waitFor({ state: 'visible' }); }
 
-  async clickGoToJokes(): Promise<void> {
-    await this.page.getByTestId('go-to-jokes-link').click();
-  }
+  async clickGoToJokes() { await this.goToJokesLink.click(); }
 }

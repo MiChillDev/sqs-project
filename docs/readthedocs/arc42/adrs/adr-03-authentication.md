@@ -1,10 +1,14 @@
-# ADR-003: Token-Based Authentication
+# ADR-03: Token-Based Authentication
+
+[Back to ADR overview](../09-decisions.md)
 
 **Status:** Accepted
 
 ## Context
 
 The application requires user authentication for protected operations such as joke creation and external API access. There are two access levels: public joke browsing (unauthenticated) and administrative operations (authenticated). Two roles exist: Administrator (can import jokes from external API and create jokes) and Regular User (read-only access to jokes from the local database).
+
+The application does not provide public user registration because the current scope only requires one administrative account for importing and creating jokes. Public joke browsing does not require authentication, so additional regular user accounts would add user-management complexity without supporting an implemented use case.
 
 Three options were evaluated:
 
@@ -31,7 +35,7 @@ Security hardening measures include: constant-time comparison for password and t
 - **Lightweight for small scope**: The entire authentication module is compact and auditable. No Spring Security filter chains, configuration classes, or `UserDetailsService` implementations needed.
 - **No framework coupling**: Authentication logic is independent of Spring Security's lifecycle. Migrating frameworks would not require rewriting auth.
 - **Server-side token invalidation**: Since tokens are stored in the database, invalidating a session is a single row deletion. JWT-based systems require blocklists or short expiry windows to achieve the same effect.
-- **Educational value**: Building authentication from first principles teaches the team about hashing, session management, constant-time comparison, and bearer token patterns — aligning with the university project's learning objectives.
+- **Educational value**: Building authentication from first principles teaches the team about hashing, session management, constant-time comparison, and bearer token patterns.
 
 ## Alternatives Considered
 
