@@ -21,7 +21,9 @@ function JokeCardContent({ isError, isSuccess, joke }: JokeCardContentProps) {
     <CardContent className='flex-1 flex flex-col items-center justify-center gap-6 text-center'>
       {isError && <div className='text-xl text-destructive'>{t('jokePage.error')}</div>}
 
-      {isSuccess && joke === null && <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>}
+      {isSuccess && joke === null && (
+        <div className='text-xl text-destructive'>{t('jokePage.empty')}</div>
+      )}
 
       {isSuccess && typeof joke === 'string' && joke && (
         <div data-testid='joke-content' className='text-3xl font-heading text-playful-text'>

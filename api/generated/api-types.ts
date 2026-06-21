@@ -103,6 +103,15 @@ export interface components {
             /** @description The joke text */
             content: string;
         };
+        /** @description Empty-state response returned when the local joke database contains no jokes */
+        EmptyJoke: {
+            /** @description No joke ID exists because the local joke database is empty */
+            id: null;
+            /** @description No external ID exists because the local joke database is empty */
+            externalId: null;
+            /** @description No joke content exists because the local joke database is empty */
+            content: null;
+        };
         SourceJoke: {
             /** @description Original ID from the chuck norris API */
             externalId: string;
@@ -287,19 +296,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully retrieved a random joke */
+            /** @description Successfully handled random joke request. Returns a joke if the local database contains one; otherwise returns an empty joke DTO. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    /**
-                     * @example {
-                     *       "id": "550e8400-e29b-41d4-a716-446655440000",
-                     *       "content": "Why did Chuck Norris cross the road? To get to the other side... of the world!"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["Joke"];
+                    "application/json": components["schemas"]["Joke"] | components["schemas"]["EmptyJoke"];
                 };
             };
             500: components["responses"]["InternalServerError"];
