@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
@@ -35,8 +36,15 @@ vi.mock('src/shared/components/animations/confetti', () => ({
 // -----------------------------
 
 function renderComponent() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   const Component = jokeRoute.options.component as ComponentType;
-  return render(<Component />);
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <Component />
+    </QueryClientProvider>
+  );
 }
 
 function mockSuccessfulFetch(content: string | null = 'Funny joke') {
