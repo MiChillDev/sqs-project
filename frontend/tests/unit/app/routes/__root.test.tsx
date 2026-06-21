@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import type { ComponentType } from 'react';
 import { rootRoute } from 'src/app/routes/__root';
 import { describe, expect, it, vi } from 'vitest';
-import { getTranslation } from './shared/translation-helper';
+import { getTranslation } from '../../translation-helper';
 
 let currentPathname = '/';
 

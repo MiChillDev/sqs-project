@@ -2,11 +2,12 @@ import { renderHook } from '@testing-library/react';
 import { ApiError, NetworkError } from 'src/shared/api/api-error';
 import { useLogin } from 'src/shared/api/hooks';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createQueryWrapper } from './shared/test-utils';
+import { createQueryWrapper } from '../../../test-utils';
 
 describe('useLogin', () => {
   afterEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllGlobals();
   });
 
   it('posts credentials and returns TokenResponse on success', async () => {

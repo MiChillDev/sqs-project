@@ -176,7 +176,7 @@ describe('handleMutationClientError skipGlobalErrorToast', () => {
 
   it('does NOT call toast.error when skipGlobalErrorToast is truthy', async () => {
     const { useMutation } = await import('@tanstack/react-query');
-    const { QueryClientProviderWrapper } = await import('../../src/app/providers/query-client');
+    const { QueryClientProviderWrapper } = await import('src/app/providers/query-client');
     const { renderHook, act } = await import('@testing-library/react');
 
     const { result } = renderHook(
@@ -205,7 +205,7 @@ describe('handleMutationClientError skipGlobalErrorToast', () => {
 
   it('DOES call toast.error when skipGlobalErrorToast is absent', async () => {
     const { useMutation } = await import('@tanstack/react-query');
-    const { QueryClientProviderWrapper } = await import('../../src/app/providers/query-client');
+    const { QueryClientProviderWrapper } = await import('src/app/providers/query-client');
     const { renderHook, act } = await import('@testing-library/react');
 
     const { result } = renderHook(
@@ -248,9 +248,9 @@ describe('handleMutationClientError full pipeline', () => {
   });
 
   it('calls toast.error with correct title and description for ApiError 404', async () => {
-    const { ApiError } = await import('../../src/shared/api/api-error');
+    const { ApiError } = await import('src/shared/api/api-error');
     const { useMutation } = await import('@tanstack/react-query');
-    const { QueryClientProviderWrapper } = await import('../../src/app/providers/query-client');
+    const { QueryClientProviderWrapper } = await import('src/app/providers/query-client');
     const { renderHook, act } = await import('@testing-library/react');
 
     const { result } = renderHook(
@@ -279,9 +279,9 @@ describe('handleMutationClientError full pipeline', () => {
   });
 
   it('calls toast.error with correct title and description for NetworkError', async () => {
-    const { NetworkError } = await import('../../src/shared/api/api-error');
+    const { NetworkError } = await import('src/shared/api/api-error');
     const { useMutation } = await import('@tanstack/react-query');
-    const { QueryClientProviderWrapper } = await import('../../src/app/providers/query-client');
+    const { QueryClientProviderWrapper } = await import('src/app/providers/query-client');
     const { renderHook, act } = await import('@testing-library/react');
 
     const { result } = renderHook(
@@ -316,7 +316,7 @@ describe('QueryClientProviderWrapper', () => {
   });
 
   it('renders children', async () => {
-    const { QueryClientProviderWrapper } = await import('../../src/app/providers/query-client');
+    const { QueryClientProviderWrapper } = await import('src/app/providers/query-client');
     const { render, screen } = await import('@testing-library/react');
 
     render(

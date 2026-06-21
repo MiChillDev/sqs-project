@@ -1,6 +1,6 @@
+import type { JokeCreationFormValues } from 'src/shared/lib/joke-creation-schema';
+import { jokeCreationSchema } from 'src/shared/lib/joke-creation-schema';
 import { describe, expect, it } from 'vitest';
-import type { JokeCreationFormValues } from '../../src/shared/lib/joke-creation-schema';
-import { jokeCreationSchema } from '../../src/shared/lib/joke-creation-schema';
 
 describe('jokeCreationSchema', () => {
   it('fails when content is empty', () => {

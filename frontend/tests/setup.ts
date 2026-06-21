@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
-import { getTranslation } from './unit/shared/translation-helper';
+import { getTranslation } from './unit/translation-helper';
 
 const { mockNavigate, mockUseSearch } = vi.hoisted(() => ({
   mockNavigate: vi.fn(),

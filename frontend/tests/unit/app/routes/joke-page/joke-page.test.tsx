@@ -4,8 +4,8 @@ import userEvent from '@testing-library/user-event';
 import type { ComponentType } from 'react';
 import jokeRoute from 'src/app/routes/joke-page';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import enTranslation from '../../public/locales/en/translation.json';
-import { getTranslation } from './shared/translation-helper';
+import enTranslation from '../../../../../public/locales/en/translation.json';
+import { getTranslation } from '../../../translation-helper';
 
 // -----------------------------
 // MOCKS

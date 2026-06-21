@@ -3,10 +3,11 @@ import { renderHook } from '@testing-library/react';
 import { ApiError } from 'src/shared/api/api-error';
 import { useCreateJoke, useHealthCheck, useRandomJoke, useSourceJoke } from 'src/shared/api/hooks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createQueryWrapper } from '../shared/test-utils';
+import { createQueryWrapper } from '../../test-utils';
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe('useRandomJoke', () => {

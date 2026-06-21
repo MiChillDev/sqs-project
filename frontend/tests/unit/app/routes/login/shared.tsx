@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 export { ApiError, NetworkError } from 'src/shared/api/api-error';
 
-import enTranslation from '../../../public/locales/en/translation.json';
+import enTranslation from '../../../../../public/locales/en/translation.json';
 
 export {
   afterEach,
@@ -13,10 +13,10 @@ export {
   describe,
   expect,
   it,
-} from '../shared/test-utils';
+} from '../../../test-utils';
 
 import { cleanup } from '@testing-library/react';
-import { render, screen, userEvent, waitFor } from '../shared/test-utils';
+import { render, screen, userEvent, waitFor } from '../../../test-utils';
 import { loginMockAuthStorageGet, loginMockAuthStorageSet, mockLoginMutation } from './mocks';
 
 const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
@@ -61,8 +61,6 @@ export {
   loginAndExpectRedirect,
   loginMockAuthStorageGet,
   loginMockAuthStorageGet as mockAuthStorageGet,
-  loginMockAuthStorageSet,
-  loginMockAuthStorageSet as mockAuthStorageSet,
   mockLoginMutation,
   mockNavigate,
   mockUseSearch,
@@ -70,7 +68,6 @@ export {
   screen,
   setupLoginTests,
   userEvent,
-  vi,
   waitFor,
 };
 

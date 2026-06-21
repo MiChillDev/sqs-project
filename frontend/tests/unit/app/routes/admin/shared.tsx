@@ -12,10 +12,10 @@ export {
   expect,
   it,
   waitFor,
-} from '../shared/test-utils';
+} from '../../../test-utils';
 
 import { cleanup } from '@testing-library/react';
-import { render, screen, userEvent } from '../shared/test-utils';
+import { render, screen, userEvent } from '../../../test-utils';
 import { adminMockAuthStorageClear, mockCreateJokeMutation, mockSourceJokeQuery } from './mocks';
 
 const mockNavigate = (globalThis as Record<string, unknown>).__mockNavigate as {
@@ -94,7 +94,6 @@ export {
   mockNavigate,
   mockSourceJokeQuery,
   renderComponent,
-  resetMocks,
   screen,
   setupAdminTests,
   switchToCreateTab,

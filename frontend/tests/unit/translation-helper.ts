@@ -1,4 +1,4 @@
-import enTranslation from '../../../public/locales/en/translation.json';
+import enTranslation from '../../public/locales/en/translation.json';
 
 export function getTranslation(key: string, translations?: Record<string, unknown>): string {
   const source = translations ?? (enTranslation as unknown as Record<string, unknown>);
