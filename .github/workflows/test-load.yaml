@@ -1,16 +1,11 @@
 name: Backend Load Test Pipeline
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - 'backend/**'
-      - 'test/load/**'
-  workflow_dispatch:
-
-concurrency:
-  group: loadtest-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      run-spike:
+        type: boolean
+        default: false
 
 jobs:
   k6-load-test:
@@ -18,6 +13,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
       - name: Make scripts executable
         run: |
           chmod +x start-application.sh
@@ -34,7 +30,7 @@ jobs:
         run: ./test/load/run-loadtest.sh tests/stress-test.js
 
       - name: Run spike test
-        if: github.event_name == 'workflow_dispatch'
+        if: inputs.run-spike
         run: ./test/load/run-loadtest.sh tests/spike-test.js
 
       - name: Show service logs on failure

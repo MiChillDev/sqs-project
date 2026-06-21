@@ -1,10 +1,7 @@
 name: Backend CI Pipeline
 
 on:
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'backend/**'
+  workflow_call:
 
 jobs:
   build-and-test-backend:
@@ -39,4 +36,3 @@ jobs:
           name: jacoco-xml-report
           path: backend/target/site/jacoco/jacoco.xml
           retention-days: 7
-
