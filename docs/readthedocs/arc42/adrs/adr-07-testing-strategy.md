@@ -97,8 +97,6 @@ injection, broken authentication, security misconfiguration).
   (see [ADR-03](adr-03-authentication.md) for the design rationale).
 - CI: runs in `.github/workflows/test-bash.yaml`, Stage 2, after backend unit tests pass.
 
-<!-- TODO: split test-auth-security-flow.sh into separate integration test and security test files -->
-
 ### Area 8: Architecture Testing
 
 Architecture tests ensure the codebase adheres to defined constraints and prevent structural erosion over time.

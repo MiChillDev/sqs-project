@@ -33,13 +33,13 @@ jobs:
           const fs = require('node:fs');
 
           const filters = {
-            frontend: /^(frontend\/|api\/)/,
-            backend:  /^(backend\/|api\/)/,
-            docs:     /^docs\/readthedocs\//,
-            scripts:  /^(test\/bash\/|test\/integration\/|backend\/|start-application\.sh|stop-application\.sh|docker-compose\.yml|\.github\/workflows\/)/,
-            api:      /^api\//,
-            e2e:      /^(frontend\/|backend\/|api\/|test\/e2e\/)/,
-            load:     /^(backend\/|test\/load\/)/,
+            frontend: /^(frontend\/|api\/)/m,
+            backend:  /^(backend\/|api\/)/m,
+            docs:     /^docs\/readthedocs\//m,
+            scripts:  /^(test\/bash\/|test\/integration\/|backend\/|start-application\.sh|stop-application\.sh|docker-compose\.yml|\.github\/workflows\/)/m,
+            api:      /^api\//m,
+            e2e:      /^(frontend\/|backend\/|api\/|test\/e2e\/)/m,
+            load:     /^(backend\/|test\/load\/)/m,
           };
 
           let files;

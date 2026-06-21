@@ -144,7 +144,10 @@ echo "── Stage 4: Correct login with seed admin credentials ──"
 LOGIN_RESPONSE=$(curl -s -w "\n%{http_code}" \
   -X POST "$LOGIN_URL" \
   -H "Content-Type: application/json" \
-  -d "{\"username\":\"$ADMIN_USERNAME\",\"password\":\"$ADMIN_PASSWORD\"}" 2>/dev/null)
+  -d @- 2>/dev/null <<EOF
+{"username":"$ADMIN_USERNAME","password":"$ADMIN_PASSWORD"}
+EOF
+)
 
 HTTP_BODY=$(echo "$LOGIN_RESPONSE" | sed '$ d')
 HTTP_CODE=$(echo "$LOGIN_RESPONSE" | tail -n 1)
@@ -155,16 +158,10 @@ else
   fail "Correct login returned HTTP $HTTP_CODE (expected 200)"
 fi
 
-# Verify the response body contains a token
-if echo "$HTTP_BODY" | grep -q '"token"'; then
-  pass "Login response body contains 'token' field"
-else
-  fail "Login response body does not contain 'token' field"
-fi
-
+# Verify the response body contains a valid token (not null/empty)
 TOKEN="$(echo "$HTTP_BODY" | sed -n 's/.*"token"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
 
-if [[ -n "$TOKEN" ]]; then
+if [[ -n "$TOKEN" && "$TOKEN" != "null" ]]; then
   pass "Login token extracted"
 else
   fail "Could not extract login token from response body"
@@ -178,9 +175,8 @@ echo "── Stage 5: Wrong password login attempt ──"
 WRONG_RESPONSE=$(curl -s -w "\n%{http_code}" \
   -X POST "$LOGIN_URL" \
   -H "Content-Type: application/json" \
-  -d "{\"username\":\"$ADMIN_USERNAME\",\"password\":\"wrong-password-123\"}" 2>/dev/null)
+  -d '{"username":"'"$ADMIN_USERNAME"'","password":"wrong-password-123"}' 2>/dev/null)
 
-WRONG_BODY=$(echo "$WRONG_RESPONSE" | sed '$ d')
 WRONG_CODE=$(echo "$WRONG_RESPONSE" | tail -n 1)
 
 if [[ "$WRONG_CODE" == "404" ]]; then
