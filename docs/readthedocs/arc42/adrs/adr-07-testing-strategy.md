@@ -73,7 +73,7 @@ prevent architectural erosion over time and ensure that the intended layering is
   tests include rules such as:
     - Controllers, Services and Repositories can only access each other in the following hierarchy: Controller -> Service -> Repository.
     - Classes and interfaces must be named according to the package and functionality they serve (e.g., classes in the service package must end with "Service").
-    - Controllers, Services and Repsitories must be annotated with @Controller, @Service and @Repository respectively.
+    - Controllers, Services and Repository must be annotated with @Controller, @Service and @Repository respectively.
 - **Frontend**: TODO
 
 ## Rationale
