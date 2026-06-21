@@ -15,12 +15,8 @@ The repository layer uses interface/implementation separation to isolate infrast
 ### 2. Functional Error Handling via Either Monad
 
 [ADR-06](adrs/adr-06-functional-error-handling.md)
-Instead of exceptions, the backend uses a custom `Either<L, R>` sealed interface:
 
-- `Right<L, R>` = success
-- `Left<L, R>` = error (carries `ErrorResultStatus` with HTTP code and message)
-- Chained via `map()`, `flatMap()`, `validate()` operations
-- `BaseController.handleEither()` converts to `ResponseEntity` at the controller boundary
+All backend operations, from repository to controller, return a result type that makes failure paths explicit and compiler-enforced. See ADR-06 for the full decision, rationale, and trade-offs.
 
 ### 3. OpenAPI-First Type Contract
 
@@ -35,12 +31,7 @@ This provides:
 
 ### 4. Custom Token-Based Authentication
 
-Authentication is implemented without Spring Security, using a custom mechanism:
-
-- Login validates credentials against `users` table with strong PBKDF2 password hashing
-- On success, a random UUID token is stored in `auth_sessions` with a configurable expiration
-- Protected endpoints validate `Authorization: Bearer <token>` header via `BaseController.executeAuthenticated()`
-- Security hardening: identical error messages for wrong password / missing user (prevents username enumeration); obfuscated error messages for missing tokens
+Authentication is implemented without Spring Security. Opaque bearer tokens are stored server-side, making session revocation a single row deletion. Security hardening: identical error messages for wrong password / missing user (prevents username enumeration); obfuscated error messages for missing tokens. See [ADR-03](adrs/adr-03-authentication.md) for the full design.
 
 ### 5. Dynamic Credential Bootstrap and Docker Compose Secrets
 

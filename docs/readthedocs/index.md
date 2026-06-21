@@ -1,4 +1,4 @@
-# sqs-project — Chuck Norris Joke Page
+# sqs-project: Chuck Norris Joke Page
 
 A web application for fetching, displaying, and managing Chuck Norris jokes. Developed as a university project by three students for a software quality assurance course.
 

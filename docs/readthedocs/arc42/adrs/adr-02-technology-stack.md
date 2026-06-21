@@ -13,7 +13,7 @@ The development team consists of three students with mixed experience in JavaScr
 ## Decision
 
 | Layer                     | Technology                |
-| ------------------------- | --------------------------|
+| ------------------------- | ------------------------- |
 | **Frontend Framework**    | React (TypeScript)        |
 | **Build Tool (Frontend)** | Vite                      |
 | **CSS**                   | TailwindCSS               |
