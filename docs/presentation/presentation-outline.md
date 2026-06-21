@@ -1,5 +1,3 @@
-
-
 # Motivation / Intro
 
 Chuck Norris Jokes

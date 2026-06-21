@@ -20,7 +20,7 @@ The external actors are described in [Chapter 3 (Context and Scope)](03-context.
 
 ## Level 2: Containers
 
-The container diagram is available as [C4 Level 2 — Containers](mermaid/c2-container.mmd).
+The container diagram is available as [C4 Level 2: Containers](mermaid/c2-container.mmd).
 
 | Container        | Technology         | Responsibility                                                                       |
 | ---------------- | ------------------ | ------------------------------------------------------------------------------------ |
@@ -31,8 +31,8 @@ The container diagram is available as [C4 Level 2 — Containers](mermaid/c2-con
 ## Level 3: Components
 
 The component diagrams are available as:
-- [C4 Level 3 — Backend Components](mermaid/c3-backend.mmd)
-- [C4 Level 3 — Frontend Components](mermaid/c3-frontend.mmd)
+- [C4 Level 3: Backend Components](mermaid/c3-backend.mmd)
+- [C4 Level 3: Frontend Components](mermaid/c3-frontend.mmd)
 
 The backend is organized into feature packages, each containing its own controller, service, and repository layers:
 
@@ -53,7 +53,7 @@ The database schema diagram is available as [ER Diagram](mermaid/er-diagram.mmd)
 The initial admin bootstrap consists of two backend components:
 
 | Component              | Package         | Responsibility                                                                                         |
-| -----------------------| --------------- | ------------------------------------------------------------------------------------------------------ |
+| ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------ |
 | `SeedAdminInitializer` | `config`        | Reads seed credentials from Spring configuration, validates them, and triggers the seed-admin use case |
 | `SeedAdminService`     | `users/service` | Creates or updates the configured seed admin user and stores only the password hash                    |
 
