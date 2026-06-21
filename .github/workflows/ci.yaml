@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # change detection
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+      api: ${{ steps.filter.outputs.api }}
+      docs: ${{ steps.filter.outputs.docs }}
+      bash: ${{ steps.filter.outputs.bash }}
+      integration: ${{ steps.filter.outputs.integration }}
+      e2e: ${{ steps.filter.outputs.e2e }}
+      load: ${{ steps.filter.outputs.load }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'api/**'
+            backend:
+              - 'backend/**'
+            api:
+              - 'api/**'
+            docs:
+              - 'docs/readthedocs/**'
+            bash:
+              - 'test/bash/**'
+              - 'test/integration/**'
+              - 'backend/**'
+              - 'start-application.sh'
+              - 'stop-application.sh'
+              - 'docker-compose.yml'
+              - '.github/workflows/*.yaml'
+            integration:
+              - 'test/integration/**'
+              - 'backend/**'
+              - 'start-application.sh'
+              - 'stop-application.sh'
+              - 'docker-compose.yml'
+              - '.github/workflows/*.yaml'
+            e2e:
+              - 'frontend/**'
+              - 'backend/**'
+              - 'test/e2e/**'
+              - 'api/**'
+            load:
+              - 'backend/**'
+              - 'test/load/**'
+
+  # Stage 1: fast gates
+
+  lint:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/quality-frontend.yaml
+
+  api-types:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    uses: ./.github/workflows/check-api-types.yaml
+
+  spell-check:
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    uses: ./.github/workflows/spell-check-docs.yaml
+
+  # Stage 2: unit + build (after lint)
+
+  test-frontend:
+    needs: [changes, lint]
+    if: |
+      always() &&
+      needs.changes.outputs.frontend == 'true' &&
+      needs.lint.result != 'failure'
+    uses: ./.github/workflows/test-frontend.yaml
+
+  build-frontend:
+    needs: [changes, lint]
+    if: |
+      always() &&
+      needs.changes.outputs.frontend == 'true' &&
+      needs.lint.result != 'failure'
+    uses: ./.github/workflows/build-frontend.yaml
+
+  test-backend:
+    needs: [changes, lint]
+    if: |
+      always() &&
+      needs.changes.outputs.backend == 'true' &&
+      needs.lint.result != 'failure'
+    uses: ./.github/workflows/test-backend.yaml
+
+  test-bash:
+    needs: [changes, lint]
+    if: |
+      always() &&
+      needs.changes.outputs.bash == 'true' &&
+      needs.lint.result != 'failure'
+    uses: ./.github/workflows/test-bash.yaml
+
+  # Stage 3: integration + scan (after Stage 2)
+
+  test-e2e:
+    needs: [changes, test-frontend, test-backend, build-frontend]
+    if: |
+      always() &&
+      !failure() &&
+      !cancelled() &&
+      needs.changes.outputs.e2e == 'true'
+    uses: ./.github/workflows/test-e2e.yaml
+
+  test-load:
+    needs: [changes, test-backend]
+    if: |
+      always() &&
+      needs.changes.outputs.load == 'true' &&
+      needs.test-backend.result != 'failure'
+    uses: ./.github/workflows/test-load.yaml
+    with:
+      run-spike: ${{ github.event_name == 'workflow_dispatch' }}
+
+  sonarcloud:
+    needs: [changes, test-frontend, test-backend]
+    if: |
+      always() &&
+      !failure() &&
+      !cancelled() &&
+      (github.event_name == 'push' || needs.changes.outputs.frontend == 'true' || needs.changes.outputs.backend == 'true')
+    uses: ./.github/workflows/sonarcloud.yaml
+    secrets: inherit
