@@ -75,7 +75,7 @@ export function getSourceJoke(token) {
 export function createJoke(token) {
   const payload = {
     content: `loadtest-${__VU}-${__ITER}`,
-    externalId: '',
+    externalId: `loadtest-${__VU}-${__ITER}`,
   };
 
   const res = http.post(
