@@ -1,13 +1,7 @@
 name: API Type Generation Check
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - "api/openapi.yaml"
-      - "api/generated/api-types.ts"
-      - "api/package.json"
-      - "api/pnpm-lock.yaml"
+  workflow_call:
 
 jobs:
   check-api-types:
@@ -16,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 22
 
