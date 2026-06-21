@@ -575,7 +575,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             autoLayout tb 220 220
         }
 
-        deployment * "D1_DockerCompose" {
+        deployment * "Docker Compose" "D1_DockerCompose" {
             title "Deployment - Docker Compose"
             include *
             autoLayout lr
