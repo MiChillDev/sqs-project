@@ -4,7 +4,7 @@ import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.common.utils.PasswordHasher;
 import com.chucknorris.users.models.entity.UserEntity;
-import com.chucknorris.users.repository.spring.SpringUserRepository;
+import com.chucknorris.users.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ class SeedAdminServiceTest {
     private static final String NEW_PASSWORD = "AnotherValidPassword123!";
 
     @Mock
-    private SpringUserRepository userRepository;
+    private UserRepository userRepository;
 
     @Nested
     @DisplayName("createOrUpdateSeedAdmin")
@@ -41,7 +42,11 @@ class SeedAdminServiceTest {
             void shouldCreateSeedAdminWhenUserDoesNotExist() {
                 SeedAdminService service = new SeedAdminService(userRepository);
 
-                when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.empty());
+                when(userRepository.findByUsername(USERNAME))
+                        .thenReturn(new Either.Right<>(Optional.empty()));
+
+                when(userRepository.save(any(UserEntity.class)))
+                        .thenAnswer(invocation -> new Either.Right<>(invocation.getArgument(0)));
 
                 service.createOrUpdateSeedAdmin(USERNAME, PASSWORD);
 
@@ -65,11 +70,12 @@ class SeedAdminServiceTest {
                 existingUser.setUsername(USERNAME);
                 existingUser.setPasswordHash(hashPassword(PASSWORD));
 
-                when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(existingUser));
+                when(userRepository.findByUsername(USERNAME))
+                        .thenReturn(new Either.Right<>(Optional.of(existingUser)));
 
                 service.createOrUpdateSeedAdmin(USERNAME, PASSWORD);
 
-                verify(userRepository, never()).save(existingUser);
+                verify(userRepository, never()).save(any(UserEntity.class));
                 assertPasswordMatches(PASSWORD, existingUser.getPasswordHash());
             }
 
@@ -84,7 +90,11 @@ class SeedAdminServiceTest {
                 existingUser.setUsername(USERNAME);
                 existingUser.setPasswordHash(oldHash);
 
-                when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(existingUser));
+                when(userRepository.findByUsername(USERNAME))
+                        .thenReturn(new Either.Right<>(Optional.of(existingUser)));
+
+                when(userRepository.save(existingUser))
+                        .thenReturn(new Either.Right<>(existingUser));
 
                 service.createOrUpdateSeedAdmin(USERNAME, NEW_PASSWORD);
 
@@ -104,7 +114,11 @@ class SeedAdminServiceTest {
                 existingUser.setUsername(USERNAME);
                 existingUser.setPasswordHash("invalid-hash");
 
-                when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(existingUser));
+                when(userRepository.findByUsername(USERNAME))
+                        .thenReturn(new Either.Right<>(Optional.of(existingUser)));
+
+                when(userRepository.save(existingUser))
+                        .thenReturn(new Either.Right<>(existingUser));
 
                 service.createOrUpdateSeedAdmin(USERNAME, PASSWORD);
 

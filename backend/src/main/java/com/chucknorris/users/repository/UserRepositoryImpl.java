@@ -25,4 +25,13 @@ public class UserRepositoryImpl implements UserRepository {
             return new Either.Left<>(new ErrorResultStatus(500, "Failed to find user"));
         }
     }
+
+    @Override
+    public Either<ErrorResultStatus, UserEntity> save(UserEntity user) {
+        try {
+            return new Either.Right<>(repository.save(user));
+        } catch (Exception e) {
+            return new Either.Left<>(new ErrorResultStatus(500, "Failed to save user"));
+        }
+    }
 }
