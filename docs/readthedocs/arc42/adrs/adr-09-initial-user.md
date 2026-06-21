@@ -35,6 +35,8 @@ If the configured seed user already exists, the backend verifies whether the sto
 
 The database migration layer does not create a hardcoded admin user. Database migrations define schema only, not environment-specific credentials.
 
+Operational details such as prompt behavior, default username selection, password generation, validation rules, and reset behavior are documented in [7. Deployment View](../07-deployment.md).
+
 ## Rationale
 
 * **No hardcoded credentials**: No default password or reusable password hash is committed to the repository.

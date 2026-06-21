@@ -15,4 +15,4 @@ Open the linked pages for more detailed descriptions. These contain the full dec
 | [ADR-07](adrs/adr-07-testing-strategy.md)           | Multi-Layer Testing Strategy                     | Accepted |
 | [ADR-08](adrs/adr-08-shared-api-contract.md)        | Shared API contract at project root (`/api`)     | Accepted |
 | [ADR-09](adrs/adr-09-initial-user.md)               | Initial Admin User Generation                    | Accepted |
-| [ADR-10](adrs/adr-10-secrets-management.md)         | Secrets Management under `/secrets`              | Accepted |
+| [ADR-10](adrs/adr-10-secrets-management.md)         | Docker Compose Secrets Over .env for Credentials | Accepted |
