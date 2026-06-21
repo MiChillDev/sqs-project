@@ -59,7 +59,7 @@ export interface paths {
         put?: never;
         /**
          * Add a new joke to the database
-         * @description Creates a new joke and stores it in the database. Requires admin authentication.
+         * @description Creates a new joke and stores it in the database. Requires a valid bearer token.
          */
         post: operations["createJoke"];
         delete?: never;
@@ -180,21 +180,6 @@ export interface components {
                 "application/json": components["schemas"]["Error"];
             };
         };
-        /** @description Forbidden - Insufficient permissions */
-        Forbidden: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "code": 403,
-                 *       "message": "Only administrators can add jokes"
-                 *     }
-                 */
-                "application/json": components["schemas"]["Error"];
-            };
-        };
         /** @description Internal Server Error */
         InternalServerError: {
             headers: {
@@ -277,13 +262,15 @@ export interface operations {
                 content: {
                     /**
                      * @example {
-                     *       "externalId": 12345,
+                     *       "externalId": "12345",
                      *       "content": "Why did Chuck Norris cross the road? To get to the other side... of the world!"
                      *     }
                      */
                     "application/json": components["schemas"]["SourceJoke"];
                 };
             };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -331,7 +318,7 @@ export interface operations {
                     /**
                      * @example {
                      *       "id": "550e8400-e29b-41d4-a716-446655440001",
-                     *       "externalId": 12345,
+                     *       "externalId": "12345",
                      *       "content": "Why did Chuck Norris go to the gym? To lift the world!"
                      *     }
                      */
@@ -340,7 +327,6 @@ export interface operations {
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalServerError"];
         };
     };
