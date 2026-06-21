@@ -34,6 +34,8 @@ Operational details for running the load tests are documented in [Testing](../..
 
 Static analysis runs as a quality gate in the CI pipeline. Code style, potential bugs, and anti-patterns are flagged before code can be merged. This ensures consistent code quality without relying solely on manual code review.
 
+SonarQube Cloud is used because it can analyze both parts of the monorepo: the Java/Spring Boot backend and the TypeScript frontend. It integrates with GitHub Actions and provides centralized quality gates for bugs, vulnerabilities, code smells, duplication, and coverage trends. This avoids maintaining separate static-analysis platforms for frontend and backend.
+
 ### Layer 4: Penetration Testing
 
 Penetration testing validates security controls beyond automated scanning:

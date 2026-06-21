@@ -10,7 +10,7 @@ The repository layer uses interface/implementation separation to isolate infrast
 
 - **Repository interfaces**: Domain-facing interfaces (e.g., `JokeRepository`, `AuthRepository`) define repository contracts
 - **Implementations**: Infrastructure classes in `spring/` (Spring Data JPA) and `api/` (external API calls) implement the repository interfaces
-- **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic
+- **Benefit**: Spring Data JPA and external API details are isolated behind interfaces, enabling independent testing of service logic. This also allows adding further external joke or translation APIs by introducing additional repository implementations without changing controller logic.
 
 ### 2. Functional Error Handling via Either Monad
 

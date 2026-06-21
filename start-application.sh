@@ -50,7 +50,7 @@ Options:
   --e2e                 Start app with mock external API for E2E testing.
 
   --verbose             Show Docker pull, build, and startup output.
-                         By default, Docker output is hidden unless an error occurs.
+                        By default, Docker output is hidden unless an error occurs.
 
   -h, --help            Show this help message.
 
@@ -515,7 +515,7 @@ print_summary() {
     echo "Frontend:     http://localhost:${frontend_port}"
   fi
   echo "Backend API:  http://localhost:${backend_port}"
-  echo "PostgreSQL:   localhost:${postgres_port}"
+  echo "PostgreSQL:   http://localhost:${postgres_port}"
   echo ""
   echo "Seed admin:"
   echo "  Username: $admin_username"

@@ -32,6 +32,8 @@ com.chucknorris/
 
 Within each feature package, the layered pattern is applied consistently — each feature contains its own controller, service, repository, and model classes. The common package provides cross-cutting concerns (error handling, shared base classes) used by all features.
 
+Repository interfaces belong to the feature package and define the service-facing persistence/API contract. Repository implementations act as adapters to concrete infrastructure such as Spring Data JPA repositories or external REST APIs. Services depend on the interfaces, not on Spring Data repositories directly.
+
 ## Rationale
 
 - **Straightforward for a small team**: The layered pattern is well-understood and requires minimal onboarding. All three developers can immediately contribute without learning novel architectural styles.

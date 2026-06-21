@@ -58,8 +58,9 @@
 
 ### Change Scenarios
 
-| ID   | Scenario                                      | Expected Outcome                                          |
-| ---- | --------------------------------------------- | --------------------------------------------------------- |
-| CS-1 | Developer extends API with a new endpoint     | No breaking changes to existing endpoints                 |
-| CS-2 | External Chuck Norris API becomes unavailable | System degrades gracefully; local jokes remain accessible |
-| CS-3 | Seed admin credentials are reset locally      | Backend updates local seed admin user without changing database migration scripts |
+| ID   | Scenario                                                | Expected Outcome                                          |
+| ---- | ------------------------------------------------------- | --------------------------------------------------------- |
+| CS-1 | Developer extends API with a new endpoint               | No breaking changes to existing endpoints                 |
+| CS-2 | External Chuck Norris API becomes unavailable           | System degrades gracefully; local jokes remain accessible |
+| CS-3 | Seed admin credentials are reset locally                | Backend updates local seed admin user without changing database migration scripts |
+| CS-4 | Developer adds another external joke or translation API | Existing logic remains unchanged; only a new API adapter/repository implementation and mapping logic are required |
