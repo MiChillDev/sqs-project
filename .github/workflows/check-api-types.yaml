@@ -33,4 +33,3 @@ jobs:
 
       - name: Check generated API types are committed
         run: git diff --exit-code -- api/generated/api-types.ts
-```
