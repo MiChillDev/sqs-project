@@ -60,3 +60,15 @@ The development team consists of three students with mixed experience in JavaScr
 - All components run in Docker Compose with minimal configuration
 - Large dependency surface increases vulnerability scanning needs
 - Two separate build systems (Maven for backend, Vite/npm for frontend) require coordination in CI/CD
+
+## Sources
+
+- [React](https://react.dev/reference/react)
+- [TypeScript](https://www.typescriptlang.org/docs/)
+- [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Spring Boot](https://docs.spring.io/spring-boot/)
+- [PostgreSQL](https://www.postgresql.org/docs/)
+- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/)
+- [Flyway](https://documentation.red-gate.com/flyway)
+- [Docker](https://docs.docker.com/)

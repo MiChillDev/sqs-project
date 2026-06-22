@@ -59,3 +59,7 @@ The k6 container runs as non-root, while local secret files are host-owned with 
 
 - **Positive**: Clear separation between config (`.env`, committed template) and secrets (`.secrets/`, uncommitted, isolated). No hardcoded credentials in source or images. Each consumer (PostgreSQL, Spring, k6) receives credentials through its native mechanism. CI workflows `::add-mask::` generated values as defense-in-depth; scripts avoid printing values.
 - **Negative**: More files to manage (3 secret files + 1 `.env` vs. 1 `.env`). `start-application.sh` must prompt, generate, and validate each secret. Compose secret syntax adds ~20 lines to `docker-compose.yml`. Teams unfamiliar with Docker Compose secrets may find the indirection surprising.
+
+## Sources
+
+- [Docker Compose (manage secrets securely)](https://docs.docker.com/compose/use-secrets/)

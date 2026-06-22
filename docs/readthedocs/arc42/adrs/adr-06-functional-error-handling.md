@@ -32,3 +32,7 @@ Three options were evaluated:
 - Non-standard for the Spring ecosystem, which overwhelmingly uses exceptions for error handling. Developers familiar with Spring conventions will need onboarding
 - Verbose call chains: a sequence of five operations requires four `flatMap` calls plus a final `map`: more verbose than imperative code with early returns
 - Spring transaction management, which relies on exceptions to trigger rollback, requires explicit handling when using result types instead of throwing
+
+## Sources
+
+- [Scala Either](https://www.scala-lang.org/api/3.x/scala/util/Either.html)
