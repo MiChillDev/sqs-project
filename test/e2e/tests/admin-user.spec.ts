@@ -8,7 +8,7 @@ if (!SEED_ADMIN_USERNAME || !SEED_ADMIN_PASSWORD) {
   throw new Error('SEED_ADMIN_USERNAME and SEED_ADMIN_PASSWORD environment variables must be set for admin tests');
 }
 
-test.describe('Admin user happy paths', () => {
+test.describe('Admin user flows', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
@@ -29,7 +29,7 @@ test.describe('Admin user happy paths', () => {
   test('admin can create a new joke', async ({ page }) => {
     const adminPage = new AdminPage(page);
     await adminPage.clickCreateTab();
-    await adminPage.createJoke('Test joke from E2E', 'e2e-test-1');
+    await adminPage.createJoke('Test joke from E2E', `e2e-test-${Date.now()}`);
     const text = await adminPage.getCreatedJokeText();
     expect(text).toContain('Test joke from E2E');
     expect((await adminPage.getActiveTabLabel()).trim()).toBe('Create');
@@ -55,5 +55,12 @@ test.describe('Admin user happy paths', () => {
     await adminPage.waitForUrl('**/login');
     await adminPage.verifyUnauthenticated();
     await expect(adminPage.userMenuLogin).toBeVisible();
+  });
+
+  test('admin tab stays active after creating a joke', async ({ page }) => {
+    const adminPage = new AdminPage(page);
+    await adminPage.clickCreateTab();
+    await adminPage.createJoke('Tab persistence test joke', `tab-test-${Date.now()}`);
+    expect((await adminPage.getActiveTabLabel()).trim()).toBe('Create');
   });
 });

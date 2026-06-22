@@ -27,4 +27,18 @@ test.describe('Joke page', () => {
     const newCount = await jokePage.getJokeCount();
     expect(newCount).toBeGreaterThan(initialCount);
   });
+
+  test('counter accumulates across multiple fetches', async ({ page }) => {
+    const jokePage = new JokePage(page);
+    await jokePage.navigate();
+    const initialCount = await jokePage.getJokeCount();
+    await jokePage.clickFetchJoke();
+    await jokePage.getJokeText();
+    await jokePage.clickFetchJoke();
+    await jokePage.getJokeText();
+    await jokePage.clickFetchJoke();
+    await jokePage.getJokeText();
+    const finalCount = await jokePage.getJokeCount();
+    expect(finalCount).toBeGreaterThanOrEqual(initialCount + 3);
+  });
 });
