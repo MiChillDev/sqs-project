@@ -60,3 +60,7 @@ Operational details are in [7. Deployment View](../07-deployment.md).
 * **Negative**: Backend startup logic for seed-user management must be test-covered; incorrect behavior could lock users out or overwrite credentials.
 * **Negative**: Operational behavior (default username, password policy, reset) must be documented separately from this ADR.
 
+
+## Sources
+
+- [Spring Boot](https://docs.spring.io/spring-boot/reference/features/external-config.html)
