@@ -443,14 +443,14 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
     views {
         systemContext chuckNorrisSystem "C1_SystemContext" {
             title "C1 - System Context"
-            include *
-            autoLayout lr
+            include endUser admin chuckNorrisSystem chuckApi
+            autoLayout lr 260 120
         }
 
         container chuckNorrisSystem "C2_Containers" {
             title "C2 - Containers"
             include endUser admin webApp apiBackend database chuckApi
-            autoLayout lr
+            autoLayout tb 220 140
         }
 
         component apiBackend "C3_Backend_Overview" {
@@ -461,26 +461,19 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             include jokesPersistence authPersistence usersPersistence
             include sourceJokeClient backendCommon
             include database chuckApi
-            autoLayout tb 180 180
+            autoLayout tb 150 140
         }
 
         component webApp "C3_Frontend_Overview" {
             title "C3 - Frontend Components - Overview"
             include rootRoute indexPage jokePage loginPage adminPage
             include requireAuth authStorage userMenu languageToggle themeToggle toaster
+            include sourceJokeSection jokeCreationSection
             include apiHooks fetchApi generatedTypes apiErrors
-            include apiBackend
-            autoLayout tb 180 180
-        }
-
-        component webApp "C3_Frontend_Jokes_Admin" {
-            title "C3 - Frontend Components - Jokes and Admin"
-            include jokePage adminPage sourceJokeSection jokeCreationSection
-            include apiHooks fetchApi authStorage
             include useJokeCounter useZodForm
             include card button textarea confetti
             include apiBackend
-            autoLayout tb 180 180
+            autoLayout tb 150 140
         }
 
         component webApp "C3_Frontend_Authentication" {
@@ -488,7 +481,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             include loginPage requireAuth userMenu authStorage
             include apiHooks fetchApi loginSchema apiErrors
             include apiBackend
-            autoLayout tb 180 180
+            autoLayout tb 150 140
         }
 
         deployment * "Docker Compose" "D1_DockerCompose" {
@@ -554,8 +547,8 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #FFFFFF
                 stroke #0B4F8A
                 shape RoundedBox
-                width 520
-                height 180
+                width 620
+                height 230
                 fontSize 22
             }
 
@@ -564,8 +557,8 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #0B2E4A
                 stroke #2D7DB8
                 shape Hexagon
-                width 420
-                height 160
+                width 440
+                height 190
                 fontSize 21
                 icon https://api.chucknorris.io/img/chucknorris_logo_coloured_small%402x.png
             }
@@ -576,7 +569,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #7E57C2
                 shape WebBrowser
                 width 440
-                height 170
+                height 230
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg
             }
@@ -587,7 +580,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #6DB33F
                 shape RoundedBox
                 width 440
-                height 170
+                height 230
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg
             }
@@ -597,8 +590,8 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #0B2E4A
                 stroke #336791
                 shape Cylinder
-                width 380
-                height 170
+                width 390
+                height 230
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg
             }
@@ -619,7 +612,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #F39C12
                 shape Component
                 width 390
-                height 130
+                height 165
                 fontSize 20
             }
 
@@ -629,7 +622,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #43A047
                 shape Component
                 width 400
-                height 130
+                height 170
                 fontSize 20
             }
 
@@ -639,7 +632,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #1E88E5
                 shape Component
                 width 390
-                height 130
+                height 150
                 fontSize 20
             }
 
@@ -649,7 +642,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #3F51B5
                 shape Component
                 width 420
-                height 130
+                height 165
                 fontSize 20
             }
 
@@ -659,7 +652,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #336791
                 shape Component
                 width 400
-                height 130
+                height 160
                 fontSize 20
             }
 
@@ -669,7 +662,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #0288D1
                 shape Component
                 width 420
-                height 130
+                height 170
                 fontSize 20
             }
 
@@ -679,7 +672,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #777777
                 shape Component
                 width 430
-                height 140
+                height 180
                 fontSize 20
             }
 
@@ -689,7 +682,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #7E57C2
                 shape Component
                 width 390
-                height 130
+                height 170
                 fontSize 20
             }
 
@@ -699,7 +692,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #7E57C2
                 shape Component
                 width 390
-                height 130
+                height 175
                 fontSize 20
             }
 
@@ -709,7 +702,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #00897B
                 shape Component
                 width 410
-                height 130
+                height 175
                 fontSize 20
             }
 
@@ -719,7 +712,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #F39C12
                 shape Component
                 width 390
-                height 130
+                height 175
                 fontSize 20
             }
 
@@ -729,7 +722,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #8E24AA
                 shape Component
                 width 360
-                height 120
+                height 155
                 fontSize 20
             }
 
@@ -739,7 +732,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #F9A825
                 shape Component
                 width 380
-                height 125
+                height 170
                 fontSize 20
             }
 
@@ -749,7 +742,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #43A047
                 shape Component
                 width 380
-                height 125
+                height 170
                 fontSize 20
             }
 
@@ -759,7 +752,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #777777
                 shape Component
                 width 390
-                height 125
+                height 170
                 fontSize 20
             }
 
