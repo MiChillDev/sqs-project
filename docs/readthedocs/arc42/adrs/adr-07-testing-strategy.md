@@ -103,3 +103,11 @@ Test against deployed Docker Compose. Operational details in
 - Load tests require a running Docker Compose environment, adding complexity to local development setup
 - Coverage thresholds, if applied too strictly before testing patterns are established, can incentivize low-quality
   tests that hit lines without validating behavior
+
+## Sources
+
+- [Playwright POM](https://playwright.dev/docs/pom)
+- [ArchUnit](https://www.archunit.org/userguide/html/000_Index.html)
+- [Fallow](https://docs.fallow.tools/)
+- [k6](https://grafana.com/docs/k6/latest/)
+- [SonarQube Cloud](https://docs.sonarsource.com/sonarqube-cloud/)

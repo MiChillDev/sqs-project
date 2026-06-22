@@ -47,3 +47,8 @@ Types are regenerated manually when the specification changes and committed. The
 - `api/` joins `frontend/`, `backend/`, `docs/`, and `test/` as a project root module.
 - Developers must regenerate and commit types when the specification changes. CI catches drift.
 - Dev mode mounts `./api:/api` as a Docker volume. Frontend CI workflows trigger on `api/**` changes.
+
+## Sources
+
+- [OpenAPI](https://www.openapis.org/)
+- [openapi-typescript](https://openapi-ts.dev/)
