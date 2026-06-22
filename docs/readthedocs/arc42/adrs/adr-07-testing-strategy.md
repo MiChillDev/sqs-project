@@ -10,11 +10,13 @@ The project requires a comprehensive testing strategy that provides confidence i
 validates performance, and identifies security vulnerabilities. The application spans two codebases (Java backend,
 TypeScript frontend) with different testing ecosystems and different failure modes.
 
-The CI pipeline (`ci.yaml`) orchestrates all test areas in three staged gates:
+The CI pipeline orchestrates tests in three staged gates:
 
-- **Stage 1 (fast gates)**: lint, architecture checks, spell-check — must pass before Stage 2 starts.
-- **Stage 2 (unit + build)**: frontend unit tests, backend unit tests (incl. ArchUnit), bash tests, frontend build.
-- **Stage 3 (integration + SonarQube)**: E2E tests, load tests, SonarQube analysis.
+- **Stage 1 (fast gates)**: Lint, API type checks, spell-check, architecture audit.
+- **Stage 2 (unit + build)**: Frontend and backend unit tests (incl. ArchUnit), bash tests, frontend build.
+  Frontend jobs depend on Stage 1 lint.
+- **Stage 3 (integration + SonarQube)**: E2E, load, and SonarQube analysis. Runs when Stage 2 succeeds;
+  skipped jobs do not block.
 
 ## Decision
 
@@ -24,38 +26,26 @@ integration/security tests, and architecture testing.**
 
 ### Area 1: Unit and Integration Tests
 
-Both frontend and backend have unit and integration test suites:
-
-- **Backend**: Service logic, repository operations, controller endpoints, authentication flows, and shared
-  infrastructure are tested. Repository dependencies are mocked for service tests. Controllers are tested against the
-  HTTP layer.
-- **Frontend**: Component rendering, user interaction simulation, custom hooks, and API client logic are tested.
-  Test files mirror the `src/` directory structure under `tests/unit/`. A frontend TestPresence check
-  (`test-presence.test.ts`) ensures every production source file has a matching test, excluding shadcn/ui
-  components and barrel files.
+- **Backend**: Test service, repository, controller, auth, and infrastructure behavior. Mock
+  repositories in service tests. Test controllers via HTTP layer. Enforce test file presence.
+- **Frontend**: Test components, hooks, routing, and API client behavior. Mirror test
+  files to source directory structure. Enforce test file presence.
 
 ### Area 2: E2E Tests
 
-End-to-end tests validate complete user journeys through the full stack:
-
-- Playwright with Page Object Model pattern (`pages/` directory with `BasePage`, `LoginPage`, `HomePage` classes).
-- Selectors use `data-testid` attributes, decoupling tests from styling and DOM structure.
-- Seed data strategy: 5 jokes created via REST API before the first e2e test runs.
-- The `mock-external-api` Spring profile is activated by `./start-application.sh --e2e`, isolating tests from the external Chuck Norris API while still allowing for full e2e tests (eliminated playwright mocks of requests between backend and frontend).
+- Use Playwright with Page Object Model pattern and `data-testid` selectors to decouple tests from DOM structure.
+- Create seed data via REST API before the first test runs.
+- Use `mock-external-api` Spring profile to isolate from the external Chuck Norris API, eliminating
+  frontend-level request mocking.
 
 ### Area 3: Shell Script Tests
 
-Credential validation and generation functions in `start-application.sh` are tested with Bats (Bash Automated Testing
-System):
-
-- Three test files: `test_validate_username.bats`, `test_validate_password.bats`, `test_generate_password.bats`.
-- Tests validate username/password policy rules and verify generated passwords meet complexity requirements.
-- CI: `.github/workflows/test-bash.yaml`, Stage 2. Credential generation design is documented in [ADR-09](adr-09-initial-user.md)
-  and [ADR-10](adr-10-secrets-management.md).
+- Test shell functions for credential validation and generation with Bats.
+- Validate username and password policy rules.
+- Verify generated passwords meet complexity and uniqueness requirements.
+- See [ADR-09](adr-09-initial-user.md) and [ADR-10](adr-10-secrets-management.md).
 
 ### Area 4: Load and Performance Testing
-
-Load tests validate system behavior under realistic traffic conditions:
 
 | Scenario  | GET VUs | Source VUs | POST VUs | Duration | p95 Latency | Max Error Rate |
 |-----------|---------|------------|----------|----------|-------------|----------------|
@@ -63,53 +53,36 @@ Load tests validate system behavior under realistic traffic conditions:
 | Stress    | 5→20→0  | 2          | 2→8→0    | 2m       | < 600ms     | < 5%           |
 | Spike     | 0→50→0  | 1          | 0→10→0   | 40s      | < 900ms     | < 10%          |
 
-Load tests run against a deployed Docker Compose environment. Operational details are documented in
-[Testing](../../testing.md). Thresholds and VU configuration are defined in `test/load/README.md`. Credential handling
-for k6 is part of the secret-management decision in [ADR-10](adr-10-secrets-management.md).
+Test against deployed Docker Compose. Operational details in
+[Testing](../../testing.md). Credential handling in [ADR-10](adr-10-secrets-management.md).
 
 ### Area 5: Static Code Analysis
 
-- Static analysis runs as a CI quality gate. Code style, bugs, and anti-patterns are flagged before merge.
-- SonarQube Cloud analyzes both the Java backend and TypeScript frontend — a single platform for bugs, vulnerabilities, code smells, duplication, and coverage trends.
+- Run static analysis as a CI quality gate. Flag code style, bugs, and anti-patterns before merge.
+- Use SonarQube Cloud to analyze both codebases for bugs, vulnerabilities, code smells, duplication, and coverage.
 
 ### Area 6: Penetration Testing
 
-Penetration testing validates security controls beyond automated scanning:
-
-- **Authentication bypass**: Attempts to access protected endpoints without valid tokens, with expired tokens, and with
-  manipulated tokens. Token auth flow is detailed in [ADR-03](adr-03-authentication.md).
-- **Injection attacks**: SQL injection via input fields and API parameters, command injection via external API response
-  handling.
-- **Token manipulation**: Tampering with bearer tokens, replay attacks, token forgery attempts.
-- **Input validation bypass**: Sending malformed or oversized payloads to API endpoints.
-
-The penetration testing scope is informed by OWASP Top 10 attack vectors relevant to the application's architecture (
-injection, broken authentication, security misconfiguration).
+- **Authentication bypass**: Test without valid token, expired token, manipulated token (see [ADR-03](adr-03-authentication.md)).
+- **Injection attacks**: Test SQL injection via inputs, command injection via external API responses.
+- **Token manipulation**: Test bearer tampering, replay, forgery.
+- **Input validation bypass**: Test with malformed or oversized payloads.
+- Scope informed by OWASP Top 10 (injection, broken authentication, security misconfiguration).
 
 ### Area 7: Integration/Security Tests
 
-`test/integration/test-auth-security-flow.sh` is a hybrid integration and security test executed as a shell script:
-
-- 11 stages: prerequisites check → backend startup → health check → correct login → wrong password attempt → public
-  endpoint access → four penetration stages (no token, malformed auth header, unknown token, valid token) → source-joke
-  endpoint protection.
-- Anti-enumeration is verified: wrong password returns the same HTTP 404 as wrong username
-  (see [ADR-03](adr-03-authentication.md) for the design rationale).
-- CI: runs in `.github/workflows/test-bash.yaml`, Stage 2, after backend unit tests pass.
-
-<!-- TODO: split test-auth-security-flow.sh into separate integration test and security test files -->
+- Run a hybrid integration and security shell script covering login, public access, and penetration vectors
+  (missing token, malformed header, unknown token, source-joke protection).
+- Verify anti-enumeration: wrong password must return HTTP 404 (see [ADR-03](adr-03-authentication.md)).
+- Run details: [Testing](../../testing.md).
 
 ### Area 8: Architecture Testing
 
-Architecture tests ensure the codebase adheres to defined constraints and prevent structural erosion over time.
-
-- **Backend (ArchUnit)**: `ArchitectureTest.java` enforces naming conventions (e.g. classes in `service` package must
-  end with `Service`), layer access (Controller → Service → Repository, `consideringAllDependencies()`), and annotation
-  requirements (@RestController, @Service, @Entity). `TestPresenceTest.java` ensures every controller, service,
-  repository implementation, and utility class has a matching test class.
-- **Frontend (fallow)**: Five zones defined in `.fallowrc.jsonc`: `routes-login`, `routes-admin`, `routes-shared`,
-  `app-core`, and `shared`. Import boundary rules enforce that route zones may not import from each other.
-  Forbidden API calls: `useQuery`, `useMutation`, and `fetch` are prohibited in route components (pages).
+- **Backend (ArchUnit)**: Enforce naming conventions, layer access rules (Controller → Service → Repository),
+  and annotation requirements. Check test file presence for all production classes.
+- **Frontend (fallow)**: Enforce import boundary zones preventing cross-route imports. Restrict API calls
+  to the shared layer. Check test file presence for all production source files.
+  See [Testing](../../testing.md).
 
 ## Rationale
 
@@ -125,7 +98,7 @@ Architecture tests ensure the codebase adheres to defined constraints and preven
 
 - High confidence that the application is correct, performant, and secure
 - Test maintenance burden: test suites must be updated alongside feature changes
-- CI runtime adds latency to the development feedback loop; path-based triggers can mitigate this
+- CI runtime adds latency to the development feedback loop; path-based change detection mitigates this
 - Penetration testing requires security expertise on the team or scheduled external review
 - Load tests require a running Docker Compose environment, adding complexity to local development setup
 - Coverage thresholds, if applied too strictly before testing patterns are established, can incentivize low-quality
