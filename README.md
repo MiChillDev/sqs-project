@@ -1,7 +1,7 @@
 # SQS Project - Chuck Norris Joke Page
 [![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=MiChillDev_sqs-project)
 
-A web application for fetching, displaying, and managing Chuck Norris jokes. Developed as a university project by three students for a software quality assurance course.
+A web application for fetching, displaying, and collecting Chuck Norris jokes. Developed as a university project by three students for a software quality assurance course.
 
 For further documentation: [Read the Docs](https://sqs-sose26-chuck-norris.readthedocs.io/en/latest/) 
 
@@ -27,15 +27,15 @@ cd sqs-project
 ./start-application.sh
 ```
 4. Follow the setup instructions to create an initial user that can later be used to log in to the application
-5. The frontend will be available at `http://localhost:5173` <br>
-The backend API will be available at `http://localhost:8080`
+5. The frontend will be available at `http://localhost:5173`
+   The backend API will be available at `http://localhost:8080`
 
 Use the script parameters `-h` or `--help` to get an overview of the various options like `--reset`, `--verbose` and `--show-credentials`.
 
 ### Stopping the application
 To stop the running application you can use the provided script. The script also supports `-h` and `--help` for displaying a help message.
 ```bash
-./stop-application
+./stop-application.sh
 ```
 ... or stop it manually with 
 ```bash
@@ -52,23 +52,27 @@ chmod +x start-application.sh
 ## Project Structure
 ```
 sqs-project/
+├── .env.example            # Environment variable template
+├── .github/
+│   └── workflows/          # CI/CD pipelines (lint, test, build, e2e, SonarCloud)
 ├── api/                    # Shared OpenAPI specification and generated TypeScript types
 ├── backend/                # Spring Boot REST API
-├── frontend/               # React/Vite SPA application
-├── docs/                   
-    ├── presentation/       # Final project presentation
-    ├── readthedocs/        # Architecture documentation (ADRs, arc42, C4)
-    └── retro/              # Team retrospective
-├── test/                   # Load, E2E, Integration test suites
+├── frontend/               # React/Vite SPA
+├── docs/                   # Project-related documents
+│   ├── presentation/       # Final project presentation
+│   ├── readthedocs/        # Architecture documentation (ADRs, arc42, C4)
+│   └── retro/              # Team retrospective
+├── test/                   # All non-unit test suites
+│   ├── bash/               # Shell function unit tests (Bats)
+│   ├── e2e/                # End-to-end tests (Playwright + Page Object Model)
+│   ├── integration/        # Cross-service integration tests
+│   └── load/               # Load/performance tests (k6)
 ├── docker-compose.yml
 ├── start-application.sh    # Interactive script for starting the application
 ├── stop-application.sh     # Script for stopping the application
 └── README.md
 ```
 ---
-
-<br>
-<br>
 
 ## SonarQube Analysis
 | Code | Findings | Ratings |
