@@ -29,7 +29,8 @@
 		"serverError": "Something went wrong. Please try again later.",
 		"networkError": "Unable to connect to the server. Please check your internet connection.",
 		"timeout": "The request timed out. Please try again.",
-		"clientError": "The request could not be processed. Please try again."
+		"clientError": "The request could not be processed. Please try again.",
+		"conflict": "A joke with this external ID already exists."
 	},
 	"notFound": {
 		"title": "404 - Page Not Found",
