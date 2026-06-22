@@ -38,8 +38,6 @@ class JokeServiceImplTest {
         jokeService = new JokeServiceImpl(apiRepo, jokeRepository);
     }
 
-    //TODO: explicit auth tests for authenticated endpoints
-    
     @Nested
     @DisplayName("getRandomSourceJoke")
     class GetRandomSourceJoke {
@@ -51,7 +49,9 @@ class JokeServiceImplTest {
 
             Either<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto> res = jokeService.getRandomSourceJoke();
             assertThat(res).isInstanceOf(Either.Right.class);
-            if (res instanceof Either.Right<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(com.chucknorris.jokes.models.dto.SourceJokeDto dto)) {
+            if (res instanceof Either.Right<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(
+                    com.chucknorris.jokes.models.dto.SourceJokeDto dto
+            )) {
                 assertThat(dto.externalId()).isEqualTo("s1");
             }
         }
@@ -63,7 +63,9 @@ class JokeServiceImplTest {
 
             Either<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto> res = jokeService.getRandomSourceJoke();
             assertThat(res).isInstanceOf(Either.Left.class);
-            if (res instanceof Either.Left<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(ErrorResultStatus value)) {
+            if (res instanceof Either.Left<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(
+                    ErrorResultStatus value
+            )) {
                 assertThat(value.code()).isEqualTo(502);
             }
         }

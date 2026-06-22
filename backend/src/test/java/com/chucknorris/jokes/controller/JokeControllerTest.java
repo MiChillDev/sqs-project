@@ -146,6 +146,20 @@ class JokeControllerTest {
         }
 
         @Test
+        @DisplayName("should fail with 401 when no Authorization header is present (via MVC)")
+        void shouldFailWith401WhenNoHeaderViaMvc() {
+            assertThat(mvc.get()
+                    .uri("/api/v1/source-joke")).hasStatus(401)
+                    .bodyJson()
+                    .extractingPath("$.code").asNumber().isEqualTo(401);
+
+            assertThat(mvc.get()
+                    .uri("/api/v1/source-joke")).hasStatus(401)
+                    .bodyJson()
+                    .extractingPath("$.message").asString().matches("[0-9a-fA-F-]{36}");
+        }
+
+        @Test
         @DisplayName("should return repository error when service returns Left and token valid")
         void shouldReturnRepositoryErrorWhenServiceFails() {
             MockHttpServletRequest request = new MockHttpServletRequest();
