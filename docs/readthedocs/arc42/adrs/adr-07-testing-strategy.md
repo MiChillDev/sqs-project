@@ -49,7 +49,7 @@ integration/security tests, and architecture testing.**
 
 | Scenario  | GET VUs | Source VUs | POST VUs | Duration | p95 Latency | Max Error Rate |
 |-----------|---------|------------|----------|----------|-------------|----------------|
-| Baseline  | 6       | 1          | 3        | 30s      | < 150ms     | < 1%           |
+| Baseline  | 6       | 1          | 3        | 30s      | < 200ms     | < 1%           |
 | Stress    | 5→20→0  | 2          | 2→8→0    | 2m       | < 600ms     | < 5%           |
 | Spike     | 0→50→0  | 1          | 0→10→0   | 40s      | < 900ms     | < 10%          |
 

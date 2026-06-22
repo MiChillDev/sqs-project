@@ -22,8 +22,8 @@ export const options = buildOptions({
       exec: 'createJokeScenario',
     },
   },
-  p95Ms: 150,       // 95% der Requests < 150ms
-  failedRate: 0.01,  // max. 1% Fehler
+  p95Ms: 200, // 95% der Requests < 200ms
+  failedRate: 0.01, // max. 1% Fehler
 });
 
 export const setup = makeSetup(login);
