@@ -9,6 +9,7 @@ describe('extractErrorKey', () => {
     [400, 'error.clientError'],
     [403, 'error.clientError'],
     [404, 'error.clientError'],
+    [409, 'error.conflict'],
     [422, 'error.clientError'],
   ] as const)('ApiError(%i) → %s', (status, key) => {
     expect(extractErrorKey(new ApiError(status, ''))).toBe(key);
