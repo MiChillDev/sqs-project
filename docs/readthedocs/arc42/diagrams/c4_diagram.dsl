@@ -456,34 +456,34 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 deploymentNode "sqs-network" "Docker bridge network used by the application services." "Docker bridge network" {
                     deploymentNode "frontend service" "Production frontend service. Docker Compose service: frontend. Active with profile prod." "Docker container" {
                         containerInstance webApp {
-                            tags "DockerService"
+                            tags "DockerServiceFrontend"
                             healthCheck "Frontend health" "http://127.0.0.1:8080" 5 3000
                         }
                     }
 
                     deploymentNode "frontend-dev service" "Development frontend service. Docker Compose service: frontend-dev." "Docker container" {
                         containerInstance webApp {
-                            tags "DockerService"
+                            tags "DockerServiceFrontend"
                             healthCheck "Frontend dev health" "http://127.0.0.1:5173" 5 3000
                         }
                     }
 
                     deploymentNode "app service" "Backend API service. Docker Compose service: app." "Docker container" {
                         containerInstance apiBackend {
-                            tags "DockerService"
+                            tags "DockerServiceBackend"
                             healthCheck "Backend health" "http://localhost:8080/api/v1/health" 5 3000
                         }
                     }
 
                     deploymentNode "postgres service" "PostgreSQL database service. Docker Compose service: postgres." "Docker container" {
                         containerInstance database {
-                            tags "DockerService"
+                            tags "DockerServiceDB"
                         }
                     }
 
                     deploymentNode "k6 service" "Optional load test service. Docker Compose service: k6. Active with profile loadtest." "Docker container" {
                         containerInstance k6Runner {
-                            tags "DockerService"
+                            tags "DockerServiceTest"
                         }
                     }
                 }
@@ -616,7 +616,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #7E57C2
                 shape WebBrowser
                 width 440
-                height 290
+                height 350
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg
             }
@@ -638,7 +638,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #336791
                 shape Cylinder
                 width 390
-                height 300
+                height 320
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg
             }
@@ -649,7 +649,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #777777
                 shape RoundedBox
                 width 380
-                height 190
+                height 150
                 fontSize 20
             }
 
@@ -719,7 +719,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #777777
                 shape Component
                 width 430
-                height 180
+                height 210
                 fontSize 20
             }
 
@@ -759,7 +759,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #00897B
                 shape Component
                 width 410
-                height 175
+                height 180
                 fontSize 20
             }
 
@@ -823,12 +823,39 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 fontSize 20
             }
 
-            element "DockerService" {
+            element "DockerServiceFrontend" {
                 background #E3F2FD
                 color #0B2E4A
                 stroke #1E88E5
                 width 430
-                height 260
+                height 380
+                fontSize 20
+            }
+
+            element "DockerServiceBackend" {
+                background #E3F2FD
+                color #0B2E4A
+                stroke #1E88E5
+                width 430
+                height 320
+                fontSize 20
+            }
+
+            element "DockerServiceDB" {
+                background #E3F2FD
+                color #0B2E4A
+                stroke #1E88E5
+                width 430
+                height 340
+                fontSize 20
+            }
+
+            element "DockerServiceTest" {
+                background #E3F2FD
+                color #0B2E4A
+                stroke #1E88E5
+                width 430
+                height 200
                 fontSize 20
             }
 
