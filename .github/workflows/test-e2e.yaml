@@ -1,32 +1,20 @@
 name: E2E Tests
 
-# NOTE: All `uses:` must be pinned to full-length commit SHAs.
-# The org policy rejects semantic version tags (@v4) and requires
-# actions from GitHub-owned, org-owned, or Marketplace-verified repos.
-# If you add a new action, use the SHA from the corresponding workflow on main.
-
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'frontend/**'
-      - 'backend/**'
-      - 'test/e2e/**'
-      - 'api/**'
-
-concurrency:
-  group: e2e-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
 
 jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v4 (SHA required by org policy)
+    env:
+      SECRETS_DIR: e2e-secrets
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4 (SHA required by org policy)
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 22
 
@@ -70,7 +58,7 @@ jobs:
 
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         with:
           name: playwright-report
           path: test/e2e/playwright-report/

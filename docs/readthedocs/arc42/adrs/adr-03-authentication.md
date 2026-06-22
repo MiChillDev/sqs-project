@@ -12,9 +12,9 @@ The application does not provide public user registration because the current sc
 
 Three options were evaluated:
 
-1. **Spring Security with JWT** — Industry standard for Spring Boot applications. Provides comprehensive security infrastructure (filters, CSRF protection, CORS, session management, role-based access). JWT tokens contain signed claims.
-2. **Spring Security with server-side sessions** — Uses Spring Security's built-in session management with `JSESSIONID` cookies. Stateful server with session storage.
-3. **Custom token-based authentication** — Manually implemented token generation, storage, and validation. Opaque bearer tokens stored server-side. No framework dependency.
+1. **Spring Security with JWT**: Industry standard for Spring Boot applications. Provides comprehensive security infrastructure (filters, CSRF protection, CORS, session management, role-based access). JWT tokens contain signed claims.
+2. **Spring Security with server-side sessions**: Uses Spring Security's built-in session management with `JSESSIONID` cookies. Stateful server with session storage.
+3. **Custom token-based authentication**: Manually implemented token generation, storage, and validation. Opaque bearer tokens stored server-side. No framework dependency.
 
 ## Decision
 
@@ -23,7 +23,7 @@ Three options were evaluated:
 The authentication flow works as follows:
 
 1. **Registration**: Administrator accounts are provisioned during system setup. Passwords are hashed with PBKDF2 and stored with a random per-password salt.
-2. **Roles**: Two roles exist — **Administrator** and **Regular User**. Administrators can import jokes from the external API and create jokes. Regular users access jokes from the local database without authentication.
+2. **Roles**: Two roles exist: **Administrator** and **Regular User**. Administrators can import jokes from the external API and create jokes. Regular users access jokes from the local database without authentication.
 3. **Login**: Client sends credentials to the login endpoint. On successful verification, a UUID token is generated and stored server-side with an expiration timestamp.
 4. **Authenticated requests**: Protected endpoints extract the token from the `Authorization` header, validate it against the stored sessions, and resolve the associated user.
 5. **Logout**: Token is deleted from server-side storage, immediately invalidating the session.
@@ -46,9 +46,9 @@ Security hardening measures include: constant-time comparison for password and t
 
 ## Consequences
 
-- Authentication flow is fully visible in application code — no hidden framework behavior to debug
+- Authentication flow is fully visible in application code: no hidden framework behavior to debug
 - Each component (password hashing, token generation, session storage) is independently testable
-- No built-in CSRF or CORS protection — must be handled separately (SPA with bearer tokens in headers is generally not vulnerable to CSRF)
+- No built-in CSRF or CORS protection: must be handled separately (SPA with bearer tokens in headers is generally not vulnerable to CSRF)
 - No token refresh mechanism; users must re-authenticate after token expiration
 - Non-standard approach means new developers familiar with Spring Security will need onboarding
 - If application scope grows to require OAuth2 or complex role hierarchies, migration to Spring Security should be re-evaluated

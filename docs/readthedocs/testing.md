@@ -4,22 +4,39 @@ This page documents how the project's test suites are organized and how they are
 
 The architectural testing decision is documented in [ADR-07](arc42/adrs/adr-07-testing-strategy.md).
 
-## Test Layers
+## Architecture Tests
 
-The project uses a multi-layer testing strategy:
+Backend architecture tests (ArchUnit) run as part of the Maven build:
 
-| Layer                              | Purpose                                                                               | Tools                           |
-| ---------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------- |
-| Backend unit and integration tests | Validate service, repository, controller, authentication, and infrastructure behavior | JUnit 5, Mockito, MockMvcTester |
-| Frontend tests                     | Validate components, hooks, routing, and API client behavior                          | Vitest, Testing Library         |
-| Architecture tests                 | Validate backend package and layer boundaries                                         | ArchUnit                        |
-| Load tests                         | Validate latency, error rate, and behavior under traffic                              | k6                              |
-| Static analysis                    | Enforce quality gates and detect code issues                                          | SonarQube, Biome                |
-| Penetration testing                | Validate security controls against targeted abuse cases                               | Manual/security-focused tests   |
+```bash
+cd backend
+./mvnw clean verify
+```
+
+Frontend architecture tests (fallow) run independently:
+
+```bash
+cd frontend
+pnpm run graph:audit
+```
+
+## CI Pipeline
+
+Tests run in three staged gates via `.github/workflows/ci.yaml`:
+
+- **Stage 1 (fast gates)**: Lint, API type check, spell-check, architecture audit.
+- **Stage 2 (unit + build)**: Frontend tests, backend tests (incl. ArchUnit), bash tests, frontend build.
+  Frontend jobs depend on Stage 1 lint. Backend and bash jobs are independent of Stage 1.
+- **Stage 3 (integration + SonarQube)**: E2E, load, and SonarQube analysis.
+  Runs when prior stages succeed or were skipped (`!cancelled() && !failure()`).
+
+Path-based change detection skips jobs when no relevant files changed:
+load tests only on `backend/` or `test/load/` changes, E2E only on `frontend/`, `backend/`,
+`api/`, or `test/e2e/` changes, etc. See `ci.yaml` for the exact path filter rules.
 
 ## Backend Tests
 
-Run backend tests from the backend directory:
+Run backend unit and integration tests from the backend directory:
 
 ```bash
 cd backend
@@ -38,6 +55,37 @@ pnpm install
 pnpm test
 ```
 
+## Bash Tests
+
+Run shell script credential validation tests with Bats from the project root:
+
+```bash
+bats test/bash/
+```
+
+## Integration / Auth-Security Test
+
+Run the 11-stage authentication and penetration test against the backend stack:
+
+```bash
+./test/integration/test-auth-security-flow.sh
+```
+
+This starts its own backend stack with `--reset --backend-only` and tears down on exit.
+
+## E2E Tests
+
+Run Playwright end-to-end tests from the `test/e2e/` directory:
+
+```bash
+cd test/e2e
+pnpm install
+pnpm exec playwright install chromium
+pnpm test:ci
+```
+
+This seeds 5 jokes via the REST API before the first test runs and uses the `mock-external-api` Spring profile to isolate from the external Chuck Norris API.
+
 ## Load Tests
 
 Load tests are executed with k6 against the Docker Compose backend stack.
@@ -51,14 +99,14 @@ Start the backend-only stack first:
 Then run the desired k6 scenario:
 
 ```bash
-./run-loadtest.sh tests/baseline-test.js
+./test/load/run-loadtest.sh tests/baseline-test.js
 ```
 
 Additional scenarios:
 
 ```bash
-./run-loadtest.sh tests/stress-test.js
-./run-loadtest.sh tests/spike-test.js
+./test/load/run-loadtest.sh tests/stress-test.js
+./test/load/run-loadtest.sh tests/spike-test.js
 ```
 
 The load-test scripts live under:

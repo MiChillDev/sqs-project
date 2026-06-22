@@ -10,7 +10,7 @@ The application requires persistent storage for users, jokes, and authentication
 
 ## Decision
 
-**Use PostgreSQL with Spring Data JPA for data access and Flyway for version-controlled schema migrations.** (Spring Data JPA uses Hibernate as its default JPA provider under the hood. The team works exclusively through the JPA API and Spring Data repository interfaces — no Hibernate-specific APIs are used directly.)
+**Use PostgreSQL with Spring Data JPA for data access and Flyway for version-controlled schema migrations.** (Spring Data JPA uses Hibernate as its default JPA provider under the hood. The team works exclusively through the JPA API and Spring Data repository interfaces: no Hibernate-specific APIs are used directly.)
 
 Schema changes are managed exclusively through SQL migration scripts. The ORM validates entity mappings against the Flyway-managed schema at startup but is not permitted to create or modify the schema. Flyway migration files are the definitive definition of the database schema.
 
@@ -32,11 +32,11 @@ Key aspects of this decision:
 | Alternative                   | Reason for Rejection                                                                                                  |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | jOOQ                          | More boilerplate for simple CRUD. Code generation adds build complexity. Better suited for SQL-heavy applications.    |
-| H2 in-memory (dev only)       | Different SQL dialect masks compatibility issues. Running PostgreSQL in Docker is trivial — no benefit to H2.         |
+| H2 in-memory (dev only)       | Different SQL dialect masks compatibility issues. Running PostgreSQL in Docker is trivial: no benefit to H2.          |
 | Reactive database access      | Adds complexity without justification for this application's concurrency profile. No lazy loading support.            |
 | Hibernate DDL auto-generation | No version history of schema changes. Schema is lost on restart with `create-drop` or silently altered with `update`. |
 
 ## Consequences
 
-- **Positive**: Type-safe queries validated at startup against entity mappings. Clear migration history via Flyway. Deterministic deployments — every environment runs the same migration scripts.
+- **Positive**: Type-safe queries validated at startup against entity mappings. Clear migration history via Flyway. Deterministic deployments: every environment runs the same migration scripts.
 - **Negative**: JPA learning curve (entity lifecycle, fetch strategies, cascade types). N+1 query risk with lazy-loaded associations. Database-specific features require native queries that bypass JPQL type checking. ORM abstraction adds indirection for simple queries that could be one line of SQL.

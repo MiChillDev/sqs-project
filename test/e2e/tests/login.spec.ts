@@ -6,16 +6,16 @@ test.describe('Login page', () => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
     await loginPage.verifyTitle();
-    await expect(page.getByTestId('username-input')).toBeVisible();
-    await expect(page.getByTestId('password-input')).toBeVisible();
-    await expect(page.getByTestId('submit-login-button')).toBeVisible();
+    await expect(loginPage.usernameInput).toBeVisible();
+    await expect(loginPage.passwordInput).toBeVisible();
+    await expect(loginPage.submitButton).toBeVisible();
   });
 
   test('shows validation errors on empty submission', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.navigate();
     await loginPage.submitLogin();
-    // Verify validation errors appear (field-level or form-level)
-    await expect(page.locator('[data-invalid="true"]').first()).toBeVisible();
+    await loginPage.verifyValidationError();
   });
 });
+

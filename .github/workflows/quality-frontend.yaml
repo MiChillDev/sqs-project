@@ -1,11 +1,7 @@
 name: Frontend Lint Pipeline
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - 'frontend/**'
-      - 'api/**'
+  workflow_call:
 
 jobs:
   lint:
@@ -17,10 +13,15 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 22
+
       - run: npm install -g pnpm@10
+
       - run: pnpm install --frozen-lockfile
+
       - run: pnpm run lint
+
       - run: pnpm run graph:audit

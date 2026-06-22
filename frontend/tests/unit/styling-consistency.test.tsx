@@ -23,10 +23,6 @@ vi.mock('src/shared/hooks/use-theme', () => ({
   useTheme: () => ({ theme: 'light' as const, toggleTheme: vi.fn() }),
 }));
 
-vi.mock('src/shared/hooks/use-theme', () => ({
-  useTheme: () => ({ theme: 'light' as const, toggleTheme: vi.fn() }),
-}));
-
 vi.mock('i18next', () => ({
   default: {
     t: (key: string) => key,

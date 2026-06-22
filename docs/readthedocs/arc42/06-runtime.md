@@ -44,8 +44,6 @@ sequenceDiagram
     end
 ```
 
-The user or administrator authenticates by submitting credentials. The system validates them against stored credentials using PBKDF2 password verification. On success, a token is generated and returned for use in subsequent requests.
-
 ## Fetch Random Joke (Public)
 
 The sequence for fetching a random joke from the database is documented in the follwing sequence diagram. It shows two different scenarios:
@@ -77,8 +75,6 @@ sequenceDiagram
         JokeController-->>Client: 200 OK
     end
 ```
-
-Users fetch a random joke from the local database. No authentication is required. The backend queries the database and returns the joke content.
 
 If no joke exists, the service returns an empty JokeDto with null fields. This is treated as a valid empty-state response, not as a missing resource error.
 The endpoint does not address a specific joke resource by ID. It asks the collection for a random joke. If the collection is empty, the request itself is still valid. The frontend must handle the empty-state DTO and show an appropriate message.
@@ -125,8 +121,6 @@ sequenceDiagram
     end
 ```
 
-Administrators import a joke from the external Chuck Norris API. The request includes an authorization token. The backend validates the token, fetches the joke from the external API, and maps the response.
-
 ## Create Joke (Admin)
 
 The sequence for creatig a new joke is documented in the following sequence diagram. The two scenarios are:
@@ -160,5 +154,3 @@ sequenceDiagram
         JokeController-->>Client: 200 OK
     end
 ```
-
-Administrators create a new joke directly. The request includes an authorization token and joke content. The backend validates the token and persists the joke to the database.

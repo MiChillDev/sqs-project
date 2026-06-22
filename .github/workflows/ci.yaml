@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+      docs: ${{ steps.filter.outputs.docs }}
+      scripts: ${{ steps.filter.outputs.scripts }}
+      api: ${{ steps.filter.outputs.api }}
+      e2e: ${{ steps.filter.outputs.e2e }}
+      load: ${{ steps.filter.outputs.load }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+      - id: filter
+        shell: node {0}
+        run: |
+          const { execSync } = require('node:child_process');
+          const fs = require('node:fs');
+
+          const filters = {
+            frontend: /^(frontend\/|api\/)/m,
+            backend:  /^(backend\/|api\/)/m,
+            docs:     /^docs\/readthedocs\//m,
+            scripts:  /^(test\/bash\/|test\/integration\/|backend\/|start-application\.sh|stop-application\.sh|docker-compose\.yml|\.github\/workflows\/)/m,
+            api:      /^api\//m,
+            e2e:      /^(frontend\/|backend\/|api\/|test\/e2e\/)/m,
+            load:     /^(backend\/|test\/load\/)/m,
+          };
+
+          let files;
+          if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+            files = execSync(`git diff --name-only origin/${process.env.GITHUB_BASE_REF}...HEAD`, { encoding: 'utf8' });
+          } else if (process.env.GITHUB_EVENT_NAME === 'push') {
+            try {
+              execSync(`git cat-file -e ${process.env.GITHUB_EVENT_BEFORE}`, { stdio: 'ignore' });
+              files = execSync(`git diff --name-only ${process.env.GITHUB_EVENT_BEFORE} HEAD`, { encoding: 'utf8' });
+            } catch {}
+          }
+
+          const out = process.env.GITHUB_OUTPUT;
+          for (const [name, rx] of Object.entries(filters)) {
+            const match = !files || rx.test(files);
+            fs.appendFileSync(out, `${name}=${match}\n`);
+          }
+
+  # Stage 1
+  lint:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/quality-frontend.yaml
+
+  api-types:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    uses: ./.github/workflows/check-api-types.yaml
+
+  spell-check:
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    uses: ./.github/workflows/spell-check-docs.yaml
+
+  # Stage 2
+  test-frontend:
+    needs: [changes, lint]
+    if: needs.changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/test-frontend.yaml
+
+  build-frontend:
+    needs: [changes, lint]
+    if: needs.changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/build-frontend.yaml
+
+  test-backend:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    uses: ./.github/workflows/test-backend.yaml
+
+  test-bash:
+    needs: changes
+    if: needs.changes.outputs.scripts == 'true'
+    uses: ./.github/workflows/test-bash.yaml
+
+  # Stage 3 — !failure() lets these run when a needed job was skipped (not failed)
+  test-e2e:
+    needs: [changes, test-frontend, test-backend, build-frontend]
+    if: ${{ !cancelled() && !failure() && needs.changes.outputs.e2e == 'true' }}
+    uses: ./.github/workflows/test-e2e.yaml
+
+  test-load:
+    needs: [changes, test-backend]
+    if: ${{ !cancelled() && !failure() && needs.changes.outputs.load == 'true' }}
+    uses: ./.github/workflows/test-load.yaml
+    with:
+      run-spike: ${{ github.event_name == 'workflow_dispatch' }}
+
+  sonarcloud:
+    needs: [changes, test-frontend, test-backend]
+    if: ${{ !cancelled() && !failure() && (needs.changes.outputs.frontend == 'true' || needs.changes.outputs.backend == 'true') }}
+    uses: ./.github/workflows/sonarcloud.yaml
+    secrets: inherit

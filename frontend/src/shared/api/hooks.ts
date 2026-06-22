@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { HealthCheck, Joke, JokeInput, LoginRequest, SourceJoke, TokenResponse } from './api';
 import { fetchApi } from './api';
 
@@ -21,6 +21,7 @@ export function useHealthCheck() {
 }
 
 export function useCreateJoke() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: JokeInput) =>
       fetchApi<Joke>('/api/v1/jokes', {
@@ -29,6 +30,10 @@ export function useCreateJoke() {
         body: JSON.stringify(input),
         auth: true,
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['jokes'] });
+    },
+    meta: { skipGlobalErrorToast: true },
   });
 }
 

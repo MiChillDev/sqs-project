@@ -6,20 +6,20 @@
 
 ## Context
 
-The application requires an initial user for local development, CI checks, end-to-end tests, and load tests. Earlier approaches used fixed credentials or database migration-based seeding. This created several problems:
+The application needs an initial user for local development, CI checks, end-to-end tests, and load tests. Earlier approaches caused several problems:
 
-1. **Hardcoded credentials** — Fixed usernames and passwords are easy to discover, tend to spread into tests and documentation, and are unsafe even in local-only environments.
-2. **Flyway-based seed user** — Creating the initial user through a versioned database migration makes the credentials effectively static. Changing or removing them later is difficult because versioned migrations are immutable once applied.
-3. **Manual-only user creation** — Requiring users to manually register or insert the first user would make automated CI, load tests, and reproducible local setup harder.
-4. **GitHub Secrets-only setup** — CI secrets would not help local reviewers or developers who clone the repository without access to repository secrets.
+1. **Hardcoded credentials**: Fixed usernames and passwords are discoverable, spread into tests and docs, and unsafe even locally.
+2. **Flyway-based seed user**: Versioned migrations make credentials effectively static and hard to change later.
+3. **Manual-only user creation**: Requiring manual registration breaks automated CI, load tests, and reproducible local setup.
+4. **GitHub Secrets-only setup**: CI secrets don't help local reviewers or developers cloning without repository-secret access.
 
-The system therefore needs a reproducible bootstrap mechanism that works locally and in CI without committing credentials to version control.
+The system needs a reproducible bootstrap mechanism that works locally and in CI without committing credentials.
 
 ## Decision
 
-**Generate or prompt for initial admin credentials during application startup preparation and create the corresponding user at backend startup.**
+**Generate or prompt for initial admin credentials during application startup preparation and create the user at backend startup.**
 
-The `start-application.sh` script is responsible for creating and validating local secret files on first run:
+The `start-application.sh` script creates and validates local secret files on first run:
 
 | Secret              | Storage                            | Creation                                                         |
 | ------------------- | ---------------------------------- | ---------------------------------------------------------------- |
@@ -27,43 +27,40 @@ The `start-application.sh` script is responsible for creating and validating loc
 | Seed admin username | `.secrets/app_seed_admin_username` | Prompted interactively or generated/selected automatically in CI |
 | Seed admin password | `.secrets/app_seed_admin_password` | Prompted interactively or generated automatically                |
 
-The backend receives the seed admin credentials through Docker Compose secrets and Spring Boot config tree import. On startup, the backend validates the configured seed credentials and ensures that a user with the configured username exists.
+The backend receives seed admin credentials via Docker Compose secrets and Spring Boot config tree import. On startup, it validates the credentials and ensures the configured user exists:
 
-If the configured seed user does not exist, the backend creates it and stores only the password hash in the database.
+- If absent, the backend creates the user, storing only the password hash.
+- If present, the backend verifies the stored hash matches the configured password. On mismatch, it updates the hash.
 
-If the configured seed user already exists, the backend verifies whether the stored password hash matches the configured seed password. If it does not match, the backend updates the stored password hash to match the configured secret.
-
-The database migration layer does not create a hardcoded admin user. Database migrations define schema only, not environment-specific credentials.
-
-Operational details such as prompt behavior, default username selection, password generation, validation rules, and reset behavior are documented in [7. Deployment View](../07-deployment.md).
-
+Operational details are in [7. Deployment View](../07-deployment.md).
 
 ### Implementation note
 
-The implementation is split into a startup adapter and a service: 
+`SeedAdminInitializer` is a Spring startup component that reads, validates, and triggers seed-user creation from configuration. `SeedAdminService` contains the use case: checking user existence, creating if missing, or updating the hash on change.
 
-- `SeedAdminInitializer` is a Spring startup component. It reads the configured seed credentials from Spring configuration, validates them, and triggers the seed-user use case during application startup. 
-- `SeedAdminService` contains the actual seed-user use case. It checks whether the configured user exists, creates the user if missing, or updates the stored password hash if the configured secret changed. 
-
-`SeedAdminInitializer` is placed in the `config` package because it belongs to application bootstrap, not to a specific HTTP endpoint. It is allowed to call the service layer for the same reason a controller is allowed to call the service layer: it is an entry point into an application use case. It must not access repositories directly. Repository access remains encapsulated in the service layer.
-
+`SeedAdminInitializer` lives in the `config` package as an application-bootstrap entry point. Like a controller, it calls the service layer but never accesses repositories directly.
 
 ## Rationale
 
-* **No hardcoded credentials**: No default password or reusable password hash is committed to the repository.
-* **Reproducible local setup**: A fresh clone can be started with `start-application.sh` without manual database changes.
-* **CI compatibility**: Non-interactive runs can generate credentials automatically, allowing end-to-end tests and load tests to authenticate without repository secrets.
-* **Separation of responsibilities**: The startup script manages local secret files. Docker Compose injects the secrets into containers. The backend validates and applies the seed-user state.
-* **Migration safety**: Versioned Flyway migrations remain schema-focused and do not contain mutable, environment-specific credentials.
-* **Password confidentiality**: The backend never logs the seed password and stores only a password hash in the database.
-* **Reset support**: Local credentials can be regenerated by resetting local configuration and volumes through the provided scripts.
-* **Manual Docker compatibility**: Once `.env` and `.secrets/` exist, the stack can be started with plain Docker Compose commands as well as through the scripts.
+* **No hardcoded credentials**: No default password or reusable hash is committed.
+* **Reproducible local setup**: A fresh clone starts with `start-application.sh`, no manual DB changes.
+* **CI compatibility**: Non-interactive runs auto-generate credentials for end-to-end and load tests without repository secrets.
+* **Separation of responsibilities**: Startup script handles secrets; Docker Compose injects them; backend validates and applies seed-user state.
+* **Migration safety**: Flyway migrations stay schema-focused, free of mutable credentials.
+* **Password confidentiality**: The seed password is never logged; only its hash is stored.
+* **Reset support**: Regenerate local credentials by resetting config and volumes via provided scripts.
+* **Manual Docker compatibility**: Once `.env` and `.secrets/` exist, the stack starts with plain Docker Compose.
 
 ## Consequences
 
-* **Positive**: The project has no committed default credentials. Local development, CI, end-to-end tests, and load tests can use the same bootstrap mechanism. Credential rotation is possible by resetting local secrets and recreating or updating the local stack.
-* **Positive**: Reviewers can run the project from a fresh clone without access to GitHub repository secrets.
-* **Positive**: Flyway migrations remain deterministic and do not depend on local or CI credentials.
-* **Negative**: Startup is slightly more complex because the script must generate, prompt for, validate, and persist multiple secrets.
-* **Negative**: The backend contains startup logic for seed-user creation and update. This logic must be covered by tests because incorrect behavior could lock users out or overwrite local credentials unexpectedly.
-* **Negative**: Operational behavior such as default username selection, password generation, password policy, and reset behavior must be documented separately from the ADR.
+* **Positive**: No committed default credentials. Same bootstrap mechanism for dev, CI, e2e, and load tests. Credential rotation via local secret reset and stack recreation/update.
+* **Positive**: Reviewers can run from a fresh clone without GitHub repository secrets.
+* **Positive**: Flyway migrations remain deterministic and credential-independent.
+* **Negative**: Startup is more complex: the script must generate, prompt, validate, and persist multiple secrets.
+* **Negative**: Backend startup logic for seed-user management must be test-covered; incorrect behavior could lock users out or overwrite credentials.
+* **Negative**: Operational behavior (default username, password policy, reset) must be documented separately from this ADR.
+
+
+## Sources
+
+- [Spring Boot](https://docs.spring.io/spring-boot/reference/features/external-config.html)

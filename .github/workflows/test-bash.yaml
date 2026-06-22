@@ -1,16 +1,7 @@
 name: Bash Tests Pipeline
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - '.github/workflows/test-bash.yaml'
-      - 'start-application.sh'
-      - 'stop-application.sh'
-      - 'docker-compose.yml'
-      - 'backend/**'
-      - 'test/bash/**'
-      - 'test/integration/**'
+  workflow_call:
 
 jobs:
   test-bash:

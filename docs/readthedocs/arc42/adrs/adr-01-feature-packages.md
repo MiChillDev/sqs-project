@@ -6,12 +6,12 @@
 
 ## Context
 
-The backend needs a package organization strategy. The application consists of several cohesive domains — jokes, authentication, users, health monitoring, shared infrastructure — developed in parallel by three developers. Package organization directly impacts code discoverability, parallel development efficiency, and long-term maintainability.
+The backend needs a package organization strategy. The application consists of several cohesive domains: jokes, authentication, users, health monitoring, shared infrastructure: developed in parallel by three developers. Package organization directly impacts code discoverability, parallel development efficiency, and long-term maintainability.
 
 Two options were evaluated:
 
-1. **Technical layer packages** — Organize by architectural layer (`controllers/`, `services/`, `repositories/`, `models/`). Standard Spring Boot convention where all controllers reside in one package regardless of domain.
-2. **Feature-based packages** — Organize by business domain (`jokes/`, `auth/`, `users/`, `health/`, `common/`). Each package contains its own controller, service, repository, and model classes. The `common/` package provides shared infrastructure.
+1. **Technical layer packages**: Organize by architectural layer (`controllers/`, `services/`, `repositories/`, `models/`). Standard Spring Boot convention where all controllers reside in one package regardless of domain.
+2. **Feature-based packages**: Organize by business domain (`jokes/`, `auth/`, `users/`, `health/`, `common/`). Each package contains its own controller, service, repository, and model classes. The `common/` package provides shared infrastructure.
 
 ## Decision
 
@@ -30,7 +30,7 @@ com.chucknorris/
 └── Application.java
 ```
 
-Within each feature package, the layered pattern is applied consistently — each feature contains its own controller, service, repository, and model classes. The common package provides cross-cutting concerns (error handling, shared base classes) used by all features.
+Within each feature package, the layered pattern is applied consistently: each feature contains its own controller, service, repository, and model classes. The common package provides cross-cutting concerns (error handling, shared base classes) used by all features.
 
 Repository interfaces belong to the feature package and define the service-facing persistence/API contract. Repository implementations act as adapters to concrete infrastructure such as Spring Data JPA repositories or external REST APIs. Services depend on the interfaces, not on Spring Data repositories directly.
 
@@ -39,7 +39,7 @@ Repository interfaces belong to the feature package and define the service-facin
 - **Straightforward for a small team**: The layered pattern is well-understood and requires minimal onboarding. All three developers can immediately contribute without learning novel architectural styles.
 - **Feature colocation reduces cross-package coupling**: Everything related to jokes lives in one package. Adding a joke endpoint or modifying joke persistence does not require touching files scattered across the codebase.
 - **Parallel development**: Developers can work on separate feature packages with minimal merge conflicts.
-- **Clear mental model**: Open the `jokes/` package and see the full vertical slice — controller, service, repository, and models. No tracing logic across layer-oriented directories.
+- **Clear mental model**: Open the `jokes/` package and see the full vertical slice: controller, service, repository, and models. No tracing logic across layer-oriented directories.
 
 ## Consequences
 

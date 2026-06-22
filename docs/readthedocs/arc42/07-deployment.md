@@ -39,11 +39,11 @@ All services run on a single Docker host, connected through a shared bridge netw
 
 | Service        | Image / Build                      | Port (host:container)         | Profile    |
 | -------------- | ---------------------------------- | ----------------------------- | ---------- |
-| `postgres`     | `postgres:16-alpine`               | `${POSTGRES_PORT:-5432}:5432` | —          |
-| `app`          | `backend/Dockerfile` (Spring Boot) | `${BACKEND_PORT:-8080}:8080`  | —          |
-| `frontend-dev` | `frontend/Dockerfile` (Vite)       | `${FRONTEND_PORT:-5173}:5173` | —          |
+| `postgres`     | `postgres:16-alpine`               | `${POSTGRES_PORT:-5432}:5432` |            |
+| `app`          | `backend/Dockerfile` (Spring Boot) | `${BACKEND_PORT:-8080}:8080`  |            |
+| `frontend-dev` | `frontend/Dockerfile` (Vite)       | `${FRONTEND_PORT:-5173}:5173` |            |
 | `frontend`     | `frontend/Dockerfile` (nginx)      | `${FRONTEND_PORT:-5173}:8080` | `prod`     |
-| `k6`           | `grafana/k6`                       | —                             | `loadtest` |
+| `k6`           | `grafana/k6`                       |                               | `loadtest` |
 
 `frontend-dev` starts by default (Vite dev server with hot reload). `frontend` replaces it under `--profile prod` (nginx serving pre-built static files). `k6` runs on-demand under `--profile loadtest`.
 

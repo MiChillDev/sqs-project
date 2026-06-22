@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/home-page.ts';
 import { JokePage } from '../pages/joke-page.ts';
+import { LoginPage } from '../pages/login-page.ts';
 
 test.describe('Public user flows', () => {
   test('can view welcome page', async ({ page }) => {
@@ -21,6 +22,7 @@ test.describe('Public user flows', () => {
   test('is redirected to login when visiting admin', async ({ page }) => {
     await page.goto('/admin');
     await page.waitForURL('**/login?redirect=%2Fadmin');
-    await expect(page.getByTestId('login-title')).toBeVisible();
+    const loginPage = new LoginPage(page);
+    await expect(loginPage.title).toBeVisible();
   });
 });
