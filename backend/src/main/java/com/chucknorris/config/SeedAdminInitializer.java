@@ -1,6 +1,6 @@
 package com.chucknorris.config;
 
-import com.chucknorris.users.service.SeedAdminService;
+import com.chucknorris.users.service.SeedAdminServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -15,12 +15,12 @@ public class SeedAdminInitializer implements ApplicationRunner {
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9._-]{3,64}$");
     private static final Pattern PASSWORD_ALLOWED_CHARS_PATTERN = Pattern.compile("^[A-Za-z0-9@_%+=:,.!?-]+$");
 
-    private final SeedAdminService seedAdminService;
+    private final SeedAdminServiceImpl seedAdminService;
     private final String seedAdminUsername;
     private final String seedAdminPassword;
 
     public SeedAdminInitializer(
-            SeedAdminService seedAdminService,
+            SeedAdminServiceImpl seedAdminService,
             @Value("${app.seed.admin.username:}") String seedAdminUsername,
             @Value("${app.seed.admin.password:}") String seedAdminPassword) {
         this.seedAdminService = seedAdminService;

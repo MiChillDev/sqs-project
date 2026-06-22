@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class JokeService {
+public class JokeServiceImpl implements JokeService {
 
     private final ApiJokeRepository chuckNorrisJokeRepository;
     private final JokeRepository jokeRepository;
 
-    public JokeService(ApiJokeRepository chuckNorrisJokeRepository, JokeRepository jokeRepository) {
+    public JokeServiceImpl(ApiJokeRepository chuckNorrisJokeRepository, JokeRepository jokeRepository) {
         this.chuckNorrisJokeRepository = chuckNorrisJokeRepository;
         this.jokeRepository = jokeRepository;
     }

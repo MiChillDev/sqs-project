@@ -7,21 +7,20 @@ import com.chucknorris.common.utils.PasswordHasher;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
 import com.chucknorris.users.service.UserService;
+import com.chucknorris.users.service.UserServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 import java.util.Optional;
 
-// TODO: interface
-
 @Service
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
 
     private final AuthRepository tokenRepository;
     private final UserService userService;
     private static final long EXPIRATION_TIME_SECONDS = (long) 30 * 60; // 30 minutes
 
-    public AuthService(AuthRepository tokenRepository, UserService userService) {
+    public AuthServiceImpl(AuthRepository tokenRepository, UserService userService) {
         this.tokenRepository = tokenRepository;
         this.userService = userService;
     }

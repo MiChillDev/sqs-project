@@ -14,13 +14,13 @@ import java.util.Optional;
 
 /// MOSTLY AI GENERATED CLASS
 @Service
-public class SeedAdminService {
+public class SeedAdminServiceImpl implements SeedAdminService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SeedAdminService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SeedAdminServiceImpl.class);
 
     private final UserRepository userRepository;
 
-    public SeedAdminService(UserRepository userRepository) {
+    public SeedAdminServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
