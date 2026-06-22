@@ -46,7 +46,7 @@ class TestPresenceArchitectureTest {
         return !isExplicitlyExcluded(javaClass)
                 && (
                 isController(javaClass)
-                        || isService(javaClass)
+                        || isServiceImpl(javaClass)
                         || isRepositoryImpl(javaClass)
                         || isUtilityClass(javaClass)
         );
@@ -63,8 +63,8 @@ class TestPresenceArchitectureTest {
         return javaClass.getSimpleName().endsWith("Controller");
     }
 
-    private boolean isService(JavaClass javaClass) {
-        return javaClass.getSimpleName().endsWith("Service");
+    private boolean isServiceImpl(JavaClass javaClass) {
+        return javaClass.getSimpleName().endsWith("ServiceImpl");
     }
 
     private boolean isRepositoryImpl(JavaClass javaClass) {

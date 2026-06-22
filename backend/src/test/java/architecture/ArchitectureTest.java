@@ -21,13 +21,15 @@ class ArchitectureTest {
     static final ArchRule servicesShouldBeInServicePackage =
             classes()
                     .that().haveSimpleNameEndingWith("Service")
+                    .or().haveSimpleNameEndingWith("ServiceImpl")
                     .should().resideInAPackage("..service..");
 
     @ArchTest
     static final ArchRule servicePackageContainsOnlyServices =
             classes()
                     .that().resideInAPackage("..service..")
-                    .should().haveSimpleNameEndingWith("Service");
+                    .should().haveSimpleNameEndingWith("Service")
+                    .orShould().haveSimpleNameEndingWith("ServiceImpl");
 
     @ArchTest
     static final ArchRule repositoriesShouldBeInRepositoryPackage =
@@ -115,6 +117,7 @@ class ArchitectureTest {
     static final ArchRule featureServicesShouldBeAnnotated =
             classes()
                     .that().resideInAPackage("..service..")
+                    .and().haveSimpleNameEndingWith("ServiceImpl")
                     .and().resideOutsideOfPackage("..common..")
                     .should().beAnnotatedWith(Service.class);
 

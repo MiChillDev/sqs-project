@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class JokeServiceTest {
+class JokeServiceImplTest {
 
     private JokeService jokeService;
 
@@ -35,9 +35,11 @@ class JokeServiceTest {
 
     @BeforeEach
     void setUp() {
-        jokeService = new JokeService(apiRepo, jokeRepository);
+        jokeService = new JokeServiceImpl(apiRepo, jokeRepository);
     }
 
+    //TODO: explicit auth tests for authenticated endpoints
+    
     @Nested
     @DisplayName("getRandomSourceJoke")
     class GetRandomSourceJoke {
