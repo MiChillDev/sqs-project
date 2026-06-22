@@ -6,6 +6,7 @@ repo_url: https://github.com/MiChillDev/sqs-project
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Testing: testing.md
   - Architecture (arc42):
       - arc42/index.md
       - "1. Introduction": arc42/01-introduction.md
