@@ -20,7 +20,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             url "https://api.chucknorris.io"
         }
 
-        chuckNorrisSystem = softwareSystem "sqs-project Chuck Norris Joke Page" "Application for browsing, fetching, creating, importing, storing and displaying Chuck Norris jokes." {
+        chuckNorrisSystem = softwareSystem "sqs-project\nChuck Norris Joke Page" "Application for browsing, fetching, creating, importing, storing and displaying Chuck Norris jokes." {
             tags "ChuckNorrisSystem"
 
             webApp = container "Web App" "Vite SPA for end users and administrators. Docker Compose services: frontend for production and frontend-dev for local development." "React 19, TypeScript, Vite SPA" {
@@ -30,6 +30,40 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                     "docker.compose.service.dev" "frontend-dev"
                     "prod.port" "${FRONTEND_PORT:-5173}:8080"
                     "dev.port" "${FRONTEND_PORT:-5173}:5173"
+                }
+
+                group "Frontend Overview" {
+                    frontendAppShell = component "App Shell" "Application shell with layout, navigation, language/theme controls, user menu and route outlet." "React application shell" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendRoutes = component "Routes" "Public, login and protected administrator routes." "TanStack Router routes" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendAuthFeature = component "Authentication Feature" "Login, token storage, route protection and user menu behavior." "React components, route guard and auth storage" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendJokesFeature = component "Jokes and Admin Feature" "Joke browsing, source joke import and custom joke creation." "React feature components" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendApiLayer = component "Frontend API Layer" "React Query hooks, fetchApi, generated API types and client-side API errors." "TanStack Query, TypeScript HTTP client, OpenAPI types" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendHooks = component "Frontend Hooks" "Theme, joke counter and form validation hooks." "React hooks" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendUiLibrary = component "UI Library" "Reusable UI primitives used by pages and feature components." "React UI components" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendLibraries = component "Frontend Libraries" "Shared utilities for i18n, validation, error messages, logging and counters." "TypeScript utilities" {
+                        tags "FrontendAggregate"
+                    }
                 }
 
                 group "Routes" {
@@ -78,7 +112,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                     }
 
                     apiErrors = component "ApiError / NetworkError" "Client-side error types for HTTP and network failures." "TypeScript error classes" {
-                        tags "FrontendLibrary"
+                        tags "ApiErrorTypes"
                     }
                 }
 
@@ -268,8 +302,8 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                     }
                 }
 
-                group "Shared Infrastructure" {
-                    backendCommon = component "Shared Backend Infrastructure" "Common response handling, result/error handling, token support and password hashing." "BaseController, Either, ErrorResultStatus, PasswordHasher, ApiRepository" {
+                group "Common" {
+                    backendCommon = component "Common Classes" "Common response handling, result/error handling, token support and password hashing." "BaseController, Either, ErrorResultStatus, PasswordHasher, ApiRepository" {
                         tags "CommonInfra"
                     }
                 }
@@ -316,7 +350,33 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             tags "Test"
         }
 
-        // Frontend routing and feature flow
+        // Abstract frontend overview
+        frontendAppShell -> frontendRoutes "Provides shell"
+        frontendRoutes -> frontendAuthFeature "Uses auth"
+        frontendRoutes -> frontendJokesFeature "Uses jokes/admin"
+        frontendAuthFeature -> frontendApiLayer "Login calls"
+        frontendJokesFeature -> frontendApiLayer "Joke calls"
+        frontendAuthFeature -> frontendHooks "Forms/query"
+        frontendJokesFeature -> frontendHooks "Data/form hooks"
+        frontendAppShell -> frontendUiLibrary "Uses UI"
+        frontendAuthFeature -> frontendUiLibrary "Uses UI"
+        frontendJokesFeature -> frontendUiLibrary "Uses UI"
+        frontendApiLayer -> frontendLibraries "Types/errors/storage"
+        frontendHooks -> frontendLibraries "Validation/state"
+        frontendApiLayer -> apiBackend "Calls REST API" "HTTPS/JSON"
+
+        // Detailed frontend authentication view
+        loginPage -> apiHooks "Uses login hook"
+        loginPage -> authStorage "Stores token"
+        loginPage -> loginSchema "Validates form"
+        userMenu -> authStorage "Reads"
+        requireAuth -> authStorage "Checks"
+        apiHooks -> fetchApi "Calls"
+        fetchApi -> authStorage "Token"
+        fetchApi -> apiErrors "Throws"
+        fetchApi -> authApi "Login" "HTTPS/JSON"
+
+        // Other detailed frontend relationships kept for non-overview views or future use
         rootRoute -> indexPage "Routes"
         rootRoute -> jokePage "Routes"
         rootRoute -> loginPage "Routes"
@@ -330,9 +390,6 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         adminPage -> requireAuth "Protected by"
         adminPage -> sourceJokeSection "Renders"
         adminPage -> jokeCreationSection "Renders"
-        loginPage -> apiHooks "Uses login hook"
-        loginPage -> authStorage "Stores token"
-        loginPage -> loginSchema "Validates form"
         jokePage -> apiHooks "Uses joke hook"
         jokePage -> useJokeCounter "Counts jokes"
         jokePage -> card "Displays joke"
@@ -343,14 +400,8 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         jokeCreationSection -> useZodForm "Validates form"
         jokeCreationSection -> textarea "Inputs content"
         jokeCreationSection -> button "Submit action"
-        userMenu -> authStorage "Reads token"
-        requireAuth -> authStorage "Checks token"
 
-        apiHooks -> fetchApi "Calls"
         apiHooks -> generatedTypes "Uses types"
-        fetchApi -> authStorage "Adds token"
-        fetchApi -> apiErrors "Throws errors"
-        fetchApi -> apiBackend "Calls REST API" "HTTPS/JSON"
 
         themeToggle -> useTheme "Uses"
         languageToggle -> i18n "Changes language"
@@ -444,13 +495,13 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         systemContext chuckNorrisSystem "C1_SystemContext" {
             title "C1 - System Context"
             include endUser admin chuckNorrisSystem chuckApi
-            autoLayout lr 260 120
+            autoLayout lr 340 320
         }
 
         container chuckNorrisSystem "C2_Containers" {
             title "C2 - Containers"
             include endUser admin webApp apiBackend database chuckApi
-            autoLayout tb 220 140
+            autoLayout tb 280 260
         }
 
         component apiBackend "C3_Backend_Overview" {
@@ -461,27 +512,23 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             include jokesPersistence authPersistence usersPersistence
             include sourceJokeClient backendCommon
             include database chuckApi
-            autoLayout tb 150 140
+            autoLayout tb 150 150
         }
 
         component webApp "C3_Frontend_Overview" {
             title "C3 - Frontend Components - Overview"
-            include rootRoute indexPage jokePage loginPage adminPage
-            include requireAuth authStorage userMenu languageToggle themeToggle toaster
-            include sourceJokeSection jokeCreationSection
-            include apiHooks fetchApi generatedTypes apiErrors
-            include useJokeCounter useZodForm
-            include card button textarea confetti
+            include frontendAppShell frontendRoutes frontendAuthFeature frontendJokesFeature
+            include frontendApiLayer frontendHooks frontendUiLibrary frontendLibraries
             include apiBackend
-            autoLayout tb 150 140
+            autoLayout tb 170 170
         }
 
         component webApp "C3_Frontend_Authentication" {
             title "C3 - Frontend Components - Authentication"
             include loginPage requireAuth userMenu authStorage
             include apiHooks fetchApi loginSchema apiErrors
-            include apiBackend
-            autoLayout tb 150 140
+            include authApi
+            autoLayout lr 220 240
         }
 
         deployment * "Docker Compose" "D1_DockerCompose" {
@@ -528,7 +575,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #111111
                 stroke #8A6D00
                 width 360
-                height 150
+                height 145
                 fontSize 22
             }
 
@@ -547,8 +594,8 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #FFFFFF
                 stroke #0B4F8A
                 shape RoundedBox
-                width 620
-                height 230
+                width 660
+                height 260
                 fontSize 22
             }
 
@@ -558,7 +605,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #2D7DB8
                 shape Hexagon
                 width 440
-                height 190
+                height 210
                 fontSize 21
                 icon https://api.chucknorris.io/img/chucknorris_logo_coloured_small%402x.png
             }
@@ -569,7 +616,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #7E57C2
                 shape WebBrowser
                 width 440
-                height 230
+                height 290
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg
             }
@@ -580,7 +627,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #6DB33F
                 shape RoundedBox
                 width 440
-                height 230
+                height 290
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg
             }
@@ -591,7 +638,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #336791
                 shape Cylinder
                 width 390
-                height 230
+                height 300
                 fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg
             }
@@ -602,7 +649,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #777777
                 shape RoundedBox
                 width 380
-                height 150
+                height 190
                 fontSize 20
             }
 
@@ -612,7 +659,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #F39C12
                 shape Component
                 width 390
-                height 165
+                height 175
                 fontSize 20
             }
 
@@ -622,7 +669,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #43A047
                 shape Component
                 width 400
-                height 170
+                height 190
                 fontSize 20
             }
 
@@ -642,7 +689,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #3F51B5
                 shape Component
                 width 420
-                height 165
+                height 195
                 fontSize 20
             }
 
@@ -662,7 +709,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 stroke #0288D1
                 shape Component
                 width 420
-                height 170
+                height 180
                 fontSize 20
             }
 
@@ -673,6 +720,16 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 shape Component
                 width 430
                 height 180
+                fontSize 20
+            }
+
+            element "FrontendAggregate" {
+                background #F0E7FF
+                color #20124D
+                stroke #7E57C2
+                shape Component
+                width 440
+                height 210
                 fontSize 20
             }
 
@@ -756,12 +813,22 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 fontSize 20
             }
 
+            element "ApiErrorTypes" {
+                background #EEEEEE
+                color #222222
+                stroke #777777
+                shape Component
+                width 410
+                height 205
+                fontSize 20
+            }
+
             element "DockerService" {
                 background #E3F2FD
                 color #0B2E4A
                 stroke #1E88E5
-                width 390
-                height 140
+                width 430
+                height 260
                 fontSize 20
             }
 
