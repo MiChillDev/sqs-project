@@ -117,6 +117,20 @@ class JokeServiceTest {
         }
 
         @Test
+        @DisplayName("return 409 if externalId already exists")
+        void shouldFailIfExternalIdAlreadyExists() {
+            when(jokeRepository.getJokeByExternalId("ext-2"))
+                    .thenReturn(Either.right(Optional.of(new JokeEntity())));
+
+            Either<ErrorResultStatus, JokeDto> res = jokeService.createJoke(new CreateJokeDto("hello", "ext-2"));
+
+            assertThat(res).isInstanceOf(Either.Left.class);
+            if (res instanceof Either.Left<ErrorResultStatus, JokeDto>(ErrorResultStatus value)) {
+                assertThat(value.code()).isEqualTo(409);
+            }
+        }
+
+        @Test
         @DisplayName("should propagate repository error when repository returns Left")
         void shouldPropagateRepositoryError() {
             CreateJokeDto input = new CreateJokeDto("hello", "ext-2");

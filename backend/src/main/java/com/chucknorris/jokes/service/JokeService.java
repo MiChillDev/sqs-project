@@ -45,7 +45,7 @@ public class JokeService {
                 .validate(joke -> !joke.getExternalId().isEmpty(), new ErrorResultStatus(400, "externalId cannot be empty"))
                 .flatMap(joke ->
                         jokeRepository.getJokeByExternalId(joke.getExternalId())
-                                .validate(Optional::isEmpty, new ErrorResultStatus(400, "joke with the same external ID already exists"))
+                                .validate(Optional::isEmpty, new ErrorResultStatus(409, "joke with the same external ID already exists"))
                                 .map(existingJokeOpt -> joke))
                 .flatMap(jokeRepository::saveJoke)
                 .map(saved -> new JokeDto(saved.getId(), saved.getExternalId(), saved.getContent()));
