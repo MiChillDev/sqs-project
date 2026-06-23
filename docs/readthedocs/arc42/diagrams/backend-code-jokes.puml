@@ -1,0 +1,222 @@
+@startuml
+title C4 Level 4 - Backend Code - Jokes Package
+
+top to bottom direction
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+skinparam monochrome false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classFontSize 15
+skinparam classAttributeFontSize 12
+skinparam nodesep 65
+skinparam ranksep 85
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  ArrowColor #444444
+}
+
+skinparam class<<RestController>> {
+  BackgroundColor #FFF3E0
+  BorderColor #F39C12
+}
+skinparam class<<Service>> {
+  BackgroundColor #E8F5E9
+  BorderColor #43A047
+}
+skinparam class<<Repository Adapter>> {
+  BackgroundColor #E8EAF6
+  BorderColor #3F51B5
+}
+skinparam class<<JpaRepository>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<Interface>> {
+  BackgroundColor #E3F2FD
+  BorderColor #1E88E5
+}
+skinparam class<<Entity>> {
+  BackgroundColor #F1F8E9
+  BorderColor #689F38
+}
+skinparam class<<DTO>> {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+}
+skinparam class<<record>> {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+}
+skinparam class<<Common>> {
+  BackgroundColor #EEEEEE
+  BorderColor #777777
+}
+skinparam class<<External API Client>> {
+  BackgroundColor #E1F5FE
+  BorderColor #0288D1
+}
+skinparam class<<External>> {
+  BackgroundColor #F5F5F5
+  BorderColor #999999
+}
+skinparam class<<Database>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<External API>> {
+  BackgroundColor #B7D9FF
+  BorderColor #4B8FD3
+}
+
+legend right
+  HTTP<T>   = ResponseEntity<T>
+  Result<T> = Either<ErrorResultStatus, T>
+  Opt<T>    = Optional<T>
+endlegend
+
+
+package "jokes" {
+  class JokeController <<RestController>> {
+    +getRandomJoke(): HTTP<JokeDto>
+    +createJoke(input): HTTP<JokeDto>
+    +getRandomSourceJoke(): HTTP<SourceJokeDto>
+  }
+
+  class JokeService <<Service>> {
+    -chuckNorrisJokeRepository: ApiJokeRepository
+    -jokeRepository: JokeRepository
+    +getRandomJoke(): Result<JokeDto>
+    +createJoke(input): Result<JokeDto>
+    +getRandomSourceJoke(): Result<SourceJokeDto>
+  }
+
+  interface JokeRepository <<Interface>> {
+    +saveJoke(joke): Result<JokeEntity>
+    +getRandomJoke(): Result<Opt<JokeEntity>>
+  }
+
+  class JokeRepositoryImpl <<Repository Adapter>> {
+    -repository: SpringJokeRepository
+    +saveJoke(joke): Result<JokeEntity>
+    +getRandomJoke(): Result<Opt<JokeEntity>>
+  }
+
+  interface SpringJokeRepository <<JpaRepository>> {
+    +findRandomJoke(): Opt<JokeEntity>
+  }
+
+  interface ApiJokeRepository <<Interface>> {
+    +getRandomSourceJoke(): Result<SourceJokeDto>
+  }
+
+  class "ChuckNorrisApi\nJokeRepositoryImpl" as ChuckNorrisApiJokeRepositoryImpl <<External API Client>> {
+    -API_BASE_URL: String
+    +getRandomSourceJoke(): Result<SourceJokeDto>
+  }
+
+  class JokeEntity <<Entity>> {
+    -id: UUID
+    -externalId: String
+    -content: String
+  }
+
+  class ChuckNorrisResponse <<record>> {
+    +id(): String
+    +value(): String
+  }
+
+  class CreateJokeDto <<DTO>> {
+    +content(): String
+    +externalId(): String
+  }
+
+  class JokeDto <<DTO>> {
+    +id(): UUID
+    +externalId(): String
+    +content(): String
+    +empty(): JokeDto
+  }
+
+  class SourceJokeDto <<DTO>> {
+    +externalId(): String
+    +content(): String
+  }
+}
+
+package "common used by jokes" {
+  class BaseController <<Common>> {
+    #authService: AuthService
+    #executeUnauthenticated(action): HTTP<T>
+    #executeAuthenticated(action): HTTP<T>
+    -handleEither(result): HTTP<T>
+  }
+
+  abstract class ApiRepository <<Common>> {
+    #restTemplate: RestTemplate
+    #get(url, responseType): Result<T>
+  }
+
+  abstract class Either <<Common>> {
+    +map(mapper): Either
+    +flatMap(mapper): Either
+    +validate(predicate, error): Either
+    +get(): R
+  }
+
+  class ErrorResultStatus <<record>> {
+    +code(): int
+    +message(): String
+  }
+}
+
+package "external systems" {
+  class "PostgreSQL 16" as PostgreSQL <<Database>>
+  class "Chuck Norris API\napi.chucknorris.io" as ChuckApi <<External API>>
+}
+
+' Layout guidance only
+JokeController -[hidden]down- JokeService
+JokeService -[hidden]down- JokeRepository
+JokeRepository -[hidden]down- JokeRepositoryImpl
+JokeRepositoryImpl -[hidden]down- SpringJokeRepository
+ApiJokeRepository -[hidden]down- ChuckNorrisApiJokeRepositoryImpl
+BaseController -[hidden]down- ApiRepository
+
+' Inheritance and implementations
+JokeController --|> BaseController
+JokeRepositoryImpl ..|> JokeRepository
+ChuckNorrisApiJokeRepositoryImpl ..|> ApiJokeRepository
+ChuckNorrisApiJokeRepositoryImpl --|> ApiRepository
+
+' Main package flow
+JokeController --> JokeService : delegates
+JokeService --> JokeRepository : persisted jokes
+JokeService --> ApiJokeRepository : source jokes
+JokeRepositoryImpl --> SpringJokeRepository : delegates
+SpringJokeRepository --> PostgreSQL : jokes
+ChuckNorrisApiJokeRepositoryImpl --> ChuckApi : GET /jokes/random
+
+' Managed data and DTO dependencies
+SpringJokeRepository --> JokeEntity : manages
+JokeController ..> CreateJokeDto : receives
+JokeController ..> JokeDto : returns
+JokeController ..> SourceJokeDto : returns
+JokeService ..> JokeEntity : maps
+JokeService ..> JokeDto : creates
+JokeService ..> SourceJokeDto : returns
+ChuckNorrisApiJokeRepositoryImpl ..> ChuckNorrisResponse : receives
+ChuckNorrisApiJokeRepositoryImpl ..> SourceJokeDto : maps
+
+' Common result handling
+BaseController --> Either : handles
+BaseController --> ErrorResultStatus : maps errors
+ApiRepository --> Either : returns
+ApiRepository --> ErrorResultStatus : creates errors
+
+@enduml

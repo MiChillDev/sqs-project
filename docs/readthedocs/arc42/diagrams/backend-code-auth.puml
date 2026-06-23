@@ -1,0 +1,210 @@
+@startuml
+title C4 Level 4 - Backend Code - Authentication Package
+
+top to bottom direction
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+skinparam monochrome false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classFontSize 15
+skinparam classAttributeFontSize 12
+skinparam nodesep 65
+skinparam ranksep 85
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  ArrowColor #444444
+}
+
+skinparam class<<RestController>> {
+  BackgroundColor #FFF3E0
+  BorderColor #F39C12
+}
+skinparam class<<Service>> {
+  BackgroundColor #E8F5E9
+  BorderColor #43A047
+}
+skinparam class<<Repository Adapter>> {
+  BackgroundColor #E8EAF6
+  BorderColor #3F51B5
+}
+skinparam class<<JpaRepository>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<Interface>> {
+  BackgroundColor #E3F2FD
+  BorderColor #1E88E5
+}
+skinparam class<<Entity>> {
+  BackgroundColor #F1F8E9
+  BorderColor #689F38
+}
+skinparam class<<DTO>> {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+}
+skinparam class<<record>> {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+}
+skinparam class<<Common>> {
+  BackgroundColor #EEEEEE
+  BorderColor #777777
+}
+skinparam class<<External API Client>> {
+  BackgroundColor #E1F5FE
+  BorderColor #0288D1
+}
+skinparam class<<External>> {
+  BackgroundColor #F5F5F5
+  BorderColor #999999
+}
+skinparam class<<Database>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<External API>> {
+  BackgroundColor #B7D9FF
+  BorderColor #4B8FD3
+}
+
+legend right
+  HTTP<T>   = ResponseEntity<T>
+  Result<T> = Either<ErrorResultStatus, T>
+  Opt<T>    = Optional<T>
+endlegend
+
+
+package "auth" {
+  class AuthController <<RestController>> {
+    +login(request): HTTP<TokenResponseDto>
+  }
+
+  class AuthService <<Service>> {
+    -tokenRepository: AuthRepository
+    -userService: UserService
+    -EXPIRATION_TIME_SECONDS: long
+    +login(request): Result<TokenResponseDto>
+    +checkTokenIsValid(token): Result<Boolean>
+  }
+
+  interface AuthRepository <<Interface>> {
+    +saveToken(userId, token, expiresIn): Result<AuthSessionEntity>
+    +getUserIdByToken(token): Result<Opt<UUID>>
+  }
+
+  class AuthRepositoryImpl <<Repository Adapter>> {
+    -utcZoneId: ZoneId
+    -repository: SpringAuthSessionRepository
+    +saveToken(userId, token, expiresIn): Result<AuthSessionEntity>
+    +getUserIdByToken(token): Result<Opt<UUID>>
+  }
+
+  interface "SpringAuthSessionRepository" as SpringAuthSessionRepository <<JpaRepository>> {
+    +findByToken(token): Opt<AuthSessionEntity>
+  }
+
+  class LoginRequestDto <<DTO>> {
+    +username(): String
+    +password(): String
+  }
+
+  class TokenResponseDto <<DTO>> {
+    +token(): String
+    +expiresAt(): LocalDateTime
+  }
+
+  class AuthSessionEntity <<Entity>> {
+    -userId: UUID
+    -token: String
+    -expiresAt: LocalDateTime
+    -createdAt: LocalDateTime
+    -updatedAt: LocalDateTime
+  }
+}
+
+package "users dependency" {
+  class UserService <<Service>> {
+    +findByUsername(username): Result<Opt<UserEntity>>
+  }
+
+  class UserEntity <<Entity>> {
+    -id: UUID
+    -username: String
+    -passwordHash: String
+  }
+}
+
+package "common used by auth" {
+  class BaseController <<Common>> {
+    #authService: AuthService
+    #executeUnauthenticated(action): HTTP<T>
+    #executeAuthenticated(action): HTTP<T>
+    -handleEither(result): HTTP<T>
+  }
+
+  class PasswordHasher <<Common>> {
+    +hashPassword(password): Result<String>
+    +verifyPassword(password, storedHash): Result<Boolean>
+  }
+
+  abstract class Either <<Common>> {
+    +map(mapper): Either
+    +flatMap(mapper): Either
+    +validate(predicate, error): Either
+    +get(): R
+  }
+
+  class ErrorResultStatus <<record>> {
+    +code(): int
+    +message(): String
+  }
+}
+
+package "external systems" {
+  class "PostgreSQL 16" as PostgreSQL <<Database>>
+}
+
+' Layout guidance only
+AuthController -[hidden]down- AuthService
+AuthService -[hidden]down- AuthRepository
+AuthRepository -[hidden]down- AuthRepositoryImpl
+AuthRepositoryImpl -[hidden]down- SpringAuthSessionRepository
+BaseController -[hidden]down- PasswordHasher
+UserService -[hidden]down- UserEntity
+
+' Inheritance and implementations
+AuthController --|> BaseController
+AuthRepositoryImpl ..|> AuthRepository
+
+' Main package flow
+AuthController --> AuthService : delegates
+AuthService --> AuthRepository : sessions
+AuthService --> UserService : users
+AuthService --> PasswordHasher : verifies password
+AuthRepositoryImpl --> SpringAuthSessionRepository : delegates
+SpringAuthSessionRepository --> PostgreSQL : auth_sessions
+
+' Managed data and DTO dependencies
+SpringAuthSessionRepository --> AuthSessionEntity : manages
+AuthRepositoryImpl ..> AuthSessionEntity : creates
+AuthSessionEntity --> UserEntity : user_id
+AuthController ..> LoginRequestDto : receives
+AuthController ..> TokenResponseDto : returns
+AuthService ..> LoginRequestDto : reads
+AuthService ..> TokenResponseDto : creates
+
+' Common result handling
+BaseController --> AuthService : validates token
+BaseController --> Either : handles
+BaseController --> ErrorResultStatus : maps errors
+PasswordHasher --> Either : returns
+PasswordHasher --> ErrorResultStatus : creates errors
+
+@enduml

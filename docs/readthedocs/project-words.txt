@@ -18,3 +18,4 @@ Structurizr
 prebuild
 configtree
 loadtest
+pre-rendered 

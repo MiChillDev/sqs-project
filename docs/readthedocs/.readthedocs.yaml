@@ -16,7 +16,10 @@ build:
     pre_build:
       # Create UML and ER diagrams for C4
       - curl -L -o /tmp/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
-      - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code.puml
+      - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code-jokes.puml
+      - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code-auth.puml
+      - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code-users.puml
+      - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/backend-code-overview.puml
       - java -jar /tmp/plantuml.jar -tsvg docs/readthedocs/arc42/diagrams/database-schema.puml
       # Create interactive C4 diagrams
       - curl -L -o /tmp/structurizr-cli.zip https://github.com/structurizr/cli/releases/download/v2025.11.09/structurizr-cli.zip

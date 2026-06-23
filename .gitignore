@@ -20,5 +20,11 @@ secrets/
 
 # Tooling / generated local files
 .playwright-mcp
-structurizr/
 build/
+
+# Local-only documentation tooling
+.local/
+
+# Generated documentation output
+docs/readthedocs/structurizr/
+docs/readthedocs/arc42/diagrams/*.svg

@@ -20,7 +20,7 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             url "https://api.chucknorris.io"
         }
 
-        chuckNorrisSystem = softwareSystem "sqs-project Chuck Norris Joke Page" "Application for browsing, fetching, creating, importing, storing and displaying Chuck Norris jokes." {
+        chuckNorrisSystem = softwareSystem "sqs-project\nChuck Norris Joke Page" "Application for browsing, fetching, creating, importing, storing and displaying Chuck Norris jokes." {
             tags "ChuckNorrisSystem"
 
             webApp = container "Web App" "Vite SPA for end users and administrators. Docker Compose services: frontend for production and frontend-dev for local development." "React 19, TypeScript, Vite SPA" {
@@ -32,116 +32,190 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                     "dev.port" "${FRONTEND_PORT:-5173}:5173"
                 }
 
-                group "Pages / Routes" {
-                    indexPage = component "IndexPage" "Landing page." "React Page / Route" {
+                group "Frontend Overview" {
+                    frontendAppShell = component "App Shell" "Application shell with layout, navigation, language/theme controls, user menu and route outlet." "React application shell" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendRoutes = component "Routes" "Public, login and protected administrator routes." "TanStack Router routes" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendAuthFeature = component "Authentication Feature" "Login, token storage, route protection and user menu behavior." "React components, route guard and auth storage" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendJokesFeature = component "Jokes and Admin Feature" "Joke browsing, source joke import and custom joke creation." "React feature components" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendApiLayer = component "Frontend API Layer" "React Query hooks, fetchApi, generated API types and client-side API errors." "TanStack Query, TypeScript HTTP client, OpenAPI types" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendHooks = component "Frontend Hooks" "Theme, joke counter and form validation hooks." "React hooks" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendUiLibrary = component "UI Library" "Reusable UI primitives used by pages and feature components." "React UI components" {
+                        tags "FrontendAggregate"
+                    }
+
+                    frontendLibraries = component "Frontend Libraries" "Shared utilities for i18n, validation, error messages, logging and counters." "TypeScript utilities" {
+                        tags "FrontendAggregate"
+                    }
+                }
+
+                group "Routes" {
+                    rootRoute = component "RootRoute" "Application shell with layout, header, language/theme/user controls and route outlet." "TanStack Router root route" {
+                        tags "FrontendRoute"
+                    }
+
+                    indexPage = component "IndexPage" "Landing page with navigation to the joke page." "React route component" {
                         tags "FrontendPage"
                     }
 
-                    jokePage = component "JokePage" "Joke page at /jokes." "React Page / Route" {
+                    jokePage = component "JokePage" "Public joke page at /jokes." "React route component" {
                         tags "FrontendPage"
                     }
 
-                    demoApiPage = component "DemoApiPage" "API demo page at /demo/api." "React Page / Route" {
+                    loginPage = component "LoginPage" "Login page at /login." "React route component" {
                         tags "FrontendPage"
                     }
 
-                    componentDemoPage = component "ComponentDemoPage" "Component demo page at /demo." "React Page / Route" {
-                        tags "FrontendPage"
-                    }
-
-                    referencePage = component "ReferencePage" "Reference page at /reference." "React Page / Route" {
+                    adminPage = component "AdminPage" "Protected administrator page for importing and creating jokes." "React route component" {
                         tags "FrontendPage"
                     }
                 }
 
+                group "Admin Feature" {
+                    sourceJokeSection = component "SourceJokeSection" "Loads a source joke from the backend." "React component" {
+                        tags "AppComponent"
+                    }
+
+                    jokeCreationSection = component "JokeCreationSection" "Creates a custom joke through the backend API." "React form component" {
+                        tags "AppComponent"
+                    }
+                }
+
                 group "API Layer" {
-                    fetchApi = component "fetchApi" "HTTP client used by the frontend to call the backend API." "TypeScript HTTP Client" {
+                    apiHooks = component "API Hooks" "useRandomJoke, useHealthCheck, useCreateJoke, useLogin and useSourceJoke." "TanStack React Query hooks" {
                         tags "FrontendApi"
                     }
 
-                    reactQueryHooks = component "React Query Hooks" "useRandomJoke, useHealthCheck, useCreateJoke and useSourceJoke." "TanStack React Query Hooks" {
+                    fetchApi = component "fetchApi" "Shared HTTP client for backend API calls, timeout handling, auth headers and response parsing." "TypeScript HTTP client" {
                         tags "FrontendApi"
                     }
 
-                    generatedTypes = component "Generated Types" "Types generated from openapi.yaml." "OpenAPI generated TypeScript types" {
+                    generatedTypes = component "Generated API Types" "Types generated from openapi.yaml." "OpenAPI generated TypeScript types" {
                         tags "FrontendApi"
+                    }
+
+                    apiErrors = component "ApiError / NetworkError" "Client-side error types for HTTP and network failures." "TypeScript error classes" {
+                        tags "ApiErrorTypes"
+                    }
+                }
+
+                group "Authentication" {
+                    authStorage = component "authStorage" "Stores and retrieves the current auth token in the browser." "TypeScript utility" {
+                        tags "FrontendLibrary"
+                    }
+
+                    requireAuth = component "requireAuth" "Route guard that redirects unauthenticated users to /login." "TanStack Router guard" {
+                        tags "FrontendGuard"
+                    }
+
+                    userMenu = component "UserMenu" "Shows login/logout related user actions." "React component" {
+                        tags "AppComponent"
                     }
                 }
 
                 group "Shared Components" {
                     group "UI Library" {
-                        button = component "Button" "Reusable button component." "React Component" {
+                        button = component "Button" "Reusable button component." "React UI component" {
                             tags "UiComponent"
                         }
 
-                        card = component "Card" "Reusable card component." "React Component" {
+                        card = component "Card" "Reusable card component." "React UI component" {
                             tags "UiComponent"
                         }
 
-                        field = component "Field" "Reusable form field component." "React Component" {
+                        field = component "Field" "Reusable form field component." "React UI component" {
                             tags "UiComponent"
                         }
 
-                        input = component "Input" "Reusable input component." "React Component" {
+                        input = component "Input" "Reusable input component." "React UI component" {
                             tags "UiComponent"
                         }
 
-                        label = component "Label" "Reusable label component." "React Component" {
+                        label = component "Label" "Reusable label component." "React UI component" {
                             tags "UiComponent"
                         }
 
-                        separator = component "Separator" "Reusable separator component." "React Component" {
+                        separator = component "Separator" "Reusable separator component." "React UI component" {
                             tags "UiComponent"
                         }
 
-                        dropdownMenu = component "DropdownMenu" "Reusable dropdown menu component." "React Component" {
+                        dropdownMenu = component "DropdownMenu" "Reusable dropdown menu component." "React UI component" {
+                            tags "UiComponent"
+                        }
+
+                        sheet = component "Sheet" "Reusable sheet/drawer component." "React UI component" {
+                            tags "UiComponent"
+                        }
+
+                        textarea = component "Textarea" "Reusable textarea component." "React UI component" {
                             tags "UiComponent"
                         }
                     }
 
-                    group "App Components" {
-                        themeToggle = component "ThemeToggle" "Allows switching the UI theme." "React Component" {
+                    group "App Shell" {
+                        themeToggle = component "ThemeToggle" "Allows switching the UI theme." "React component" {
                             tags "AppComponent"
                         }
 
-                        languageToggle = component "LanguageToggle" "Allows switching the application language." "React Component" {
+                        languageToggle = component "LanguageToggle" "Allows switching the application language." "React component" {
                             tags "AppComponent"
                         }
 
-                        toaster = component "Toaster" "Displays toast notifications." "React Component" {
+                        toaster = component "Toaster" "Displays toast notifications." "React component" {
                             tags "AppComponent"
                         }
 
-                        confetti = component "Confetti" "Displays visual feedback effects." "React Component" {
+                        confetti = component "Confetti" "Displays visual feedback effects." "React component" {
                             tags "AppComponent"
                         }
 
-                        configErrorBanner = component "ConfigErrorBanner" "Shows frontend configuration problems." "React Component" {
+                        errorAlert = component "ErrorAlert" "Displays user-facing error messages." "React component" {
                             tags "AppComponent"
                         }
 
-                        i18nWatcher = component "I18nWatcher" "Keeps the UI language state in sync with i18next." "React Component" {
+                        i18nWatcher = component "I18nWatcher" "Keeps the UI language state in sync with i18next." "React component" {
                             tags "AppComponent"
                         }
                     }
                 }
 
                 group "Hooks" {
-                    useTheme = component "useTheme" "Custom hook for theme state." "React Hook" {
+                    useTheme = component "useTheme" "Custom hook for theme state." "React hook" {
                         tags "FrontendHook"
                     }
 
-                    useZodForm = component "useZodForm" "Custom hook for Zod-based forms." "React Hook" {
+                    useJokeCounter = component "useJokeCounter" "Counts fetched jokes and triggers confetti." "React hook" {
                         tags "FrontendHook"
                     }
 
-                    useZodResolver = component "useZodResolver" "Custom hook for Zod validation integration." "React Hook" {
+                    useZodForm = component "useZodForm" "Custom hook for Zod-based forms." "React hook" {
+                        tags "FrontendHook"
+                    }
+
+                    useZodResolver = component "useZodResolver" "Custom hook for localized Zod validation." "React hook" {
                         tags "FrontendHook"
                     }
                 }
 
                 group "Libraries" {
-                    utils = component "utils" "Utility functions, including cn()." "TypeScript Library" {
+                    utils = component "utils" "Shared utility functions including cn()." "TypeScript utility" {
                         tags "FrontendLibrary"
                     }
 
@@ -149,21 +223,29 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                         tags "FrontendLibrary"
                     }
 
-                    errorMessages = component "error-messages" "Maps technical errors to user-facing messages." "TypeScript Library" {
+                    errorMessages = component "error-messages" "Maps technical errors to user-facing messages." "TypeScript utility" {
                         tags "FrontendLibrary"
                     }
 
-                    debugLogger = component "debug-logger" "Frontend debug logging utility." "TypeScript Library" {
+                    debugLogger = component "debug-logger" "Frontend debug logging utility." "TypeScript utility" {
                         tags "FrontendLibrary"
                     }
 
-                    zodLocales = component "zod-locales" "Localized validation messages for Zod." "Zod" {
+                    zodLocales = component "zod-locales" "Localized validation messages for Zod." "Zod utility" {
+                        tags "FrontendLibrary"
+                    }
+
+                    loginSchema = component "login-schema" "Zod schema for login validation." "Zod schema" {
+                        tags "FrontendLibrary"
+                    }
+
+                    jokeCounterLib = component "joke-counter" "Counter helpers for joke milestones and confetti reset." "TypeScript utility" {
                         tags "FrontendLibrary"
                     }
                 }
             }
 
-            apiBackend = container "API Backend" "Spring Boot REST API for jokes, authentication and health checks. Docker Compose service: app." "Java 21, Spring Boot 4" {
+            apiBackend = container "API Backend" "Spring Boot REST API for jokes, authentication, users and health checks. Docker Compose service: app." "Java 21, Spring Boot 4" {
                 tags "Backend"
                 properties {
                     "docker.compose.service" "app"
@@ -172,96 +254,56 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                     "datasource.url" "jdbc:postgresql://postgres:5432/${POSTGRES_DB:-sqs_db}"
                 }
 
-                group "Jokes Domain" {
-                    jokeController = component "JokeController" "REST controller for retrieving jokes, creating jokes and retrieving source jokes." "Spring REST Controller" {
+                group "API Layer" {
+                    jokesApi = component "Jokes API" "REST API for retrieving, creating and importing jokes." "Spring REST Controllers" {
                         tags "Controller"
                     }
 
-                    jokeService = component "JokeService" "Business logic for jokes; coordinates persistence access and imports from the Chuck Norris API." "Spring Service" {
+                    authApi = component "Authentication API" "REST API for login and token-based authentication." "Spring REST Controller" {
+                        tags "Controller"
+                    }
+
+                    healthApi = component "Health API" "Health endpoint for the backend service." "Spring REST Controller" {
+                        tags "Controller"
+                    }
+                }
+
+                group "Application Layer" {
+                    jokesApplication = component "Jokes Application Logic" "Coordinates joke use cases, persistence and source joke imports." "Spring Services" {
                         tags "Service"
                     }
 
-                    jokeRepository = component "JokeRepository" "Repository interface for persisted jokes." "Java Interface" {
-                        tags "RepositoryInterface"
+                    authApplication = component "Authentication Logic" "Handles login, token creation and token validation." "Spring Services" {
+                        tags "Service"
                     }
 
-                    jokeRepositoryImpl = component "JokeRepositoryImpl" "Repository implementation that delegates persistence operations to Spring Data." "Spring Repository Adapter" {
+                    usersApplication = component "Users and Seed Admin Logic" "Looks up users and manages the configured seed administrator." "Spring Services" {
+                        tags "Service"
+                    }
+                }
+
+                group "Persistence Layer" {
+                    jokesPersistence = component "Jokes Persistence" "Reads and writes persisted jokes." "Repository adapters, Spring Data JPA" {
                         tags "RepositoryImpl"
                     }
 
-                    springJokeRepository = component "SpringJokeRepository" "Spring Data repository for JokeEntity." "Spring Data JpaRepository" {
-                        tags "JpaRepository"
+                    authPersistence = component "Authentication Persistence" "Reads and writes authentication sessions." "Repository adapters, Spring Data JPA" {
+                        tags "RepositoryImpl"
                     }
 
-                    chuckNorrisApiJokeRepositoryImpl = component "ChuckNorrisApiJokeRepositoryImpl" "External API client for fetching source jokes from api.chucknorris.io; extends ApiRepository." "Spring Component, RestTemplate" {
+                    usersPersistence = component "Users Persistence" "Reads and writes users." "Repository adapters, Spring Data JPA" {
+                        tags "RepositoryImpl"
+                    }
+                }
+
+                group "Integration Layer" {
+                    sourceJokeClient = component "Chuck Norris API Client" "Fetches source jokes from api.chucknorris.io." "RestTemplate client" {
                         tags "ExternalApiClient"
                     }
                 }
 
-                group "Authentication Domain" {
-                    authController = component "AuthController" "REST controller for login at POST /api/v1/auth/login. Extends BaseController." "Spring REST Controller" {
-                        tags "Controller"
-                    }
-
-                    authService = component "AuthService" "Performs login and token validation." "Spring Service" {
-                        tags "Service"
-                    }
-
-                    authRepository = component "AuthRepository" "Repository interface for authentication sessions." "Java Interface" {
-                        tags "RepositoryInterface"
-                    }
-
-                    authRepositoryImpl = component "AuthRepositoryImpl" "Repository implementation that delegates authentication session persistence to Spring Data." "Spring Repository Adapter" {
-                        tags "RepositoryImpl"
-                    }
-
-                    springAuthSessionRepository = component "SpringAuthSessionRepository" "Spring Data repository for AuthSessionEntity." "Spring Data JpaRepository" {
-                        tags "JpaRepository"
-                    }
-                }
-
-                group "Users Domain" {
-                    userService = component "UserService" "User lookup service; does not create or modify users." "Spring Service" {
-                        tags "Service"
-                    }
-
-                    userRepository = component "UserRepository" "Repository interface for users." "Java Interface" {
-                        tags "RepositoryInterface"
-                    }
-
-                    userRepositoryImpl = component "UserRepositoryImpl" "Repository implementation that delegates user persistence lookups to Spring Data." "Spring Repository Adapter" {
-                        tags "RepositoryImpl"
-                    }
-
-                    springUserRepository = component "SpringUserRepository" "Spring Data repository for UserEntity." "Spring Data JpaRepository" {
-                        tags "JpaRepository"
-                    }
-                }
-
-                group "Health" {
-                    healthController = component "HealthController" "Provides GET /api/v1/health and returns a static UP response. " "Spring REST Controller" {
-                        tags "Controller"
-                    }
-                }
-
-                group "Common Infrastructure" {
-                    baseController = component "BaseController" "Common superclass for authenticated and unauthenticated controller execution using executeAuthenticated(), executeUnauthenticated() and handleEither()." "Java superclass" {
-                        tags "CommonInfra"
-                    }
-
-                    either = component "Either<L,R>" "Domain result type used to model success and error results." "Java Domain Type" {
-                        tags "CommonInfra"
-                    }
-
-                    errorResultStatus = component "ErrorResultStatus" "Domain error status with HTTP status code and message/id." "Java Domain Type" {
-                        tags "CommonInfra"
-                    }
-
-                    passwordHasher = component "PasswordHasher" "Hashes and verifies passwords using PBKDF2." "PBKDF2" {
-                        tags "CommonInfra"
-                    }
-
-                    apiRepository = component "ApiRepository" "Abstract base class for external API access using RestTemplate." "Abstract Class, RestTemplate" {
+                group "Common" {
+                    backendCommon = component "Common Classes" "Common response handling, result/error handling, token support and password hashing." "BaseController, Either, ErrorResultStatus, PasswordHasher, ApiRepository" {
                         tags "CommonInfra"
                     }
                 }
@@ -299,34 +341,77 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         endUser -> webApp "Browses and uses the web application" "HTTPS"
         admin -> webApp "Uses administrator functions" "HTTPS"
 
-        webApp -> apiBackend "Calls REST endpoints" "HTTPS/JSON"
-        apiBackend -> database "Reads and writes jokes, users and authentication sessions" "JDBC/JPA"
+        webApp -> apiBackend "Calls REST API" "HTTPS/JSON"
+        apiBackend -> database "Reads/writes data" "JDBC/JPA"
         apiBackend -> chuckApi "Fetches source jokes" "HTTPS/JSON" {
             tags "External"
         }
-        k6Runner -> apiBackend "Runs load tests against /api/v1 endpoints" "HTTP" {
+        k6Runner -> apiBackend "Runs load tests" "HTTP" {
             tags "Test"
         }
 
-        // C3 - Frontend to backend component entry points
-        fetchApi -> apiBackend "Sends HTTP requests to the backend API" "HTTPS/JSON"
-        reactQueryHooks -> fetchApi "Uses for backend calls"
-        reactQueryHooks -> generatedTypes "Uses OpenAPI generated request/response types"
+        // Abstract frontend overview
+        frontendAppShell -> frontendRoutes "Provides shell"
+        frontendRoutes -> frontendAuthFeature "Uses auth"
+        frontendRoutes -> frontendJokesFeature "Uses jokes/admin"
+        frontendAuthFeature -> frontendApiLayer "Login calls"
+        frontendJokesFeature -> frontendApiLayer "Joke calls"
+        frontendAuthFeature -> frontendHooks "Forms/query"
+        frontendJokesFeature -> frontendHooks "Data/form hooks"
+        frontendAppShell -> frontendUiLibrary "Uses UI"
+        frontendAuthFeature -> frontendUiLibrary "Uses UI"
+        frontendJokesFeature -> frontendUiLibrary "Uses UI"
+        frontendApiLayer -> frontendLibraries "Types/errors/storage"
+        frontendHooks -> frontendLibraries "Validation/state"
+        frontendApiLayer -> apiBackend "Calls REST API" "HTTPS/JSON"
 
-        webApp -> jokeController "GET /api/v1/jokes, POST /api/v1/jokes, GET /api/v1/source-joke" "HTTPS/JSON"
-        webApp -> authController "POST /api/v1/auth/login" "HTTPS/JSON"
-        webApp -> healthController "GET /api/v1/health" "HTTPS/JSON"
+        // Detailed frontend authentication view
+        loginPage -> apiHooks "Uses login hook"
+        loginPage -> authStorage "Stores token"
+        loginPage -> loginSchema "Validates form"
+        userMenu -> authStorage "Reads"
+        requireAuth -> authStorage "Checks"
+        apiHooks -> fetchApi "Calls"
+        fetchApi -> authStorage "Token"
+        fetchApi -> apiErrors "Throws"
+        fetchApi -> authApi "Login" "HTTPS/JSON"
 
-        // C3 - Frontend internal relationships
-        indexPage -> reactQueryHooks "Uses data hooks"
-        jokePage -> reactQueryHooks "Loads, creates and imports jokes"
-        demoApiPage -> fetchApi "Demonstrates direct API calls"
-        referencePage -> generatedTypes "Documents generated API types"
-        componentDemoPage -> button "Demonstrates UI components"
-        componentDemoPage -> card "Demonstrates UI components"
-        componentDemoPage -> field "Demonstrates UI components"
-        componentDemoPage -> input "Demonstrates UI components"
-        componentDemoPage -> dropdownMenu "Demonstrates UI components"
+        // Other detailed frontend relationships kept for non-overview views or future use
+        rootRoute -> indexPage "Routes"
+        rootRoute -> jokePage "Routes"
+        rootRoute -> loginPage "Routes"
+        rootRoute -> adminPage "Routes"
+        rootRoute -> languageToggle "Renders"
+        rootRoute -> themeToggle "Renders"
+        rootRoute -> userMenu "Renders"
+        rootRoute -> i18nWatcher "Renders"
+        rootRoute -> toaster "Renders"
+
+        adminPage -> requireAuth "Protected by"
+        adminPage -> sourceJokeSection "Renders"
+        adminPage -> jokeCreationSection "Renders"
+        jokePage -> apiHooks "Uses joke hook"
+        jokePage -> useJokeCounter "Counts jokes"
+        jokePage -> card "Displays joke"
+        jokePage -> button "Fetch action"
+        jokePage -> confetti "Shows milestone"
+        sourceJokeSection -> apiHooks "Uses source hook"
+        jokeCreationSection -> apiHooks "Uses create hook"
+        jokeCreationSection -> useZodForm "Validates form"
+        jokeCreationSection -> textarea "Inputs content"
+        jokeCreationSection -> button "Submit action"
+
+        apiHooks -> generatedTypes "Uses types"
+
+        themeToggle -> useTheme "Uses"
+        languageToggle -> i18n "Changes language"
+        i18nWatcher -> i18n "Syncs language"
+        toaster -> errorMessages "Shows messages"
+        errorAlert -> errorMessages "Shows messages"
+        useZodForm -> useZodResolver "Uses"
+        useZodResolver -> zodLocales "Uses locales"
+        useTheme -> debugLogger "Logs storage errors"
+        useJokeCounter -> jokeCounterLib "Uses"
 
         button -> utils "Uses cn()"
         card -> utils "Uses cn()"
@@ -335,97 +420,70 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
         label -> utils "Uses cn()"
         separator -> utils "Uses cn()"
         dropdownMenu -> utils "Uses cn()"
+        sheet -> utils "Uses cn()"
+        textarea -> utils "Uses cn()"
 
-        themeToggle -> useTheme "Reads and changes theme state"
-        languageToggle -> i18n "Changes active language"
-        i18nWatcher -> i18n "Synchronizes language state"
-        toaster -> errorMessages "Displays mapped error messages"
-        configErrorBanner -> errorMessages "Displays configuration errors"
-        useZodForm -> useZodResolver "Uses validation resolver"
-        useZodResolver -> zodLocales "Uses localized validation messages"
-        debugLogger -> utils "Uses shared utilities"
+        // Backend C3 entry points
+        webApp -> jokesApi "Joke requests" "HTTPS/JSON"
+        webApp -> authApi "Login request" "HTTPS/JSON"
+        webApp -> healthApi "Health check" "HTTPS/JSON"
 
-        // C3 - Backend Jokes Domain
-        jokeController -> jokeService "Delegates joke requests"
-        jokeController -> baseController "Inherits authenticated/unauthenticated execution helpers" {
-            tags "Inheritance"
-        }
-        jokeService -> jokeRepository "Uses repository interface for persisted jokes"
-        jokeService -> chuckNorrisApiJokeRepositoryImpl "Fetches source jokes"
-        jokeRepository -> jokeRepositoryImpl "Implemented by" {
-            tags "Implementation"
-        }
-        jokeRepositoryImpl -> springJokeRepository "Delegates persistence operations"
-        springJokeRepository -> database "Reads and writes JokeEntity" "JPA"
-        chuckNorrisApiJokeRepositoryImpl -> apiRepository "Extends common API repository" {
-            tags "Inheritance"
-        }
-        chuckNorrisApiJokeRepositoryImpl -> chuckApi "GET /jokes/random" "HTTPS/JSON" {
+        // Backend C3 layers
+        jokesApi -> jokesApplication "Delegates"
+        authApi -> authApplication "Delegates"
+        healthApi -> backendCommon "Returns status"
+
+        jokesApplication -> jokesPersistence "Reads/writes jokes"
+        jokesApplication -> sourceJokeClient "Imports source jokes"
+
+        authApplication -> authPersistence "Manages sessions"
+        authApplication -> usersApplication "Finds users"
+        authApplication -> backendCommon "Token/password support"
+
+        usersApplication -> usersPersistence "Reads/writes users"
+        usersApplication -> backendCommon "Password hashing"
+
+        jokesPersistence -> database "jokes" "JPA"
+        authPersistence -> database "auth_sessions" "JPA"
+        usersPersistence -> database "users" "JPA"
+
+        sourceJokeClient -> chuckApi "GET /jokes/random" "HTTPS/JSON" {
             tags "External"
         }
-
-        // C3 - Backend Authentication Domain
-        authController -> authService "Performs login"
-        authController -> baseController "Inherits unauthenticated execution helper" {
-            tags "Inheritance"
-        }
-        authService -> authRepository "Uses session repository interface"
-        authService -> userRepository "Looks up users for login"
-        authService -> passwordHasher "Verifies PBKDF2 password hashes"
-        authRepository -> authRepositoryImpl "Implemented by" {
-            tags "Implementation"
-        }
-        authRepositoryImpl -> springAuthSessionRepository "Delegates persistence operations"
-        springAuthSessionRepository -> database "Reads and writes AuthSessionEntity" "JPA"
-
-        // C3 - Backend Users Domain
-        userService -> userRepository "Looks up users"
-        userRepository -> userRepositoryImpl "Implemented by" {
-            tags "Implementation"
-        }
-        userRepositoryImpl -> springUserRepository "Delegates persistence operations"
-        springUserRepository -> database "Reads UserEntity" "JPA"
-
-        // C3 - Common Infrastructure
-        baseController -> authService "Checks Authorization header token for authenticated actions"
-        baseController -> either "Handles success/error results"
-        baseController -> errorResultStatus "Maps errors to HTTP responses"
-        apiRepository -> either "Returns success/error results"
-        apiRepository -> errorResultStatus "Creates API error results"
 
         dockerCompose = deploymentEnvironment "Docker Compose" {
             deploymentNode "Docker Host" "Runs the local Docker Compose stack." "Docker Engine / Docker Compose" {
                 deploymentNode "sqs-network" "Docker bridge network used by the application services." "Docker bridge network" {
                     deploymentNode "frontend service" "Production frontend service. Docker Compose service: frontend. Active with profile prod." "Docker container" {
                         containerInstance webApp {
-                            tags "DockerService"
+                            tags "DockerServiceFrontend"
                             healthCheck "Frontend health" "http://127.0.0.1:8080" 5 3000
                         }
                     }
 
                     deploymentNode "frontend-dev service" "Development frontend service. Docker Compose service: frontend-dev." "Docker container" {
                         containerInstance webApp {
-                            tags "DockerService"
+                            tags "DockerServiceFrontend"
                             healthCheck "Frontend dev health" "http://127.0.0.1:5173" 5 3000
                         }
                     }
 
                     deploymentNode "app service" "Backend API service. Docker Compose service: app." "Docker container" {
                         containerInstance apiBackend {
-                            tags "DockerService"
+                            tags "DockerServiceBackend"
                             healthCheck "Backend health" "http://localhost:8080/api/v1/health" 5 3000
                         }
                     }
 
                     deploymentNode "postgres service" "PostgreSQL database service. Docker Compose service: postgres." "Docker container" {
                         containerInstance database {
-                            tags "DockerService"
+                            tags "DockerServiceDB"
                         }
                     }
 
                     deploymentNode "k6 service" "Optional load test service. Docker Compose service: k6. Active with profile loadtest." "Docker container" {
                         containerInstance k6Runner {
-                            tags "DockerService"
+                            tags "DockerServiceTest"
                         }
                     }
                 }
@@ -436,26 +494,41 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
     views {
         systemContext chuckNorrisSystem "C1_SystemContext" {
             title "C1 - System Context"
-            include *
-            autoLayout lr
+            include endUser admin chuckNorrisSystem chuckApi
+            autoLayout lr 340 320
         }
 
         container chuckNorrisSystem "C2_Containers" {
             title "C2 - Containers"
             include endUser admin webApp apiBackend database chuckApi
-            autoLayout lr
+            autoLayout tb 280 260
         }
 
-        component apiBackend "C3_BackendComponents" {
+        component apiBackend "C3_Backend_Overview" {
             title "C3 - Backend Components"
-            include *
-            autoLayout lr
+            include webApp
+            include jokesApi authApi healthApi
+            include jokesApplication authApplication usersApplication
+            include jokesPersistence authPersistence usersPersistence
+            include sourceJokeClient backendCommon
+            include database chuckApi
+            autoLayout tb 150 150
         }
 
-        component webApp "C3_FrontendComponents" {
-            title "C3 - Frontend Components"
-            include *
-            autoLayout lr
+        component webApp "C3_Frontend_Overview" {
+            title "C3 - Frontend Components - Overview"
+            include frontendAppShell frontendRoutes frontendAuthFeature frontendJokesFeature
+            include frontendApiLayer frontendHooks frontendUiLibrary frontendLibraries
+            include apiBackend
+            autoLayout tb 170 170
+        }
+
+        component webApp "C3_Frontend_Authentication" {
+            title "C3 - Frontend Components - Authentication"
+            include loginPage requireAuth userMenu authStorage
+            include apiHooks fetchApi loginSchema apiErrors
+            include authApi
+            autoLayout lr 220 240
         }
 
         deployment * "Docker Compose" "D1_DockerCompose" {
@@ -464,10 +537,28 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
             autoLayout lr
         }
 
-        image apiBackend "C4_BackendCode" {
-            title "C4 - Backend Code View"
-            description "PlantUML class diagram."
-            image backend-code.svg
+        image apiBackend "C4_BackendCode_Overview" {
+            title "C4 - Backend Code Overview"
+            description "Compact PlantUML class overview without DTO and entity details."
+            image backend-code-overview.svg
+        }
+
+        image apiBackend "C4_BackendCode_Jokes" {
+            title "C4 - Backend Code - Jokes Package"
+            description "Detailed PlantUML class diagram for the jokes package."
+            image backend-code-jokes.svg
+        }
+
+        image apiBackend "C4_BackendCode_Auth" {
+            title "C4 - Backend Code - Authentication Package"
+            description "Detailed PlantUML class diagram for the authentication package."
+            image backend-code-auth.svg
+        }
+
+        image apiBackend "C4_BackendCode_Users" {
+            title "C4 - Backend Code - Users Package"
+            description "Detailed PlantUML class diagram for users and seed admin setup."
+            image backend-code-users.svg
         }
 
         image database "ERD_DatabaseSchema" {
@@ -483,6 +574,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 shape Person
                 color #111111
                 stroke #8A6D00
+                width 360
+                height 145
+                fontSize 22
             }
 
             element "UserEnd" {
@@ -500,6 +594,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #FFFFFF
                 stroke #0B4F8A
                 shape RoundedBox
+                width 660
+                height 260
+                fontSize 22
             }
 
             element "PublicApi" {
@@ -507,6 +604,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #0B2E4A
                 stroke #2D7DB8
                 shape Hexagon
+                width 440
+                height 210
+                fontSize 21
                 icon https://api.chucknorris.io/img/chucknorris_logo_coloured_small%402x.png
             }
 
@@ -515,6 +615,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #20124D
                 stroke #7E57C2
                 shape WebBrowser
+                width 440
+                height 350
+                fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg
             }
 
@@ -523,6 +626,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #123D12
                 stroke #6DB33F
                 shape RoundedBox
+                width 440
+                height 290
+                fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg
             }
 
@@ -531,6 +637,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #0B2E4A
                 stroke #336791
                 shape Cylinder
+                width 390
+                height 320
+                fontSize 21
                 icon https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg
             }
 
@@ -539,6 +648,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #222222
                 stroke #777777
                 shape RoundedBox
+                width 380
+                height 150
+                fontSize 20
             }
 
             element "Controller" {
@@ -546,6 +658,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #4A2A00
                 stroke #F39C12
                 shape Component
+                width 390
+                height 175
+                fontSize 20
             }
 
             element "Service" {
@@ -553,6 +668,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #123D12
                 stroke #43A047
                 shape Component
+                width 400
+                height 190
+                fontSize 20
             }
 
             element "RepositoryInterface" {
@@ -560,6 +678,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #0B2E4A
                 stroke #1E88E5
                 shape Component
+                width 390
+                height 150
+                fontSize 20
             }
 
             element "RepositoryImpl" {
@@ -567,6 +688,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #1A237E
                 stroke #3F51B5
                 shape Component
+                width 420
+                height 195
+                fontSize 20
             }
 
             element "JpaRepository" {
@@ -574,6 +698,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #0B2E4A
                 stroke #336791
                 shape Component
+                width 400
+                height 160
+                fontSize 20
             }
 
             element "ExternalApiClient" {
@@ -581,6 +708,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #01579B
                 stroke #0288D1
                 shape Component
+                width 420
+                height 180
+                fontSize 20
             }
 
             element "CommonInfra" {
@@ -588,6 +718,29 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #222222
                 stroke #777777
                 shape Component
+                width 430
+                height 210
+                fontSize 20
+            }
+
+            element "FrontendAggregate" {
+                background #F0E7FF
+                color #20124D
+                stroke #7E57C2
+                shape Component
+                width 440
+                height 210
+                fontSize 20
+            }
+
+            element "FrontendRoute" {
+                background #EDE7F6
+                color #20124D
+                stroke #7E57C2
+                shape Component
+                width 390
+                height 170
+                fontSize 20
             }
 
             element "FrontendPage" {
@@ -595,6 +748,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #20124D
                 stroke #7E57C2
                 shape Component
+                width 390
+                height 175
+                fontSize 20
             }
 
             element "FrontendApi" {
@@ -602,6 +758,19 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #003D33
                 stroke #00897B
                 shape Component
+                width 410
+                height 180
+                fontSize 20
+            }
+
+            element "FrontendGuard" {
+                background #FFF3E0
+                color #4A2A00
+                stroke #F39C12
+                shape Component
+                width 390
+                height 175
+                fontSize 20
             }
 
             element "UiComponent" {
@@ -609,6 +778,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #4A148C
                 stroke #8E24AA
                 shape Component
+                width 360
+                height 155
+                fontSize 20
             }
 
             element "AppComponent" {
@@ -616,6 +788,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #4A2A00
                 stroke #F9A825
                 shape Component
+                width 380
+                height 170
+                fontSize 20
             }
 
             element "FrontendHook" {
@@ -623,6 +798,9 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #123D12
                 stroke #43A047
                 shape Component
+                width 380
+                height 170
+                fontSize 20
             }
 
             element "FrontendLibrary" {
@@ -630,48 +808,101 @@ workspace "Chuck Norris Joke Page" "C4 diagrams for the sqs-project Chuck Norris
                 color #222222
                 stroke #777777
                 shape Component
+                width 390
+                height 170
+                fontSize 20
             }
 
-            element "DockerService" {
+            element "ApiErrorTypes" {
+                background #EEEEEE
+                color #222222
+                stroke #777777
+                shape Component
+                width 410
+                height 205
+                fontSize 20
+            }
+
+            element "DockerServiceFrontend" {
                 background #E3F2FD
                 color #0B2E4A
                 stroke #1E88E5
+                width 430
+                height 380
+                fontSize 20
+            }
+
+            element "DockerServiceBackend" {
+                background #E3F2FD
+                color #0B2E4A
+                stroke #1E88E5
+                width 430
+                height 320
+                fontSize 20
+            }
+
+            element "DockerServiceDB" {
+                background #E3F2FD
+                color #0B2E4A
+                stroke #1E88E5
+                width 430
+                height 340
+                fontSize 20
+            }
+
+            element "DockerServiceTest" {
+                background #E3F2FD
+                color #0B2E4A
+                stroke #1E88E5
+                width 430
+                height 200
+                fontSize 20
             }
 
             relationship "Relationship" {
                 color #555555
-                thickness 2
+                thickness 3
                 routing Orthogonal
+                fontSize 18
             }
 
             relationship "External" {
                 color #2D7DB8
                 style dashed
-                thickness 2
+                thickness 3
+                routing Orthogonal
+                fontSize 18
             }
 
             relationship "Inheritance" {
                 color #777777
                 style dashed
-                thickness 2
+                thickness 3
+                routing Direct
+                fontSize 17
             }
 
             relationship "Implementation" {
                 color #777777
                 style dashed
-                thickness 2
+                thickness 3
+                routing Direct
+                fontSize 17
             }
 
             relationship "Test" {
                 color #777777
                 style dashed
-                thickness 2
+                thickness 3
+                routing Orthogonal
+                fontSize 18
             }
 
             relationship "Note" {
                 color #BBBBBB
                 style dotted
-                thickness 1
+                thickness 2
+                fontSize 16
             }
         }
     }

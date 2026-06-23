@@ -1,0 +1,188 @@
+@startuml
+title C4 Level 4 - Backend Code - Users Package
+
+top to bottom direction
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+skinparam monochrome false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam classFontSize 15
+skinparam classAttributeFontSize 12
+skinparam nodesep 65
+skinparam ranksep 85
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #555555
+  ArrowColor #444444
+}
+
+skinparam class<<RestController>> {
+  BackgroundColor #FFF3E0
+  BorderColor #F39C12
+}
+skinparam class<<Service>> {
+  BackgroundColor #E8F5E9
+  BorderColor #43A047
+}
+skinparam class<<Repository Adapter>> {
+  BackgroundColor #E8EAF6
+  BorderColor #3F51B5
+}
+skinparam class<<JpaRepository>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<Interface>> {
+  BackgroundColor #E3F2FD
+  BorderColor #1E88E5
+}
+skinparam class<<Entity>> {
+  BackgroundColor #F1F8E9
+  BorderColor #689F38
+}
+skinparam class<<DTO>> {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+}
+skinparam class<<record>> {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+}
+skinparam class<<Common>> {
+  BackgroundColor #EEEEEE
+  BorderColor #777777
+}
+skinparam class<<Config>> {
+  BackgroundColor #EEEEEE
+  BorderColor #777777
+}
+skinparam class<<External API Client>> {
+  BackgroundColor #E1F5FE
+  BorderColor #0288D1
+}
+skinparam class<<External>> {
+  BackgroundColor #F5F5F5
+  BorderColor #999999
+}
+skinparam class<<Database>> {
+  BackgroundColor #DCECF8
+  BorderColor #336791
+}
+skinparam class<<External API>> {
+  BackgroundColor #B7D9FF
+  BorderColor #4B8FD3
+}
+
+legend right
+  HTTP<T>   = ResponseEntity<T>
+  Result<T> = Either<ErrorResultStatus, T>
+  Opt<T>    = Optional<T>
+endlegend
+
+
+package "users" {
+  class UserService <<Service>> {
+    -userRepository: UserRepository
+    +findByUsername(username): Result<Opt<UserEntity>>
+  }
+
+  class SeedAdminService <<Service>> {
+    -userRepository: UserRepository
+    +createOrUpdateSeedAdmin(username, password): void
+    -createSeedAdminUser(username, password): void
+    -ensurePasswordMatchesConfiguredSecret(user, password): void
+  }
+
+  interface UserRepository <<Interface>> {
+    +findByUsername(username): Result<Opt<UserEntity>>
+    +save(user): Result<UserEntity>
+  }
+
+  class UserRepositoryImpl <<Repository Adapter>> {
+    -repository: SpringUserRepository
+    +findByUsername(username): Result<Opt<UserEntity>>
+    +save(user): Result<UserEntity>
+  }
+
+  interface SpringUserRepository <<JpaRepository>> {
+    +findByUsername(username): Opt<UserEntity>
+  }
+
+  class UserEntity <<Entity>> {
+    -id: UUID
+    -username: String
+    -passwordHash: String
+    -createdAt: LocalDateTime
+    -updatedAt: LocalDateTime
+  }
+}
+
+package "config" {
+  class "SeedAdminInitializer" as SeedAdminInitializer <<Config>> {
+    -seedAdminService: SeedAdminService
+    -seedAdminUsername: String
+    -seedAdminPassword: String
+    +run(args): void
+    -validateSeedAdminConfiguration(): void
+    -validatePassword(password): void
+  }
+}
+
+package "common used by users" {
+  class PasswordHasher <<Common>> {
+    +hashPassword(password): Result<String>
+    +verifyPassword(password, storedHash): Result<Boolean>
+  }
+
+  abstract class Either <<Common>> {
+    +map(mapper): Either
+    +flatMap(mapper): Either
+    +validate(predicate, error): Either
+    +get(): R
+  }
+
+  class ErrorResultStatus <<record>> {
+    +code(): int
+    +message(): String
+  }
+}
+
+package "external systems" {
+  class "PostgreSQL 16" as PostgreSQL <<Database>>
+}
+
+' Layout guidance only
+SeedAdminInitializer -[hidden]down- SeedAdminService
+UserService -[hidden]down- UserRepository
+UserRepository -[hidden]down- UserRepositoryImpl
+UserRepositoryImpl -[hidden]down- SpringUserRepository
+SpringUserRepository -[hidden]down- UserEntity
+PasswordHasher -[hidden]down- Either
+
+' Implementations
+UserRepositoryImpl ..|> UserRepository
+
+' Main package flow
+UserService --> UserRepository : finds
+SeedAdminInitializer --> SeedAdminService : startup
+SeedAdminService --> UserRepository : creates/updates
+SeedAdminService --> PasswordHasher : hashes/verifies
+UserRepositoryImpl --> SpringUserRepository : delegates
+SpringUserRepository --> PostgreSQL : users
+
+' Managed data
+SpringUserRepository --> UserEntity : manages
+
+' Common result handling
+PasswordHasher --> Either : returns
+PasswordHasher --> ErrorResultStatus : creates errors
+UserRepository --> Either : returns
+UserRepositoryImpl --> Either : returns
+UserRepositoryImpl --> ErrorResultStatus : creates errors
+
+@enduml
