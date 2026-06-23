@@ -9,7 +9,7 @@ The interactive diagram below contains all Structurizr views. Use the view selec
 
 Light mode is recommended for the embedded Structurizr view, because the diagram colors are optimized for a light background.
 
-Note that these views might be distorted. Prerendered images are provided for this reason.
+Note that these views might be distorted. Pre-rendered images are provided for this reason.
 
 [Open the full Structurizr view](../../structurizr/index.html#D1_DockerCompose)
 
