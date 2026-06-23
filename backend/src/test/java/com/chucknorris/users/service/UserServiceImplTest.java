@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
@@ -28,7 +28,7 @@ class UserServiceTest {
         @Test
         @DisplayName("findByUsername returns user when repository returns present")
         void returnsUser() {
-            UserService svc = new UserService(userRepository);
+            UserServiceImpl svc = new UserServiceImpl(userRepository);
             UserEntity u = new UserEntity();
             u.setUsername("bob");
             when(userRepository.findByUsername("bob")).thenReturn(Either.right(Optional.of(u)));
@@ -41,7 +41,7 @@ class UserServiceTest {
         @Test
         @DisplayName("findByUsername propagates repository error")
         void propagatesLeft() {
-            UserService svc = new UserService(userRepository);
+            UserServiceImpl svc = new UserServiceImpl(userRepository);
             when(userRepository.findByUsername("bob")).thenReturn(Either.left(new ErrorResultStatus(503, "db")));
 
             Either<ErrorResultStatus, Optional<UserEntity>> res = svc.findByUsername("bob");

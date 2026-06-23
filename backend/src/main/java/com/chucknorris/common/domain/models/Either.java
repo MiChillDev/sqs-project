@@ -77,7 +77,11 @@ public sealed interface Either<L, R> permits Either.Left, Either.Right {
     // Monadic FlatMap (Right-biased)
     default <T> Either<L, T> flatMap(Function<? super R, Either<L, T>> mapper) {
         if (this instanceof Right<L, R>(R value)) {
-            return mapper.apply(value);
+            try {
+                return (mapper.apply(value));
+            } catch (Exception e) {
+                return left(null); // intentional null value. This is only a fallback that should not occur. for mapping operations that can fail, use tryCatch operation in Either and flatMap
+            }
         }
         return left(((Left<L, R>) this).value());
     }

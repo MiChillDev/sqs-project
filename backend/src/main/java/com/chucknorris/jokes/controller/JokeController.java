@@ -1,6 +1,7 @@
 package com.chucknorris.jokes.controller;
 
 import com.chucknorris.auth.service.AuthService;
+import com.chucknorris.auth.service.AuthServiceImpl;
 import com.chucknorris.common.controller.BaseController;
 import com.chucknorris.jokes.models.dto.CreateJokeDto;
 import com.chucknorris.jokes.models.dto.JokeDto;

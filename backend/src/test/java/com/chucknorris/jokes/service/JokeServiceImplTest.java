@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class JokeServiceTest {
+class JokeServiceImplTest {
 
     private JokeService jokeService;
 
@@ -35,7 +35,7 @@ class JokeServiceTest {
 
     @BeforeEach
     void setUp() {
-        jokeService = new JokeService(apiRepo, jokeRepository);
+        jokeService = new JokeServiceImpl(apiRepo, jokeRepository);
     }
 
     @Nested
@@ -49,7 +49,9 @@ class JokeServiceTest {
 
             Either<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto> res = jokeService.getRandomSourceJoke();
             assertThat(res).isInstanceOf(Either.Right.class);
-            if (res instanceof Either.Right<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(com.chucknorris.jokes.models.dto.SourceJokeDto dto)) {
+            if (res instanceof Either.Right<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(
+                    com.chucknorris.jokes.models.dto.SourceJokeDto dto
+            )) {
                 assertThat(dto.externalId()).isEqualTo("s1");
             }
         }
@@ -61,7 +63,9 @@ class JokeServiceTest {
 
             Either<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto> res = jokeService.getRandomSourceJoke();
             assertThat(res).isInstanceOf(Either.Left.class);
-            if (res instanceof Either.Left<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(ErrorResultStatus value)) {
+            if (res instanceof Either.Left<ErrorResultStatus, com.chucknorris.jokes.models.dto.SourceJokeDto>(
+                    ErrorResultStatus value
+            )) {
                 assertThat(value.code()).isEqualTo(502);
             }
         }

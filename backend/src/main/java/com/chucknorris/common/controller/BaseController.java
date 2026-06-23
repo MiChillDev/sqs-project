@@ -1,9 +1,9 @@
 package com.chucknorris.common.controller;
 
 import com.chucknorris.auth.service.AuthService;
+import com.chucknorris.auth.service.AuthServiceImpl;
 import com.chucknorris.common.domain.models.Either;
 import com.chucknorris.common.domain.models.ErrorResultStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
