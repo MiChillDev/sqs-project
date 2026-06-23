@@ -9,6 +9,8 @@ The interactive diagram below contains all Structurizr views. Use the view selec
 
 Light mode is recommended for the embedded Structurizr view, because the diagram colors are optimized for a light background.
 
+Note that these views might be distorted. Prerendered images are provided for this reason.
+
 [Open the full Structurizr view](../../structurizr/index.html#D1_DockerCompose)
 
 <iframe
@@ -29,7 +31,7 @@ The interactive Structurizr view is the primary entry point for navigating these
 
 ## Deployment: Docker Compose
 
-The deployment view shows how the application is run in the local Docker Compose setup.
+The [deployment view](diagrams/c4/D1_DockerCompose.png) shows how the application is run in the local Docker Compose setup.
 
 The relevant runtime services are:
 
@@ -45,7 +47,7 @@ The frontend containers communicate with the backend API. The backend API commun
 
 ## Level 1: System Context
 
-The system context view shows the `sqs-project Chuck Norris Joke Page` as a single software system in its environment.
+The [system context view](diagrams/c4/C1_SystemContext.png) shows the `sqs-project Chuck Norris Joke Page` as a single software system in its environment.
 This view shows who uses the system and which external system it depends on.
 
 The external actors are described in [Chapter 3 (Context and Scope)](03-context.md).
@@ -58,7 +60,7 @@ The main relationships are:
 
 ## Level 2: Containers
 
-The container view shows the main deployable/runtime parts of the system.
+The [container view](diagrams/c4/C2_Containers.png) shows the main deployable/runtime parts of the system.
 This view focuses on runtime responsibilities and technology choices.
 
 | Container       | Technology         | Responsibility                                                                       |
@@ -76,7 +78,7 @@ The goal is to explain responsibilities and dependencies without showing every c
 
 ### C3 - Backend Components
 
-The backend component view groups backend functionality into architectural building blocks instead of individual classes.
+The [backend component view](diagrams/c4/C3_Backend_Overview.png) groups backend functionality into architectural building blocks instead of individual classes.
 
 The backend is organized into layers:
 
@@ -123,7 +125,7 @@ The backend is organized into feature packages:
 
 ### C3 - Frontend Components - Authentication
 
-The authentication component view shows the login and route protection flow in more detail.
+The [authentication component view](diagrams/c4/C3_Frontend_Authentication.png) shows the login and route protection flow in more detail.
 
 The main flow is:
 
@@ -148,7 +150,7 @@ This view is more detailed than the frontend overview, but still less detailed t
 
 ### C3 - Frontend Components - Overview
 
-The frontend overview view is intentionally abstract. It groups frontend details into larger building blocks.
+The [frontend overview view](diagrams/c4/C3_Frontend_Overview.png) is intentionally abstract. It groups frontend details into larger building blocks.
 
 The main frontend building blocks are:
 
@@ -173,7 +175,7 @@ They provide the details that are intentionally omitted from the C3 backend comp
 
 ### C4 - Backend Code Overview
 
-The backend code overview shows the main backend class chains without DTOs and entity details.
+The [backend code overview](diagrams/backend-code-overview.svg) shows the main backend class chains without DTOs and entity details.
 
 It focuses on the high-level class flow:
 
@@ -200,7 +202,7 @@ This view is useful for understanding the recurring backend pattern across the f
 
 ### C4 - Backend Code - Jokes Package
 
-The jokes code view shows the concrete classes involved in the jokes package.
+The [jokes code view](diagrams/backend-code-jokes.svg) shows the concrete classes involved in the jokes package.
 
 It covers:
 
@@ -218,7 +220,7 @@ This view explains how persisted jokes and imported source jokes are handled at 
 
 ### C4 - Backend Code - Authentication Package
 
-The authentication code view shows the concrete classes involved in login and token validation.
+The [authentication code view](diagrams/backend-code-auth.svg) shows the concrete classes involved in login and token validation.
 
 It covers:
 
@@ -234,7 +236,7 @@ This view explains how login requests are processed, how sessions are stored, an
 
 ### C4 - Backend Code - Users Package
 
-The users code view shows user lookup and seed admin handling.
+The [users code view](diagrams/backend-code-users.svg) shows user lookup and seed admin handling.
 
 It covers:
 

@@ -49,6 +49,8 @@ All services run on a single Docker host, connected through a shared bridge netw
 
 The only persistent volume is `postgres_data` for the database.
 
+A diagram can be seen in [Chapter 5](05-building-blocks.md).
+
 ## Database
 
 PostgreSQL 16 stores all persistent data. Schema changes are managed through Flyway migration scripts under version control, applied automatically on application startup.
